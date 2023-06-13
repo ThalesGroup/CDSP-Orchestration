@@ -1,0 +1,55 @@
+#
+# (c) 2023 Thales Group. All rights reserved.
+# Author: Anurag Jain, Developer Advocate, Thales
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+  - name: "Sample playbook for License Management on CipherTrust Manager"
+    hosts: localhost
+    connection: local
+
+    vars_files:
+      - vars/licenseMgmt.yml
+
+    tasks:
+    - name: "Get trial license ID from CM"
+      thales.ciphertrust.license_trial_get:
+        localNode: "{{ this_node_connection_string }}"
+      register: license
+
+    - name: "Activate Trial License"
+      thales.ciphertrust.license_trial_action:
+        action_type: activate
+        trialId: "{{ license['id'] }}"
+        localNode: "{{ this_node_connection_string }}"
+      register: output
+
+    - name: Paused for verifying trial license activation, press enter to continue
+      ansible.builtin.pause:
+
+    - name: "De-activate Trial License"
+      thales.ciphertrust.license_trial_action:
+        action_type: deactivate
+        trialId: "{{ license['id'] }}"
+        localNode: "{{ this_node_connection_string }}"
+
+    # The next one requires a valid license file/information
+    - name: "Add License"
+      thales.ciphertrust.license_create:
+        localNode: "{{ this_node_connection_string }}"
+        license: "{{ license_string }}"
+      ignore_errors: true # Set to true if it is ok to ignore error and continue to next step 
+
+    - name: Debug Output
+      debug: var=output

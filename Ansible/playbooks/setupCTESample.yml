@@ -1,0 +1,136 @@
+#
+# (c) 2023 Thales Group. All rights reserved.
+# Author: Anurag Jain, Developer Advocate, Thales
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+---
+  - name: "Sample playbook to configure and setup CTE"
+    hosts: localhost
+    connection: local
+
+    vars_files:
+      - vars/cte.yml
+
+    tasks:
+    - name: "Create Key"
+      thales.ciphertrust.vault_keys2_save:
+        op_type: create
+        name: "CTE_standard_pol_key"
+        algorithm: aes
+        size: 256
+        undeletable: false
+        unexportable: false
+        usageMask: 76
+        meta:
+          ownerId: "local|d736184d-6bd8-4684-aeea-1c2e3d1a6d40"
+          permissions:
+            DecryptWithKey:
+              - "CTE Clients"
+            EncryptWithKey:
+              - "CTE Clients"
+            ExportKey:
+              - "CTE Clients"
+            MACVerifyWithKey:
+              - "CTE Clients"
+            MACWithKey:
+              - "CTE Clients"
+            ReadKey:
+              - "CTE Clients"
+            SignVerifyWithKey:
+              - "CTE Clients"
+            SignWithKey:
+              - "CTE Clients"
+            UseKey:
+              - "CTE Clients"
+          cte:
+            persistent_on_client: true
+            encryption_mode: CBC
+            cte_versioned: false
+        xts: false
+        localNode: "{{ this_node_connection_string }}"
+      ignore_errors: true
+
+    - name: "Create CTE Policy Element - Resource Set"
+      thales.ciphertrust.cte_resource_set:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        name: "RS-Ans-001"
+        description: "Created via Ansible"
+        type: Directory
+        resources:
+          - directory: "/"
+            file: "*"
+            include_subfolders: true
+            hdfs: false
+      ignore_errors: true
+      
+    - name: "Create CTE Policy"
+      thales.ciphertrust.cte_policy_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        name: "Policy-Ans-001"
+        description: "Created via Ansible"
+        never_deny: false
+        metadata:
+          restrict_update: false
+        security_rules:
+          - action: key_op
+            effect: "permit,applykey"
+            partial_match: true
+          - resource_set_id: RS-Ans-001
+            exclude_resource_set: false
+            partial_match: true
+            action: all_ops
+            effect: "permit,audit,applykey"
+        policy_type: Standard
+        key_rules:
+          - key_id: CTE_standard_pol_key
+            resource_set_id: RS-Ans-001
+        data_transform_rules:
+          - key_id: CTE_standard_pol_key
+            resource_set_id: RS-Ans-001
+        name: Ansible-CTE-Policy-001
+        description: "Created using Ansible"
+      ignore_errors: true
+      register: policy
+
+    - name: "Create CTE Client"
+      thales.ciphertrust.cte_client:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        name: "CTE-Client-Ans-001"
+        description: "Created via Ansible"
+        communication_enabled: false
+        password_creation_method: GENERATE
+        registration_allowed: true
+        user_space_client: true
+        client_type: FS
+      register: client
+
+    - name: "Add Guard Paths to the CTE Client"
+      thales.ciphertrust.cte_client:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: add_guard_point
+        id: "{{ client['response']['id'] }}"
+        guard_paths:
+          - "/tmp/"
+        guard_point_params:
+          - guard_point_type: directory_auto
+            policy_id: "{{ policy['response']['id'] }}"
+            automount_enabled: true
+      register: output
+
+    - name: Debug Output
+      debug: var=output

@@ -1,0 +1,12 @@
+this_node_connection_string:
+  server_ip: <CM_IP_OR_FQDN>
+  server_private_ip: <CM_PRIVATE_IP>
+  server_port: 5432
+  user: <CM_ADMIN_USERNAME>
+  password: <CM_ADMIN_PASSWORD>
+  verify: False
+
+group_name: AnsibleGroup
+new_group_name: NewGroupName
+user_id: "<USER_ID>"
+client_id: "<CLIENT_ID>"

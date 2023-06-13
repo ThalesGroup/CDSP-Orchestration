@@ -1,0 +1,158 @@
+---
+# (c) 2023 Thales Group. All rights reserved.
+# Author: Anurag Jain, Developer Advocate, Thales
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+####################################################################
+# WARNING: These are designed specifically for Ansible tests       #
+# and should not be used as examples of how to write Ansible roles #
+####################################################################
+
+## Verify that integration_config was specified
+- block:
+  - assert:
+      that:
+        - this_node_connection_string is defined
+        - key_name is defined
+        - key_algo is defined
+        - key_len is defined
+        - usage_mask is defined
+        - key_revocation_reason is defined
+        - key_revocation_message is defined
+        - key_reactivation_reason is defined
+        - key_reactivation_message is defined
+
+## Validate the create user module
+- block:
+  - name: "Create Key"
+    thales.ciphertrust.vault_keys2_save:
+      op_type: create
+      name: "{{ key_name }}"
+      algorithm: "{{ key_algo }}"
+      size: "{{ key_len }}"
+      usageMask: "{{ usage_mask }}"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_create
+
+  - assert:
+      that:
+        - _result_create is not failed
+        - _result_create.response.id is string
+
+  - name: "Save key ID"
+    set_fact:
+      key_id: "{{ _result_create.response.id }}"
+
+  - name: "Patch Key"
+    thales.ciphertrust.vault_keys2_save:
+      op_type: "patch"
+      cm_key_id: "{{ key_id }}"
+      unexportable: false
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_patch
+
+  - assert:
+      that:
+        - _result_patch is not failed
+        - _result_patch.response.message is match("Resource updated succesfully")
+
+  - name: "Create Version"
+    thales.ciphertrust.vault_keys2_save:
+      op_type: create_version
+      cm_key_id: "{{ key_id }}"
+      encoding: "base64"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_create_version
+
+  - assert:
+      that:
+        - _result_create_version is not failed
+        - _result_create_version.response.message is match("Resource created sucessfully")
+
+  - name: "Archive Key"
+    thales.ciphertrust.vault_keys2_op:
+      op_type: archive
+      cm_key_id: "{{ key_id }}"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_archive
+
+  - assert:
+      that:
+        - _result_archive is not failed
+        - _result_archive.response.message is match("Resource created succesfully")
+
+  - name: "Recover Key"
+    thales.ciphertrust.vault_keys2_op:
+      op_type: recover
+      cm_key_id: "{{ key_id }}"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_recover
+
+  - assert:
+      that:
+        - _result_recover is not failed
+        - _result_recover.response.message is match("Resource created succesfully")
+
+  - name: "Revoke Key"
+    thales.ciphertrust.vault_keys2_op:
+      op_type: revoke
+      cm_key_id: "{{ key_id }}"
+      reason: "{{ key_revocation_reason }}"
+      message: "{{ key_revocation_message }}"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_revoke
+
+  - assert:
+      that:
+        - _result_revoke is not failed
+        - _result_revoke.response.message is match("Resource created succesfully")
+
+  - name: "Reactivate Key"
+    thales.ciphertrust.vault_keys2_op:
+      op_type: reactivate
+      cm_key_id: "{{ key_id }}"
+      reason: "{{ key_reactivation_reason }}"
+      message: "{{ key_reactivation_message }}"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_reactivate
+
+  - assert:
+      that:
+        - _result_reactivate is not failed
+        - _result_reactivate.response.message is match("Resource created succesfully")
+
+  - name: "Destroy Key"
+    thales.ciphertrust.vault_keys2_op:
+      op_type: destroy
+      cm_key_id: "{{ key_id }}"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_destroy
+
+  - assert:
+      that:
+        - _result_destroy is not failed
+        - _result_destroy.response.message is match("Resource created succesfully")
+
+  - name: "Delete Key"
+    thales.ciphertrust.cm_resource_delete:
+      key: "{{ key_id }}"
+      resource_type: "keys"
+      localNode: "{{ this_node_connection_string }}"
+    register: _result_delete
+
+  - assert:
+      that:
+        - _result_delete is not failed
+        - _result_delete.response.message is match("Resource deletion succesful")

@@ -1,0 +1,16 @@
+this_node_connection_string:
+  server_ip: <CM_IP_OR_FQDN>
+  server_private_ip: <CM_PRIVATE_IP>
+  server_port: 5432
+  user: <CM_ADMIN_USERNAME>
+  password: <CM_ADMIN_PASSWORD>
+  verify: False
+
+key_name: <KEY_NAME>
+key_algo: <KEY_ALGO>
+key_len: <KEY_LENGTH>
+usage_mask: <USAGE_MASK>
+key_revocation_reason: KeyCompromise
+key_revocation_message: "By Ansible"
+key_reactivation_reason: DeactivatedToActive
+key_reactivation_message: "By Ansible"

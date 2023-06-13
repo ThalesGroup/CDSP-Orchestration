@@ -1,0 +1,17 @@
+this_node_address: <CM_IP_OR_FQDN>
+this_node_private_ip: <CM_PRIVATE_IP>
+this_node_username: <CM_ADMIN_USERNAME>
+this_node_password: <CM_ADMIN_PASSWORD>
+
+this_node_connection_string:
+  server_ip: "{{ this_node_address }}"
+  server_private_ip: "{{ this_node_private_ip }}"
+  server_port: 5432
+  user: "{{ this_node_username }}"
+  password: "{{ this_node_password }}"
+  verify: False
+
+group_name: <GROUP_NAME>
+new_group_name: <GROUP_NAME_UPDATED>
+user_id: "<CM_USER_ID>"
+client_id: "<CM_CLIENT_ID>"

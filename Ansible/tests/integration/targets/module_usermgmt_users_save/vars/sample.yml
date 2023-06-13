@@ -1,0 +1,16 @@
+this_node_connection_string:
+  server_ip: <CM_IP_OR_FQDN>
+  server_private_ip: <CM_PRIVATE_IP>
+  server_port: 5432
+  user: <CM_ADMIN_USERNAME>
+  password: <CM_ADMIN_PASSWORD>
+  verify: False
+
+username: "<USERNAME>"
+password: "<PASSWORD>"
+email: "<USER_EMAIL>"
+name: "<USER_NAME>"
+new_password: "<NEW_PASSWORD>"
+new_name: "<NEW_USER_NAME>"
+new_email: "<NEW_USER_EMAIL>"
+new_self_name: "<FULL_NAME_SELF>"

@@ -1,0 +1,26 @@
+this_node_address: <CM_IP_OR_FQDN>
+this_node_private_ip: <CM_PRIVATE_IP>
+this_node_username: <CM_ADMIN_USERNAME>
+this_node_password: <CM_ADMIN_PASSWORD>
+
+this_node_connection_string:
+  server_ip: "{{ this_node_address }}"
+  server_private_ip: "{{ this_node_private_ip }}"
+  server_port: 5432
+  user: "{{ this_node_username }}"
+  password: "{{ this_node_password }}"
+  verify: False
+
+dpg_key_name: AnsibleKey
+char_set_name: AnsibleCharSet
+non_card_protection_policy_name: AnsibleNotCardProtPolicy
+fpe_card_protection_policy_name: AnsibleCardProtPolicy
+var_username: anurag
+var_password: T0uGhP@ssW0rD!
+var_email: anurag@example.com
+var_name: "Anurag Jain"
+var_user_set_name: AnsibleUserSet
+access_policy_name: AnsibleAccessPolicy
+dpg_policy_name: AnsibleDpgPolicy
+client_profile_name: AnsibleClientProfile
+nae_port_number: 9006

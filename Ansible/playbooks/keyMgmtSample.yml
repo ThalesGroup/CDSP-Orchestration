@@ -1,0 +1,58 @@
+#
+# (c) 2023 Thales Group. All rights reserved.
+# Author: Anurag Jain, Developer Advocate, Thales
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+  - name: "Sample playbook for Key Management and Key Operations on CipherTrust Manager"
+    hosts: localhost
+    connection: local
+
+    vars_files:
+      - vars/keyMgmt.yml
+
+    tasks:
+    - name: "Create Key"
+      thales.ciphertrust.vault_keys2_save:
+        op_type: create
+        name: "{{ key_name }}"
+        algorithm: aes
+        size: 256
+        usageMask: 3145740
+        localNode: "{{ this_node_connection_string }}"
+      register: output
+
+    - name: "Get Key ID from its name"
+      thales.ciphertrust.cm_resource_get_id_from_name:
+        query_param: "name"
+        query_param_value: "{{ key_name }}"
+        resource_type: "keys"
+      register: key
+
+    - name: "Patch Key"
+      thales.ciphertrust.vault_keys2_save:
+        op_type: patch
+        cm_key_id: "{{ key['id'] }}"
+        unexportable: false
+        localNode: "{{ this_node_connection_string }}"
+
+    - name: "Create Version"
+      thales.ciphertrust.vault_keys2_save:
+        op_type: create_version
+        cm_key_id: "{{ key['id'] }}"
+        encoding: "base64"
+        localNode: "{{ this_node_connection_string }}"
+
+    - name: Debug Output
+      debug: var=output

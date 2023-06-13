@@ -1,0 +1,16 @@
+this_node_connection_string:
+  server_ip: <CM_IP_OR_FQDN>
+  server_private_ip: <CM_PRIVATE_IP>
+  server_port: 5432
+  user: <CM_ADMIN_USERNAME>
+  password: <CM_ADMIN_PASSWORD>
+  verify: False
+
+csr_cn: <CSR_CN>
+cert_bundle_pem: <CERT_KEY_PAIR>
+cert_format: <CERT_FORMAT>
+source_interface: <SOURCE_NAE_INTERFACE>
+port: <INTERFACE_PORT>
+type: <INTERFACE_TYPE>
+mode: <INTERFACE_MODE>
+new_port: <NEW_INTERFACE_PORT>

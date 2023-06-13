@@ -1,0 +1,18 @@
+this_node_address: <CM_IP_OR_FQDN>
+this_node_private_ip: <CM_PRIVATE_IP>
+this_node_username: <CM_ADMIN_USERNAME>
+this_node_password: <CM_ADMIN_PASSWORD>
+
+this_node_connection_string:
+  server_ip: "{{ this_node_address }}"
+  server_private_ip: "{{ this_node_private_ip }}"
+  server_port: 5432
+  user: "{{ this_node_username }}"
+  password: "{{ this_node_password }}"
+  verify: False
+
+key_name: <KEY_NAME>
+key_revocation_reason: KeyCompromise
+key_revocation_message: "By Ansible"
+key_reactivation_reason: DeactivatedToActive
+key_reactivation_message: "By Ansible"

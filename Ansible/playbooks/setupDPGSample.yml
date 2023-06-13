@@ -1,0 +1,148 @@
+#
+# (c) 2023 Thales Group. All rights reserved.
+# Author: Anurag Jain, Developer Advocate, Thales
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+---
+  - name: "Sample playbook to configure and setup a new DPG instance"
+    hosts: localhost
+    connection: local
+
+    vars_files:
+      - vars/dpg.yml
+
+    tasks:
+    - name: "Create Key"
+      thales.ciphertrust.vault_keys2_save:
+        op_type: create
+        name: "{{ dpg_key_name }}"
+        algorithm: aes
+        size: 256
+        usageMask: 3145740
+        localNode: "{{ this_node_connection_string }}"
+      ignore_errors: true
+
+    - name: "Create Interface"
+      thales.ciphertrust.interface_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        port: 9006
+        auto_gen_ca_id: "kylo:kylo:naboo:localca:76c4da32-0953-4c6a-bf77-c5a70314244c"
+        auto_registration: true
+        cert_user_field: CN
+        interface_type: nae
+        mode: tls-cert-pw-opt
+        network_interface: all
+        trusted_cas:
+          local:
+            - "kylo:kylo:naboo:localca:76c4da32-0953-4c6a-bf77-c5a70314244c"
+      ignore_errors: true
+
+    - name: "Create Character Set"
+      thales.ciphertrust.dpg_character_set_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        name: "{{ char_set_name }}"
+        range:
+          - 0030-0039
+          - 0041-005A
+          - 0061-007A
+        encoding: UTF-8
+      register: charset
+    
+    - name: "Create Protection Policy for non-CARD"
+      thales.ciphertrust.dpg_protection_policy_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        name: "{{ non_card_protection_policy_name }}"
+        key: "{{ dpg_key_name }}"
+        tweak: "1628462495815733"
+        tweak_algorithm: "SHA1"
+        algorithm: "FPE/FF3/ASCII"
+        character_set_id: "{{ charset['response']['id'] }}"
+      register: protection_policy_non_card
+
+    - name: "Create Protection Policy for CARD"
+      thales.ciphertrust.dpg_protection_policy_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        name: "{{ fpe_card_protection_policy_name }}"
+        key: "{{ dpg_key_name }}"
+        tweak: "9828462495846783"
+        tweak_algorithm: "SHA1"
+        algorithm: "FPE/AES/CARD10"
+      register: protection_policy_card
+
+    - name: "Create user"
+      thales.ciphertrust.usermgmt_users_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: "create"
+        username: "{{ var_username }}"
+        password: "{{ var_password }}"
+        email: "{{ var_email }}"
+        name: "{{ var_name }}"
+      ignore_errors: true
+
+    - name: "User Set Creation"
+      thales.ciphertrust.dpg_user_set_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: "create"
+        name: "{{ var_user_set_name }}"
+        users:
+          - "{{ var_username }}"
+      register: userset
+
+    - name: "Create Access Policy"
+      thales.ciphertrust.dpg_access_policy_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: "create"
+        name: "{{ access_policy_name }}"
+        default_reveal_type: "Ciphertext"
+        user_set_policy:
+          - reveal_type: Ciphertext
+            user_set_id: "{{ userset['response']['id'] }}"
+
+    - name: "Create DPG Policy"
+      thales.ciphertrust.dpg_policy_save:
+        localNode: "{{ this_node_connection_string }}"
+        op_type: create
+        name: "{{  dpg_policy_name }}"
+        proxy_config:
+          - api_url: "/tmp/abc"
+            json_request_post_tokens:
+              - name: "details.ssn"
+                operation: "protect"
+                protection_policy: "{{ non_card_protection_policy_name }}"
+      register: policy
+
+    - name: "Create Client Profile"
+      thales.ciphertrust.dpg_client_profile_save:
+        name: "{{ client_profile_name }}"
+        op_type: create
+        app_connector_type: DPG
+        name: AnsibleClientProfile
+        lifetime: 30d
+        cert_duration: 730
+        max_clients: 200
+        ca_id: "kylo:kylo:naboo:localca:76c4da32-0953-4c6a-bf77-c5a70314244c"
+        nae_iface_port: "{{ nae_port_number }}"
+        csr_parameters:
+          csr_cn: admin
+        policy_id: "{{ policy['response']['id'] }}"
+        localNode: "{{ this_node_connection_string }}"
+      register: output
+
+    - name: Debug Output
+      debug: var=output
