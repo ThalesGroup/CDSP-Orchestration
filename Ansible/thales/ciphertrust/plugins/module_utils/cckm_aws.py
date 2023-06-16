@@ -23,204 +23,80 @@ __metaclass__ = type
 import json
 import ast
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cm_api import POSTData, PATCHData, POSTWithoutData
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cm_api import POSTData, POSTWithoutData
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 # CCKM AWS CKS Management Functions
-def createAWSKeyCKS(**kwargs):
+def performCKSOperation(**kwargs):
   request = {}
 
   for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
+    if key not in ['node', 'id', 'cks_op'] and value != None:
       request[key] = value
 
-  payload = json.dumps(request)
+  if kwargs['cks_op'] == "block" or kwargs['cks_op'] == "unblock" or kwargs['cks_op'] == "disconnect" or kwargs['cks_op'] == "rotate-credential":
+    try:
+      response = POSTWithoutData(
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/" + kwargs['cks_op'],
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  elif kwargs['cks_op'] == "create-aws-key" or kwargs['cks_op'] == "connect" or kwargs['cks_op'] == "link":
+    payload = json.dumps(request)
+    try:
+      response = POSTData(
+        payload=payload,
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/" + kwargs['cks_op'],
+        id="id",
+      )        
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  else:
+    raise AnsibleCMException(message="invalid operation on custom key store")
+  
 
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/create-aws-key",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def blockCKS(**kwargs):
+def performHYOKKeyOperation(**kwargs):
   request = {}
 
   for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
+    if key not in ['node', 'id', 'hyok_key_op'] and value != None:
       request[key] = value
 
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/block",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def unblockCKS(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/unblock",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def connectCKS(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/connect",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def disconnectCKS(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/disconnect",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def linkLocalCKSWithAWS(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/link",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def rotateCredential(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/rotate-credential",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def blockHYOKKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/block",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def unblockHYOKKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/unblock",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def linkHYOKKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/link",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
+  if kwargs['hyok_key_op'] == "block" or kwargs['hyok_key_op'] == "unblock":
+    try:
+      response = POSTWithoutData(
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['hyok_key_op'],
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  elif kwargs['hyok_key_op'] == "link":
+    payload = json.dumps(request)
+    try:
+      response = POSTData(
+        payload=payload,
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['hyok_key_op'],
+        id="id",
+      )        
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  else:
+    raise AnsibleCMException(message="invalid operation on HYOK key")
 
 # CCKM AWS Key Management Functions
 def performKeyOperation(**kwargs):
