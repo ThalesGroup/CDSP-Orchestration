@@ -59,6 +59,21 @@ def addCCKMCloudAsset(**kwargs):
       endpoint = 'cckm/azure/secrets'
     else:
       raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "aws":
+    if resource_type == "cks":
+      endpoint = 'cckm/aws/custom-key-stores'
+    elif resource_type == "virtual-key":
+      endpoint = 'cckm/virtual/keys'
+    elif resource_type == "hyok-key":
+      endpoint = 'cckm/aws/create-hyok-key'
+    elif resource_type == "key":
+      endpoint = 'cckm/aws/keys'
+    elif resource_type == "template":
+      endpoint = 'cckm/aws/templates'
+    elif resource_type == "kms":
+      endpoint = 'cckm/aws/kms'
+    else:
+      raise AnsibleCMException(message="invalid asset type")
   else:
       raise AnsibleCMException(message="Cloud provider not supported")
 
@@ -98,6 +113,17 @@ def editCCKMCloudAsset(**kwargs):
       endpoint = "cckm/azure/secrets/" + kwargs['id']
     else:
       raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "aws":
+    if resource_type == "cks":
+      endpoint = 'cckm/aws/custom-key-stores/' + kwargs['id']
+    elif resource_type == "virtual-key":
+      endpoint = 'cckm/virtual/keys/' + kwargs['id']
+    elif resource_type == "template":
+      endpoint = 'cckm/aws/templates/' + kwargs['id']
+    elif resource_type == "kms":
+      endpoint = 'cckm/aws/kms/' + kwargs['id']
+    else:
+      raise AnsibleCMException(message="invalid asset type")
   else:
       raise AnsibleCMException(message="Cloud provider not supported")
 
@@ -135,6 +161,13 @@ def createSyncJob(**kwargs):
       endpoint = "cckm/azure/secrets/synchronization-jobs"
     else:
       raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "aws":
+    if resource_type == "cks":
+      endpoint = 'cckm/aws/custom-key-stores/synchronization-jobs'
+    elif resource_type == "key":
+      endpoint = 'cckm/aws/synchronization-jobs'
+    else:
+      raise AnsibleCMException(message="invalid asset type")
   else:
       raise AnsibleCMException(message="Cloud provider not supported")
 
@@ -169,6 +202,13 @@ def cancelSyncJob(**kwargs):
       endpoint = "cckm/azure/synchronization-jobs/" + kwargs['id'] + "/cancel"
     elif resource_type == "secret":
       endpoint = "cckm/azure/secrets/synchronization-jobs/" + kwargs['id'] + "/cancel"
+    else:
+      raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "aws":
+    if resource_type == "cks":
+      endpoint = "cckm/aws/custom-key-stores/synchronization-jobs/" + kwargs['id'] + "/cancel"
+    elif resource_type == "key":
+      endpoint = "cckm/aws/synchronization-jobs/" + kwargs['id'] + "/cancel"
     else:
       raise AnsibleCMException(message="invalid asset type")
   else:

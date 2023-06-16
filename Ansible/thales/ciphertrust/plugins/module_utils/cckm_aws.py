@@ -20,66 +20,13 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
 import json
 import ast
 
 from ansible_collections.thales.ciphertrust.plugins.module_utils.cm_api import POSTData, PATCHData, POSTWithoutData
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
-def is_json(myjson):
-  try:
-    json.loads(myjson)
-  except ValueError as e:
-    return False
-  return True
-
 # CCKM AWS CKS Management Functions
-def createCustomKeyStore(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def editCustomKeyStore(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = PATCHData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'],
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
 def createAWSKeyCKS(**kwargs):
   request = {}
 
@@ -200,46 +147,6 @@ def linkLocalCKSWithAWS(**kwargs):
   except AnsibleCMException as custom_e:
     raise
 
-def synchronize_AWS_CKS(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/synchronization-jobs",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def cancelSynchronizeJob(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/custom-key-stores/synchronization-jobs/" + kwargs['id'] + "/cancel",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
 def rotateCredential(**kwargs):
   request = {}
 
@@ -251,71 +158,6 @@ def rotateCredential(**kwargs):
     response = POSTWithoutData(
       cm_node=kwargs["node"],
       cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/rotate-credential",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def createVirtualKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/virtual/keys",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def editVirtualKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = PATCHData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/virtual/keys/" + kwargs['id'],
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def createHYOKKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/create-hyok-key",
-      id="id",
     )          
     return ast.literal_eval(str(response))
   except CMApiException as api_e:
@@ -381,68 +223,6 @@ def linkHYOKKey(**kwargs):
     raise
 
 # CCKM AWS Key Management Functions
-def createAWSKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/keys",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def synchronizeAWSKey(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/synchronization-jobs",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def cancelSynchronizeAWSKeyJob(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  try:
-    response = POSTWithoutData(
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/synchronization-jobs/" + kwargs['id'] + "/cancel",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
 def performKeyOperation(**kwargs):
   request = {}
 
@@ -520,93 +300,7 @@ def verifyKeyAlias(**kwargs):
   except AnsibleCMException as custom_e:
     raise
 
-def createKeyPolicy(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/templates",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def updateKeyPolicy(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = PATCHData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/templates/" + kwargs['id'],
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
 # CCKM AWS Key Management Functions
-def createAwsKms(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/kms",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def updateAwsKms(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = PATCHData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/aws/kms/" + kwargs['id'],
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
 def updateACLs(**kwargs):
   request = {}
 
