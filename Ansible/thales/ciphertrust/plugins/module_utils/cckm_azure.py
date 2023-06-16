@@ -20,66 +20,13 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
 import json
 import ast
 
 from ansible_collections.thales.ciphertrust.plugins.module_utils.cm_api import POSTData, PATCHData, POSTWithoutData, DeleteWithoutData
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
-def is_json(myjson):
-  try:
-    json.loads(myjson)
-  except ValueError as e:
-    return False
-  return True
-
 # CCKM Azure Vault Management Functions
-def addAzureVault(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = POSTData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/azure/add-vaults",
-      id="id",
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
-def editAzureVault(**kwargs):
-  request = {}
-
-  for key, value in kwargs.items():
-    if key not in ['node', 'id'] and value != None:
-      request[key] = value
-
-  payload = json.dumps(request)
-
-  try:
-    response = PATCHData(
-      payload=payload,
-      cm_node=kwargs["node"],
-      cm_api_endpoint="cckm/azure/vaults/" + kwargs['id'],
-    )          
-    return ast.literal_eval(str(response))
-  except CMApiException as api_e:
-    raise
-  except AnsibleCMException as custom_e:
-    raise
-
 def performAZVaultOperation(**kwargs):
   request = {}
 
@@ -125,3 +72,119 @@ def performAZVaultOperation(**kwargs):
       raise
   else:
     raise AnsibleCMException(message="Unsupported vault_op")
+
+# CCKM Azure Certificate Management Functions
+def performAZCertificateOperation(**kwargs):
+  request = {}
+
+  for key, value in kwargs.items():
+    if key not in ['node', 'id', 'certificate_op_type'] and value != None:
+      request[key] = value
+
+  payload = json.dumps(request)
+
+  if kwargs['certificate_op_type'] == "restore":
+    try:
+      response = POSTData(
+        payload=payload,
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/azure/certificates/" + kwargs['id'] + "/" + kwargs['certificate_op_type'],
+        id="id",
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  elif kwargs['certificate_op_type'] == "soft-delete" or kwargs['certificate_op_type'] == "hard-delete" or kwargs['certificate_op_type'] == "recover":
+    try:
+      response = POSTWithoutData(
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/azure/certificates/" + kwargs['id'] + "/" + kwargs['certificate_op_type'],
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  else:
+    raise AnsibleCMException(message="Unsupported certificate_op_type")
+
+def importCertToAZ(**kwargs):
+  request = {}
+
+  for key, value in kwargs.items():
+    if key not in ['node'] and value != None:
+      request[key] = value
+
+  payload = json.dumps(request)
+
+  try:
+    response = POSTData(
+      payload=payload,
+      cm_node=kwargs["node"],
+      cm_api_endpoint="cckm/azure/certificates/import",
+      id="id",
+    )          
+    return ast.literal_eval(str(response))
+  except CMApiException as api_e:
+    raise
+  except AnsibleCMException as custom_e:
+    raise
+
+# CCKM Azure Certificate Management Functions
+def performAZKeyOperation(**kwargs):
+  request = {}
+
+  for key, value in kwargs.items():
+    if key not in ['node', 'id', 'key_op_type'] and value != None:
+      request[key] = value
+
+  payload = json.dumps(request)
+
+  if kwargs['key_op_type'] == "restore" or kwargs['key_op_type'] == "enable-rotation-job":
+    try:
+      response = POSTData(
+        payload=payload,
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/azure/keys/" + kwargs['id'] + "/" + kwargs['key_op_type'],
+        id="id",
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  else:
+    try:
+      response = POSTWithoutData(
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/azure/keys/" + kwargs['id'] + "/" + kwargs['key_op_type'],
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+
+def uploadKeyOnAZ(**kwargs):
+  request = {}
+
+  for key, value in kwargs.items():
+    if key not in ['node'] and value != None:
+      request[key] = value
+
+  payload = json.dumps(request)
+
+  try:
+    response = POSTData(
+      payload=payload,
+      cm_node=kwargs["node"],
+      cm_api_endpoint="cckm/azure/upload-key",
+      id="id",
+    )          
+    return ast.literal_eval(str(response))
+  except CMApiException as api_e:
+    raise
+  except AnsibleCMException as custom_e:
+    raise

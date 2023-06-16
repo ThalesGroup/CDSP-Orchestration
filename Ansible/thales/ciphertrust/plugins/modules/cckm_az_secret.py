@@ -21,16 +21,16 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_azure import performAZVaultOperation
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_commons import addCCKMCloudAsset, editCCKMCloudAsset
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_azure import performAZSecretOperation
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_commons import addCCKMCloudAsset, editCCKMCloudAsset, createSyncJob, cancelSyncJob
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
-module: cckm_az_vault
+module: cckm_az_secret
 short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for Azure Vault
+    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for Azure Secrets API
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -75,8 +75,8 @@ options:
 '''
 
 EXAMPLES = '''
-- name: "Create Azure Vault"
-  thales.ciphertrust.cckm_az_vault:
+- name: "Create Azure Key"
+  thales.ciphertrust.cckm_az_secret:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -91,69 +91,55 @@ RETURN = '''
 
 '''
 
-_acl = dict(
-  actions=dict(type='list', element='str'),
-  group=dict(type='str'),
-  permit=dict(type='bool'),
-  user_id=dict(type='str'),
-)
-
 _schema_less = dict()
 
-_azure_vault_property_sku = dict(
-   family=dict(type='str'),
-   name=dict(type='str', options=['Standard', 'Premium']),
+_azure_param_attribute = dict(
+  enabled=dict(type='bool'),
+  exp=dict(type='str'),
+  nbf=dict(type='str'),
 )
 
-_azure_vault_property = dict(
-   createMode=dict(type='str', options=['CreateModeRecover', 'CreateModeDefault']),
-   enablePurgeProtection=dict(type='bool'),
-   enableRbacAuthorization=dict(type='bool'),
-   enableSoftDelete=dict(type='bool'),
-   enabledForDeployment=dict(type='bool'),
-   enabledForDiskEncryption=dict(type='bool'),
-   enabledForTemplateDeployment=dict(type='bool'),
-   sku=dict(type='dict', options=_azure_vault_property_sku),
-   softDeleteRetentionInDays=dict(type='int'),
-   tenantId=dict(type='str'),
-   vaultUri=dict(type='str'),
-)
-
-_azure_vault = dict(
-   azure_vault_id=dict(type='str'),
-   location=dict(type='str'),
-   name=dict(type='str'),
-   properties=dict(type='dict', options=_azure_vault_property),
-   type=dict(type='str'),
-   tags=dict(type='dict', options=_schema_less),
+_azure_param = dict(
+  value=dict(type='str'),
+  attributes=dict(type='dict', options=_azure_param_attribute),
+  contentType=dict(type='str'),
+  tags=dict(type='dict', options=_schema_less),
 )
 
 argument_spec = dict(
     op_type=dict(type='str', options=[
        'create', 
        'update',
-       'update-acls',
+       'secret_op',
+       'create-sync-job',
+       'cancel-sync-job',
        ], required=True),
-    vault_id=dict(type='str'),
-    connection=dict(type='str'),
-    subscription_id=dict(type='str'),
-    vaults=dict(type='list', element='dict', options=_azure_vault),
-    vault_op=dict(type='str', options=['enable-rotation-job', 'disable-rotation-job', 'update-acls', 'remove-vault']),
-    acls=dict(type='list', element='dict', options=_acl),
-    job_config_id=dict(type='str'),
-    override_key_scheduler=dict(type='bool'),
+    secret_id=dict(type='str'),
+    job_id=dict(type='str'),
+    secret_op_type=dict(type='str', options=['soft-delete', 'hard-delete', 'restore', 'recover']),
+    # op_type = create
+    azure_param=dict(type='dict', options=_azure_param),
+    secret_name=dict(type='str'),
+    key_vault=dict(type='str'),
+    # op_type = update
+    attributes=dict(type='dict', options=_schema_less),
+    tags=dict(type='dict', options=_schema_less),
+    # op_type = create-sync-job
+    key_vaults=dict(type='list', element='str'),
+    synchronize_all=dict(type='bool'),
 )
 
-def validate_parameters(cckm_az_vault_module):
+def validate_parameters(cckm_az_secret_module):
     return True
 
 def setup_module_object():
     module = ThalesCipherTrustModule(
         argument_spec=argument_spec,
         required_if=(
-            ['op_type', 'create', ['connection', 'subscription_id', 'vaults']],
-            ['op_type', 'update', ['vault_id', 'connection']],
-            ['op_type', 'action', ['vault_id', 'vault_op']],
+            ['op_type', 'create', ['azure_param', 'secret_name', 'key_vault']],
+            ['op_type', 'update', ['secret_id']],
+            ['op_type', 'secret_op', ['secret_id', 'secret_op_type']],
+            ['op_type', 'cancel-sync-job', ['job_id']],
         ),
         mutually_exclusive=[],
         supports_check_mode=True,
@@ -166,7 +152,7 @@ def main():
     
     module = setup_module_object()
     validate_parameters(
-        cckm_az_vault_module=module,
+        cckm_az_secret_module=module,
     )
 
     result = dict(
@@ -177,11 +163,11 @@ def main():
       try:
         response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
-          asset_type="vault",
+          asset_type="secret",
           cloud_type="az",
-          connection=module.params.get('connection'),
-          subscription_id=module.params.get('subscription_id'),
-          vaults=module.params.get('vaults'),
+          azure_param=module.params.get('azure_param'),
+          secret_name=module.params.get('key_name'),
+          key_vault=module.params.get('key_vault'),
         )
         result['response'] = response
       except CMApiException as api_e:
@@ -194,10 +180,11 @@ def main():
       try:
         response = editCCKMCloudAsset(
           node=module.params.get('localNode'),
-          id=module.params.get('vault_id'),
-          asset_type="vault",
+          id=module.params.get('key_id'),
+          asset_type="secret",
           cloud_type="az",
-          connection=module.params.get('connection'),      
+          attributes=module.params.get('attributes'),
+          tags=module.params.get('tags'),
         )
         result['response'] = response
       except CMApiException as api_e:
@@ -206,15 +193,14 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'action':
-      if module.params.get('vault_op') == 'enable-rotation-job':
+    elif module.params.get('op_type') == 'secret_op':
+      if module.params.get('secret_op_type') == 'restore':
         try:
-          response = performAZVaultOperation(
+          response = performAZSecretOperation(
             node=module.params.get('localNode'),
-            id=module.params.get('vault_id'),
-            vault_op=module.params.get('vault_op'),
-            job_config_id=module.params.get('job_config_id'),
-            override_key_scheduler=module.params.get('override_key_scheduler'),
+            id=module.params.get('secret_id'),
+            secret_op_type=module.params.get('secret_op_type'),
+            key_vault=module.params.get('key_vault'),
           )
           result['response'] = response
         except CMApiException as api_e:
@@ -222,26 +208,12 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('vault_op') == 'update-acls':
-        try:
-          response = performAZVaultOperation(
-            node=module.params.get('localNode'),
-            id=module.params.get('vault_id'),
-            vault_op=module.params.get('vault_op'),
-            acls=module.params.get('acls'),
-          )
-          result['response'] = response
-        except CMApiException as api_e:
-          if api_e.api_error_code:
-            module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-        except AnsibleCMException as custom_e:
-          module.fail_json(msg=custom_e.message)         
       else:         
         try:
-          response = performAZVaultOperation(
+          response = performAZSecretOperation(
             node=module.params.get('localNode'),
-            id=module.params.get('vault_id'),
-            vault_op=module.params.get('vault_op'),
+            id=module.params.get('secret_id'),
+            secret_op_type=module.params.get('secret_op_type'),
           )
           result['response'] = response
         except CMApiException as api_e:
@@ -249,6 +221,37 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
+
+    elif module.params.get('op_type') == 'create-sync-job':
+      try:
+        response = createSyncJob(
+          node=module.params.get('localNode'),
+          asset_type="secret",
+          cloud_type="az",
+          key_vaults=module.params.get('key_vaults'),
+          synchronize_all=module.params.get('synchronize_all'),
+        )
+        result['response'] = response
+      except CMApiException as api_e:
+        if api_e.api_error_code:
+          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+      except AnsibleCMException as custom_e:
+        module.fail_json(msg=custom_e.message)
+
+    elif module.params.get('op_type') == 'cancel-sync-job':
+      try:
+        response = cancelSyncJob(
+          node=module.params.get('localNode'),
+          id=module.params.get('job_id'),
+          asset_type="secret",
+          cloud_type="az",
+        )
+        result['response'] = response
+      except CMApiException as api_e:
+        if api_e.api_error_code:
+          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+      except AnsibleCMException as custom_e:
+        module.fail_json(msg=custom_e.message)
 
     else:
         module.fail_json(msg="invalid op_type")
