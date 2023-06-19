@@ -21,15 +21,16 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_aws import createAwsKms, updateAwsKms, updateACLs
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_aws import updateACLs
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_commons import addCCKMCloudAsset, editCCKMCloudAsset
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
-module: cckm_aws_key
+module: cckm_aws_kms
 short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for AWS Keys
+    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for AWS KMS
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -144,8 +145,10 @@ def main():
 
     if module.params.get('op_type') == 'create':
       try:
-        response = createAwsKms(
+        response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="kms",
+          cloud_type="aws",
           account_id=module.params.get('account_id'),
           connection=module.params.get('connection'),
           name=module.params.get('name'),
@@ -162,7 +165,9 @@ def main():
 
     elif module.params.get('op_type') == 'update':
       try:
-        response = updateAwsKms(
+        response = editCCKMCloudAsset(
+          asset_type="kms",
+          cloud_type="aws",
           node=module.params.get('localNode'),
           id=module.params.get('kms_id'),
           connection=module.params.get('connection'),
