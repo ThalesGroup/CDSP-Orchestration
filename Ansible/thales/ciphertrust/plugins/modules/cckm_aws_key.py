@@ -21,7 +21,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_aws import createAWSKey, synchronizeAWSKey, cancelSynchronizeAWSKeyJob, performKeyOperation, uploadKeyToAWS, verifyKeyAlias, createKeyPolicy, updateKeyPolicy
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_aws import performKeyOperation, uploadKeyToAWS, verifyKeyAlias
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_commons import addCCKMCloudAsset, editCCKMCloudAsset, createSyncJob, cancelSyncJob
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
@@ -111,10 +112,10 @@ _aws_key_param = dict(
 
 argument_spec = dict(
     op_type=dict(type='str', options=[
-       'create-aws-key', 
+       'create', 
        'create-sync-job',
        'cancel-sync-job',
-       'aws-key-perform-operation',
+       'key_op',
        'upload-key-aws',
        'verify-key-alias',
        'create-aws-template',
@@ -123,7 +124,7 @@ argument_spec = dict(
     key_id=dict(type='str'),
     template_id=dict(type='str'),
     job_id=dict(type='str'),
-    aws_key_action=dict(type='str', options=[
+    key_op_type=dict(type='str', options=[
       'enable-rotation-job',
       'disable-rotation-job',
       'import-material',
@@ -195,9 +196,9 @@ def setup_module_object():
     module = ThalesCipherTrustModule(
         argument_spec=argument_spec,
         required_if=(
-            ['op_type', 'create-aws-key', ['kms', 'region']],
-            ['op_type', 'cancel-synch-job', ['job_id']],
-            ['op_type', 'aws-key-perform-action', ['key_id', 'aws_key_action']],
+            ['op_type', 'create', ['kms', 'region']],
+            ['op_type', 'cancel-sync-job', ['job_id']],
+            ['op_type', 'key_op', ['key_id', 'key_op_type']],
             ['op_type', 'upload-key-aws', ['kms', 'region', 'source_key_identifier']],
             ['op_type', 'verify-key-alias', ['alias', 'kms', 'region']],
             ['op_type', 'create-aws-template', ['kms', 'name']],
@@ -221,10 +222,12 @@ def main():
         changed=False,
     )
 
-    if module.params.get('op_type') == 'create-aws-key':
+    if module.params.get('op_type') == 'create':
       try:
-        response = createAWSKey(
+        response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="key",
+          cloud_type="aws",
           aws_param=module.params.get('aws_param'),
           kms=module.params.get('kms'),
           region=module.params.get('region'),
@@ -241,14 +244,16 @@ def main():
           module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
-
+    
     elif module.params.get('op_type') == 'create-sync-job':
       try:
-        response = synchronizeAWSKey(
+        response = createSyncJob(
           node=module.params.get('localNode'),
+          asset_type="key",
+          cloud_type="aws",
           kms=module.params.get('kms'),
           regions=module.params.get('regions'),
-          synchronize_all=module.params.get('synchronize_all'),          
+          synchronize_all=module.params.get('synchronize_all'),
         )
         result['response'] = response
       except CMApiException as api_e:
@@ -257,11 +262,13 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'cancel-sync-job':
+    elif module.params.get('op_type') == 'cancel-synchronization-job':
       try:
-        response = cancelSynchronizeAWSKeyJob(
+        response = cancelSyncJob(
           node=module.params.get('localNode'),
           id=module.params.get('job_id'),
+          asset_type="key",
+          cloud_type="aws",
         )
         result['response'] = response
       except CMApiException as api_e:
@@ -270,12 +277,12 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'aws-key-perform-operation':
-      if module.params.get('aws_key_action') == "enable-rotation-job":
+    elif module.params.get('op_type') == 'key_op':
+      if module.params.get('key_op_type') == "enable-rotation-job":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             job_config_id=module.params.get('job_config_id'),
             auto_rotate_disable_encrypt=module.params.get('auto_rotate_disable_encrypt'),
@@ -289,11 +296,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "import-material":
+      elif module.params.get('key_op_type') == "import-material":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             key_expiration=module.params.get('key_expiration'),
             source_key_identifier=module.params.get('source_key_identifier'),
@@ -306,11 +313,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "rotate":
+      elif module.params.get('key_op_type') == "rotate":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             description=module.params.get('description'),
             disable_encrypt=module.params.get('disable_encrypt'),
@@ -326,11 +333,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "schedule-deletion":
+      elif module.params.get('key_op_type') == "schedule-deletion":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             days=module.params.get('days'),
           )
@@ -340,11 +347,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "policy":
+      elif module.params.get('key_op_type') == "policy":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             external_accounts=module.params.get('external_accounts'),
             key_admins=module.params.get('key_admins'),
@@ -360,11 +367,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "update-description":
+      elif module.params.get('key_op_type') == "update-description":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             description=module.params.get('description'),
           )
@@ -374,11 +381,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "add-tags":
+      elif module.params.get('key_op_type') == "add-tags":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             tags=module.params.get('tags'),
           )
@@ -388,11 +395,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "remove-tags":
+      elif module.params.get('key_op_type') == "remove-tags":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             tags=module.params.get('tags'),
           )
@@ -402,11 +409,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "add-alias":
+      elif module.params.get('key_op_type') == "add-alias":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             tags=module.params.get('alias'),
           )
@@ -416,11 +423,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "delete-alias":
+      elif module.params.get('key_op_type') == "delete-alias":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             tags=module.params.get('alias'),
           )
@@ -430,11 +437,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "replicate-key":
+      elif module.params.get('key_op_type') == "replicate-key":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             replica_region=module.params.get('replica_region'),
             aws_param=module.params.get('aws_param'),
@@ -451,11 +458,11 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('aws_key_action') == "update-primary-region":
+      elif module.params.get('key_op_type') == "update-primary-region":
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
             PrimaryRegion=module.params.get('PrimaryRegion'),
           )
@@ -469,7 +476,7 @@ def main():
         try:
           response = performKeyOperation(
             node=module.params.get('localNode'),
-            aws_key_action=module.params.get('aws_key_action'),
+            key_op_type=module.params.get('key_op_type'),
             id=module.params.get('key_id'),
           )
           result['response'] = response
@@ -520,8 +527,10 @@ def main():
 
     elif module.params.get('op_type') == 'create-aws-template':
       try:
-        response = createKeyPolicy(
+        response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="template",
+          cloud_type="aws",
           kms=module.params.get('kms'),
           name=module.params.get('name'),
           external_accounts=module.params.get('external_accounts'),
@@ -540,8 +549,10 @@ def main():
 
     elif module.params.get('op_type') == 'patch-aws-template':
       try:
-        response = updateKeyPolicy(
+        response = editCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="template",
+          cloud_type="aws",
           id=module.params.get('template_id'),
           kms=module.params.get('kms'),
           auto_push=module.params.get('auto_push'),

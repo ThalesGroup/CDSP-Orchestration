@@ -21,7 +21,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_aws import createCustomKeyStore, editCustomKeyStore, createAWSKeyCKS, blockCKS, unblockCKS, connectCKS, disconnectCKS, linkLocalCKSWithAWS, synchronize_AWS_CKS, cancelSynchronizeJob, rotateCredential, createVirtualKey, editVirtualKey, createHYOKKey, blockHYOKKey, unblockHYOKKey, linkHYOKKey
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_aws import performCKSOperation, performHYOKKeyOperation
+from ansible_collections.thales.ciphertrust.plugins.module_utils.cckm_commons import addCCKMCloudAsset, editCCKMCloudAsset, createSyncJob, cancelSyncJob
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
@@ -170,7 +171,7 @@ argument_spec = dict(
     deletable=dict(type='bool'),
 )
 
-def validate_parameters(cckm_aws_module):
+def validate_parameters(cckm_aws_cks_module):
     return True
 
 def setup_module_object():
@@ -195,7 +196,7 @@ def main():
     
     module = setup_module_object()
     validate_parameters(
-        cckm_aws_module=module,
+        cckm_aws_cks_module=module,
     )
 
     result = dict(

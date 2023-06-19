@@ -102,27 +102,27 @@ def performKeyOperation(**kwargs):
   request = {}
 
   for key, value in kwargs.items():
-    if key not in ['node', 'id', 'aws_key_action'] and value != None:
+    if key not in ['node', 'id', 'key_op_type'] and value != None:
       request[key] = value
 
-  if kwargs['aws_key_action'] == "disable-rotation-job" or kwargs['aws_key_action'] == "delete-material" or kwargs['aws_key_action'] == "enable" or kwargs['aws_key_action'] == "disable" or kwargs['aws_key_action'] == "cancel-deletion" or kwargs['aws_key_action'] == "enable-auto-rotation" or kwargs['aws_key_action'] == "disable-auto-rotation":
+  if kwargs['key_op_type'] == "disable-rotation-job" or kwargs['key_op_type'] == "delete-material" or kwargs['key_op_type'] == "enable" or kwargs['key_op_type'] == "disable" or kwargs['key_op_type'] == "cancel-deletion" or kwargs['key_op_type'] == "enable-auto-rotation" or kwargs['key_op_type'] == "disable-auto-rotation":
     try:
       response = POSTWithoutData(
         cm_node=kwargs["node"],
-        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['aws_key_action'],
+        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['key_op_type'],
       )          
       return ast.literal_eval(str(response))
     except CMApiException as api_e:
       raise
     except AnsibleCMException as custom_e:
       raise
-  elif kwargs['aws_key_action'] == "enable-rotation-job" or kwargs['aws_key_action'] == "import-material" or kwargs['aws_key_action'] == "rotate" or kwargs['aws_key_action'] == "schedule-deletion" or kwargs['aws_key_action'] == "policy" or kwargs['aws_key_action'] == "update-description" or kwargs['aws_key_action'] == "add-tags" or kwargs['aws_key_action'] == "remove-tags" or kwargs['aws_key_action'] == "add-alias" or kwargs['aws_key_action'] == "delete-alias" or kwargs['aws_key_action'] == "replicate-key" or kwargs['aws_key_action'] == "update-primary-region":
+  elif kwargs['key_op_type'] == "enable-rotation-job" or kwargs['key_op_type'] == "import-material" or kwargs['key_op_type'] == "rotate" or kwargs['key_op_type'] == "schedule-deletion" or kwargs['key_op_type'] == "policy" or kwargs['key_op_type'] == "update-description" or kwargs['key_op_type'] == "add-tags" or kwargs['key_op_type'] == "remove-tags" or kwargs['key_op_type'] == "add-alias" or kwargs['key_op_type'] == "delete-alias" or kwargs['key_op_type'] == "replicate-key" or kwargs['key_op_type'] == "update-primary-region":
     payload = json.dumps(request)
     try:
       response = POSTData(
         payload=payload,
         cm_node=kwargs["node"],
-        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['aws_key_action'],
+        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['key_op_type'],
         id="id",
       )        
       return ast.literal_eval(str(response))
