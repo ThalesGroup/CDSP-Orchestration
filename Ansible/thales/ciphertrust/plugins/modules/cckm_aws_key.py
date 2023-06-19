@@ -69,14 +69,138 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, patch]
+        choices: [create, create-sync-job, cancel-sync-job, key_op, upload-key-aws, verify-key-alias, create-aws-template, patch-aws-template]
         required: true
+        type: str
+    key_id:
+        description: AWS Key to be acted upon
+        type: str
+    template_id:
+        description: AWS Key Policy to be acted upon
+        type: str
+    job_id:
+        description: Synchronization Job ID
+        type: str
+    key_op_type:
+        description: Operation to be performed
+        choices: [enable-rotation-job, disable-rotation-job, import-material, delete-material, rotate, schedule-deletion, policy, update-description, enable, disable, add-tags, remove-tags, add-alias, delete-alias, cancel-deletion, enable-auto-rotation, disable-auto-rotation, replicate-key, update-primary-region]
+        required: true
+        type: str
+    kms:
+        description: Name or ID of the KMS to be used to create the key.
+        type: str
+    name:
+        description: Unique name of the policy template.
+        type: str
+    region:
+        description: Name of the available regions.
+        type: str
+    aws_param:
+        description: Synchronization Job ID
+        type: str
+    external_accounts:
+        description: AWS accounts that can use this key. External accounts are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_admins:
+        description: IAM users who can administer this key using the KMS API. Key admins are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_admins_roles:
+        description: IAM roles that can administer this key using the KMS API. Key admins are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_users:
+        description: IAM users who can use the KMS key in cryptographic operations. Key users are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_users_roles:
+        description: IAM roles that can use the KMS key in cryptographic operations. Key users are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    policytemplate:
+        description: ID of the policy template to apply. Policy template is mutually exclusive to all other policy parameters. If no policy parameters are specified, the default policy is used.
+        type: str
+    kms_list:
+        description: Name or ID of KMS resource from which the AWS custom key stores will be synchronized. synchronize_all and kms, regions are mutually exclusive. Specify either synchronize_all or kms and regions.
+        type: list
+    synchronize_all:
+        description: Set true to synchronize all custom key stores from all kms and regions. synchronize_all and kms, regions are mutually exclusive. Specify either synchronize_all or kms and regions.
+        type: bool
+    regions:
+        description: Regions from which the AWS custom key stores will be synchronized. If not specified, custom key stores from all regions are synchronized. synchronize_all and kms, regions are mutually exclusive. Specify either synchronize_all or kms and regions.
+        type: list
+    job_config_id:
+        description: ID of the scheduler configuration job that will schedule the key rotation.
+        type: str
+    auto_rotate_disable_encrypt:
+        description: Disable encryption on the old key.
+        type: bool
+    auto_rotate_domain_id:
+        description: Id of the domain in which dsm key will be created.
+        type: str
+    auto_rotate_key_source:
+        description: 
+          - Key source from where the key will be uploaded.
+          - local for CipherTrust Manager and it is default one
+          - dsm for Data Security Manager (DSM)
+          - hsm-luna for Luna HSM
+        type: str
+        choices: [local, dsm, hsm]
+    auto_rotate_partition_id:
+        description: Id of the partition in which hsm-luna key will be created.
+        type: str
+    key_expiration:
+        description: Whether to disable encryption on key which is getting rotated .
+        type: bool
+    source_key_identifier:
+        description: description:
+          - If source_key_tier is local, source_key_identifier is the key identifier of the ciphertrust manager key to be uploaded. source_key_identifier is the mandatory parameter in case of dsm.
+          - If source_key_tier is dsm, source_key_identifier is the key identifier of the dsm key to be uploaded. By default, a new CipherTrust Manager key would be generated automatically.
+          - If key material is re-imported, AWS allows re-importing the same key material only, therefore it is mandatory to provide source key identifier of the same CipherTrust Manager key which was imported previously.
+        type: str
+    source_key_tier:
+        description: Source key tier. Options are local, dsm and hsm-luna. Default is local.
+        type: str
+    valid_to:
+        description: Id of the partition in which hsm-luna key will be created.
+        type: str
+        choices: [local, dsm, hsm]
+    description:
+        description: Description for the new key (after key rotation).
+        type: str
+    disable_encrypt:
+        description: Indicates whether to disable encryption on the new key (after key rotation).
+        type: bool
+    retain_alias:
+        description: Indicates whether to retain the alias with the timestamp on the archived key after key rotation.
+        type: bool
+    source_key_id:
+        description:
+          - If source_key_tier is dsm or hsm-luna, this parameter is the key identifier of the key to be uploaded. source_key_id is a mandatory parameter in the case of dsm and hsm-luna.
+          - If source_key_tier is local, this parameter is the key identifier of the CipherTrust Manager key to be uploaded. By default, a new CipherTrust Manager key is generated automatically.
+        type: str
+    days:
+        description: Number of days after which the key will be deleted.
+        type: int
+    tags:
+        description: Tags to be added to the AWS key
+        type: list
+    policy:
+        description: Key policy to attach to the KMS key. Policy is mutually exclusive to all other policy parameters. If no policy parameters are specified the default policy is created.
+        type: dict
+    alias:
+        description: Alias to be added to the AWS key.
+        type: str
+    auto_push:
+        description: Pushes the verified policy template to all the associated keys. Mandatorily required to update a 'verified' policy-template.
+        type: bool
+    replica_region:
+        description: Name of the available regions.
+        type: str
+    PrimaryRegion:
+        description: The AWS Region of the new primary key.Enter the region ID, such as us-east-1 ap-southeast-2. There must be an existing replica key in this region.
         type: str
 '''
 
 EXAMPLES = '''
-- name: "Create AWS Connection"
-  thales.ciphertrust.connection_manager_aws:
+- name: "Create AWS Key"
+  thales.ciphertrust.cckm_aws_key:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -187,6 +311,8 @@ argument_spec = dict(
     replica_region=dict(type='str'),
     # update-primary-region
     PrimaryRegion=dict(type='str'),
+    # add-tags
+    tags=dict(type='list', element='str'),
 )
 
 def validate_parameters(cckm_aws_key_module):

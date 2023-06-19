@@ -30,7 +30,7 @@ DOCUMENTATION = '''
 module: cckm_aws_custom_keystore
 short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for AWS
+    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for AWS Custom Key Store
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -69,14 +69,94 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, patch]
+        choices: [create, update, create-synchronization-job, cancel-synchronization-job, create-virtual-key, update-virtual-key,create-hyok-key, cks_op, hyok_op]
         required: true
         type: str
+    cks_id:
+        description: AWS Custom Key Store ID
+        type: str
+    cks_key_id:
+        description: AWS Custom Key Store Key ID
+        type: str
+    virtual_key_id:
+        description: Virtual Key ID
+        type: str
+    hyok_key_id:
+        description: HYOK Key ID
+        type: str
+    job_id:
+        description: Synchronization Job ID
+        type: str
+    cks_op_type:
+        description: Operation that can be performed on a Custom Key Store
+        choices: [create-aws-key, connect, link, block, unblock, disconnect, rotate-credential]
+        type: str
+    hyok_op_type:
+        description: Operation that can be performed on an HYOK Key
+        choices: [block, unblock, link]
+        type: str
+    aws_param:
+        description: Parameters related to AWS interaction with a custom key store
+        type: dict
+    kms:
+        description: Name or ID of the AWS Account container in which to create the key store.
+        type: str
+    name:
+        description: Unique name for the custom key store
+        type: str
+    region:
+        description: Name of the available AWS regions
+        type: str
+    linked_state:
+        description: Indicates whether the custom key store is linked with AWS. Applicable to a custom key store of type EXTERNAL_KEY_STORE. Default value is false. When false, creating a custom key store in the CCKM does not trigger the AWS KMS to create a new key store. Also, the new custom key store will not synchronize with any key stores within the AWS KMS until the new key store is linked.
+        type: bool
+    local_hosted_params:
+        description: Parameters for a custom key store that is locally hosted
+        type: str
+    external_accounts:
+        description: AWS accounts that can use this key. External accounts are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_admins:
+        description: IAM users who can administer this key using the KMS API. Key admins are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_admins_roles:
+        description: IAM roles that can administer this key using the KMS API. Key admins are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_users:
+        description: IAM users who can use the KMS key in cryptographic operations. Key users are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    key_users_roles:
+        description: IAM roles that can use the KMS key in cryptographic operations. Key users are mutually exclusive to policy and policy template. If no policy parameters are specified, the default policy is used.
+        type: list
+    policytemplate:
+        description: ID of the policy template to apply. Policy template is mutually exclusive to all other policy parameters. If no policy parameters are specified, the default policy is used.
+        type: str
+    cks_key_param:
+        description: AWS key parameters.
+        type: dict
+    key_store_password:
+        description: The password of the kmsuser crypto user (CU) account configured in the specified CloudHSM cluster. This parameter does not change the password in CloudHSM cluster. User needs to configure the credentials on CloudHSM cluster separately. Required field for custom key store of type AWS_CLOUDHSM. Omit for External Key Stores.
+        type: str
+    kms_list:
+        description: Name or ID of KMS resource from which the AWS custom key stores will be synchronized. synchronize_all and kms, regions are mutually exclusive. Specify either synchronize_all or kms and regions.
+        type: list
+    synchronize_all:
+        description: Set true to synchronize all custom key stores from all kms and regions. synchronize_all and kms, regions are mutually exclusive. Specify either synchronize_all or kms and regions.
+        type: bool
+    regions:
+        description: Regions from which the AWS custom key stores will be synchronized. If not specified, custom key stores from all regions are synchronized. synchronize_all and kms, regions are mutually exclusive. Specify either synchronize_all or kms and regions.
+        type: list
+    source_key_id:
+        description: The unique id of the source key (Luna HSM key) for the first version of the virtual key.
+        type: str
+    deletable:
+        description: Mouse over a property in the schema to view its details.
+        type: bool
 '''
 
 EXAMPLES = '''
-- name: "Create AWS Connection"
-  thales.ciphertrust.connection_manager_aws:
+- name: "Create AWS CKS"
+  thales.ciphertrust.cckm_aws_custom_keystore:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

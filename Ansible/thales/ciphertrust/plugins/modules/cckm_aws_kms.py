@@ -69,14 +69,38 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, patch]
+        choices: [create, update, update-acls]
         required: true
         type: str
+    kms_id:
+        description: AWS KMS ID to be acted upton
+        type: str
+    account_id:
+        description: ID of the AWS account.
+        type: str
+    name:
+        description: Unique name for the KMS.
+        type: str
+    connection:
+        description: Name or ID of the connection in which the account is managed.
+        type: str
+    regions:
+        description: AWS regions to be added to the CCKM.
+        type: list
+    assume_role_arn:
+        description: Amazon Resource Name (ARN) of the role to be assumed.
+        type: str
+    assume_role_external_id:
+        description: External ID for the role to be assumed. This parameter can be specified only with "assume_role_arn".
+        type: str
+    acls:
+        description: acls
+        type: list
 '''
 
 EXAMPLES = '''
-- name: "Create AWS Connection"
-  thales.ciphertrust.connection_manager_aws:
+- name: "Create CCKM AWS KMS"
+  thales.ciphertrust.cckm_aws_kms:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
