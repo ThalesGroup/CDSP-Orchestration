@@ -106,7 +106,7 @@ _aws_key_param_tag = dict(
    TagValue=dict(type='str'),
 )
 
-_aws_key_param = dict(
+_cks_key_param = dict(
    Alias=dict(type='str'),
    Description=dict(type='str'),
    Policy=dict(type='dict', options=_schema_less),
@@ -127,27 +127,22 @@ _local_hosted_param = dict(
 argument_spec = dict(
     op_type=dict(type='str', options=[
        'create', 
-       'edit',
-       'create-aws-key-cks',
-       'block-cks-access',
-       'unblock-cks-access',
-       'connect-cks',
-       'disconnect-cks',
-       'link-local-cks',
+       'update',
        'create-synchronization-job',
        'cancel-synchronization-job',
-       'rotate-credential',
        'create-virtual-key',
        'update-virtual-key',
        'create-hyok-key',
-       'block-hyok-key',
-       'unblock-hyok-key',
-       'link-hyok-key',
+       'cks_op',
+       'hyok_op',
        ], required=True),
     cks_id=dict(type='str'),
     cks_key_id=dict(type='str'),
     virtual_key_id=dict(type='str'),
     hyok_key_id=dict(type='str'),
+    cks_op_type=dict(type='str', options=['create-aws-key', 'connect', 'link', 'block', 'unblock', 'disconnect', 'rotate-credential']),
+    hyok_op_type=dict(type='str', options=['block', 'unblock', 'link']),
+    # Create CKS
     aws_param=dict(type='dict', options=_aws_param),
     kms=dict(type='str'),
     name=dict(type='str'),
@@ -161,7 +156,7 @@ argument_spec = dict(
     key_users=dict(type='list', element='str'),
     key_users_roles=dict(type='list', element='str'),
     policytemplate=dict(type='str'),
-    aws_key_param=dict(type='dict', options=_aws_key_param),
+    cks_key_param=dict(type='dict', options=_cks_key_param),
     # connect-cks
     key_store_password=dict(type='str'),
     # synchronization-jobs
@@ -182,8 +177,12 @@ def setup_module_object():
     module = ThalesCipherTrustModule(
         argument_spec=argument_spec,
         required_if=(
-            ['op_type', 'patch', ['cks_id']],
+            ['op_type', 'update', ['cks_id']],
             ['op_type', 'create', ['aws_param', 'kms', 'name', 'region']],
+            ['op_type', 'create-virtual-key', ['source_key_id']],
+            ['op_type', 'cancel-synchronization-job', ['job_id']]
+            ['op_type', 'cks_op', ['cks_id', 'cks_op_type']]
+            ['op_type', 'hyok_op', ['hyok_key_id', 'hyok_op_type']]
         ),
         mutually_exclusive=[],
         supports_check_mode=True,
@@ -205,8 +204,10 @@ def main():
 
     if module.params.get('op_type') == 'create':
       try:
-        response = createCustomKeyStore(
+        response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="cks",
+          cloud_type="aws",
           aws_param=module.params.get('aws_param'),
           kms=module.params.get('kms'),
           name=module.params.get('name'),
@@ -221,11 +222,13 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'edit':
+    elif module.params.get('op_type') == 'update':
       try:
-        response = editCustomKeyStore(
+        response = editCCKMCloudAsset(
           node=module.params.get('localNode'),
           id=module.params.get('cks_id'),
+          asset_type="cks",
+          cloud_type="aws",
           aws_param=module.params.get('aws_param'),
           local_hosted_params=module.params.get('local_hosted_params'),
           name=module.params.get('name'),
@@ -237,97 +240,75 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'create-aws-key-cks':
-      try:
-        response = createAWSKeyCKS(
-          node=module.params.get('localNode'),
-          id=module.params.get('cks_id'),
-          aws_param=module.params.get('aws_key_param'),
-          external_accounts=module.params.get('external_accounts'),
-          key_admins=module.params.get('key_admins'),
-          key_admins_roles=module.params.get('key_admins_roles'),
-          key_users=module.params.get('key_users'),
-          key_users_roles=module.params.get('key_users_roles'),
-          policytemplate=module.params.get('policytemplate'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'block-cks-access':
-      try:
-        response = blockCKS(
-          node=module.params.get('localNode'),
-          id=module.params.get('cks_id'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'unblock-cks-access':
-      try:
-        response = unblockCKS(
-          node=module.params.get('localNode'),
-          id=module.params.get('cks_id'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'connect-cks':
-      try:
-        response = connectCKS(
-          node=module.params.get('localNode'),
-          id=module.params.get('cks_id'),
-          key_store_password=module.params.get('key_store_password'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'disconnect-cks':
-      try:
-        response = disconnectCKS(
-          node=module.params.get('localNode'),
-          id=module.params.get('cks_id'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'link-local-cks':
-      try:
-        response = linkLocalCKSWithAWS(
-          node=module.params.get('localNode'),
-          id=module.params.get('cks_id'),
-          aws_param=module.params.get('aws_param'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
+    elif module.params.get('op_type') == 'cks_op':
+      if module.params.get('cks_op_type') == 'create-aws-key':
+        try:
+          response = performCKSOperation(
+            node=module.params.get('localNode'),
+            id=module.params.get('cks_id'),
+            cks_op_type=module.params.get('cks_op_type'),
+            aws_param=module.params.get('cks_key_param'),
+            external_accounts=module.params.get('external_accounts'),
+            key_admins=module.params.get('key_admins'),
+            key_admins_roles=module.params.get('key_admins_roles'),
+            key_users=module.params.get('key_users'),
+            key_users_roles=module.params.get('key_users_roles'),
+            policytemplate=module.params.get('policytemplate'),
+          )
+          result['response'] = response
+        except CMApiException as api_e:
+          if api_e.api_error_code:
+            module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+        except AnsibleCMException as custom_e:
+          module.fail_json(msg=custom_e.message)
+      elif module.params.get('cks_op_type') == 'connect':
+        try:
+          response = performCKSOperation(
+            node=module.params.get('localNode'),
+            cks_op_type=module.params.get('cks_op_type'),
+            id=module.params.get('cks_id'),
+            key_store_password=module.params.get('key_store_password'),
+          )
+          result['response'] = response
+        except CMApiException as api_e:
+          if api_e.api_error_code:
+            module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+        except AnsibleCMException as custom_e:
+          module.fail_json(msg=custom_e.message)
+      elif module.params.get('cks_op_type') == 'link':
+        try:
+          response = performCKSOperation(
+            node=module.params.get('localNode'),
+            cks_op_type=module.params.get('cks_op_type'),
+            id=module.params.get('cks_id'),
+            aws_param=module.params.get('aws_param'),
+          )
+          result['response'] = response
+        except CMApiException as api_e:
+          if api_e.api_error_code:
+            module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+        except AnsibleCMException as custom_e:
+          module.fail_json(msg=custom_e.message)
+      else:        
+        try:
+          response = performCKSOperation(
+            node=module.params.get('localNode'),
+            id=module.params.get('vault_id'),
+            cks_op_type=module.params.get('cks_op_type'),
+          )
+          result['response'] = response
+        except CMApiException as api_e:
+          if api_e.api_error_code:
+            module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+        except AnsibleCMException as custom_e:
+          module.fail_json(msg=custom_e.message)
 
     elif module.params.get('op_type') == 'create-synchronization-job':
       try:
-        response = synchronize_AWS_CKS(
+        response = createSyncJob(
           node=module.params.get('localNode'),
+          asset_type="cks",
+          cloud_type="aws",
           kms=module.params.get('kms_list'),
           synchronize_all=module.params.get('synchronize_all'),
           regions=module.params.get('regions'),
@@ -341,22 +322,11 @@ def main():
 
     elif module.params.get('op_type') == 'cancel-synchronization-job':
       try:
-        response = cancelSynchronizeJob(
+        response = cancelSyncJob(
           node=module.params.get('localNode'),
           id=module.params.get('job_id'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'rotate-credential':
-      try:
-        response = rotateCredential(
-          node=module.params.get('localNode'),
-          id=module.params.get('cks_id'),
+          asset_type="cks",
+          cloud_type="aws",
         )
         result['response'] = response
       except CMApiException as api_e:
@@ -367,8 +337,10 @@ def main():
 
     elif module.params.get('op_type') == 'create-virtual-key':
       try:
-        response = createVirtualKey(
+        response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="virtual-key",
+          cloud_type="aws",
           source_key_id=module.params.get('source_key_id'),
         )
         result['response'] = response
@@ -380,8 +352,10 @@ def main():
 
     elif module.params.get('op_type') == 'update-virtual-key':
       try:
-        response = editVirtualKey(
+        response = editCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="virtual-key",
+          cloud_type="aws",
           id=module.params.get('virtual_key_id'),
           deletable=module.params.get('deletable'),
         )
@@ -394,8 +368,10 @@ def main():
 
     elif module.params.get('op_type') == 'create-hyok-key':
       try:
-        response = createHYOKKey(
+        response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
+          asset_type="hyok-key",
+          cloud_type="aws",
           aws_param=module.params.get('aws_key_param'),
           external_accounts=module.params.get('external_accounts'),
           key_admins=module.params.get('key_admins'),
@@ -412,51 +388,40 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'block-hyok-key':
-      try:
-        response = blockHYOKKey(
-          node=module.params.get('localNode'),
-          id=module.params.get('hyok_key_id'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'unblock-hyok-key':
-      try:
-        response = unblockHYOKKey(
-          node=module.params.get('localNode'),
-          id=module.params.get('hyok_key_id'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'link-hyok-key':
-      try:
-        response = linkHYOKKey(
-          node=module.params.get('localNode'),
-          id=module.params.get('hyok_key_id'),
-          aws_param=module.params.get('aws_key_param'),
-          external_accounts=module.params.get('external_accounts'),
-          key_admins=module.params.get('key_admins'),
-          key_admins_roles=module.params.get('key_admins_roles'),
-          key_users=module.params.get('key_users'),
-          key_users_roles=module.params.get('key_users_roles'),
-          policytemplate=module.params.get('policytemplate'),
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
+    elif module.params.get('op_type') == 'hyok_op':
+      if module.params.get('hyok_op_type') == 'link':
+        try:
+          response = performHYOKKeyOperation(
+            node=module.params.get('localNode'),
+            id=module.params.get('hyok_key_id'),
+            hyok_op_type=module.params.get('hyok_op_type'),
+            aws_param=module.params.get('aws_key_param'),
+            external_accounts=module.params.get('external_accounts'),
+            key_admins=module.params.get('key_admins'),
+            key_admins_roles=module.params.get('key_admins_roles'),
+            key_users=module.params.get('key_users'),
+            key_users_roles=module.params.get('key_users_roles'),
+            policytemplate=module.params.get('policytemplate'),
+          )
+          result['response'] = response
+        except CMApiException as api_e:
+          if api_e.api_error_code:
+            module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+        except AnsibleCMException as custom_e:
+          module.fail_json(msg=custom_e.message)
+      else:        
+        try:
+          response = performHYOKKeyOperation(
+            node=module.params.get('localNode'),
+            id=module.params.get('hyok_key_id'),
+            hyok_op_type=module.params.get('hyok_op_type'),
+          )
+          result['response'] = response
+        except CMApiException as api_e:
+          if api_e.api_error_code:
+            module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+        except AnsibleCMException as custom_e:
+          module.fail_json(msg=custom_e.message)
 
     else:
         module.fail_json(msg="invalid op_type")

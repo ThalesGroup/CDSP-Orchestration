@@ -34,24 +34,24 @@ def performCKSOperation(**kwargs):
     if key not in ['node', 'id', 'cks_op'] and value != None:
       request[key] = value
 
-  if kwargs['cks_op'] == "block" or kwargs['cks_op'] == "unblock" or kwargs['cks_op'] == "disconnect" or kwargs['cks_op'] == "rotate-credential":
+  if kwargs['cks_op_type'] == "block" or kwargs['cks_op_type'] == "unblock" or kwargs['cks_op_type'] == "disconnect" or kwargs['cks_op_type'] == "rotate-credential":
     try:
       response = POSTWithoutData(
         cm_node=kwargs["node"],
-        cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/" + kwargs['cks_op'],
+        cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/" + kwargs['cks_op_type'],
       )          
       return ast.literal_eval(str(response))
     except CMApiException as api_e:
       raise
     except AnsibleCMException as custom_e:
       raise
-  elif kwargs['cks_op'] == "create-aws-key" or kwargs['cks_op'] == "connect" or kwargs['cks_op'] == "link":
+  elif kwargs['cks_op_type'] == "create-aws-key" or kwargs['cks_op_type'] == "connect" or kwargs['cks_op_type'] == "link":
     payload = json.dumps(request)
     try:
       response = POSTData(
         payload=payload,
         cm_node=kwargs["node"],
-        cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/" + kwargs['cks_op'],
+        cm_api_endpoint="cckm/aws/custom-key-stores/" + kwargs['id'] + "/" + kwargs['cks_op_type'],
         id="id",
       )        
       return ast.literal_eval(str(response))
@@ -61,33 +61,32 @@ def performCKSOperation(**kwargs):
       raise
   else:
     raise AnsibleCMException(message="invalid operation on custom key store")
-  
 
 def performHYOKKeyOperation(**kwargs):
   request = {}
 
   for key, value in kwargs.items():
-    if key not in ['node', 'id', 'hyok_key_op'] and value != None:
+    if key not in ['node', 'id', 'hyok_op_type'] and value != None:
       request[key] = value
 
-  if kwargs['hyok_key_op'] == "block" or kwargs['hyok_key_op'] == "unblock":
+  if kwargs['hyok_op_type'] == "block" or kwargs['hyok_op_type'] == "unblock":
     try:
       response = POSTWithoutData(
         cm_node=kwargs["node"],
-        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['hyok_key_op'],
+        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['hyok_op_type'],
       )          
       return ast.literal_eval(str(response))
     except CMApiException as api_e:
       raise
     except AnsibleCMException as custom_e:
       raise
-  elif kwargs['hyok_key_op'] == "link":
+  elif kwargs['hyok_op_type'] == "link":
     payload = json.dumps(request)
     try:
       response = POSTData(
         payload=payload,
         cm_node=kwargs["node"],
-        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['hyok_key_op'],
+        cm_api_endpoint="cckm/aws/keys/" + kwargs['id'] + "/" + kwargs['hyok_op_type'],
         id="id",
       )        
       return ast.literal_eval(str(response))

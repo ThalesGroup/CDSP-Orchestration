@@ -132,13 +132,14 @@ argument_spec = dict(
     op_type=dict(type='str', options=[
        'create', 
        'update',
+       'vault_op',
        'update-acls',
        ], required=True),
     vault_id=dict(type='str'),
     connection=dict(type='str'),
     subscription_id=dict(type='str'),
     vaults=dict(type='list', element='dict', options=_azure_vault),
-    vault_op=dict(type='str', options=['enable-rotation-job', 'disable-rotation-job', 'update-acls', 'remove-vault']),
+    vault_op_type=dict(type='str', options=['enable-rotation-job', 'disable-rotation-job', 'update-acls', 'remove-vault']),
     acls=dict(type='list', element='dict', options=_acl),
     job_config_id=dict(type='str'),
     override_key_scheduler=dict(type='bool'),
@@ -153,7 +154,7 @@ def setup_module_object():
         required_if=(
             ['op_type', 'create', ['connection', 'subscription_id', 'vaults']],
             ['op_type', 'update', ['vault_id', 'connection']],
-            ['op_type', 'action', ['vault_id', 'vault_op']],
+            ['op_type', 'vault_op', ['vault_id', 'vault_op_type']],
         ),
         mutually_exclusive=[],
         supports_check_mode=True,
@@ -206,13 +207,13 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'action':
-      if module.params.get('vault_op') == 'enable-rotation-job':
+    elif module.params.get('op_type') == 'vault_op':
+      if module.params.get('vault_op_type') == 'enable-rotation-job':
         try:
           response = performAZVaultOperation(
             node=module.params.get('localNode'),
             id=module.params.get('vault_id'),
-            vault_op=module.params.get('vault_op'),
+            vault_op=module.params.get('vault_op_type'),
             job_config_id=module.params.get('job_config_id'),
             override_key_scheduler=module.params.get('override_key_scheduler'),
           )
@@ -222,12 +223,12 @@ def main():
             module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
         except AnsibleCMException as custom_e:
           module.fail_json(msg=custom_e.message)
-      elif module.params.get('vault_op') == 'update-acls':
+      elif module.params.get('vault_op_type') == 'update-acls':
         try:
           response = performAZVaultOperation(
             node=module.params.get('localNode'),
             id=module.params.get('vault_id'),
-            vault_op=module.params.get('vault_op'),
+            vault_op=module.params.get('vault_op_type'),
             acls=module.params.get('acls'),
           )
           result['response'] = response
@@ -241,7 +242,7 @@ def main():
           response = performAZVaultOperation(
             node=module.params.get('localNode'),
             id=module.params.get('vault_id'),
-            vault_op=module.params.get('vault_op'),
+            vault_op=module.params.get('vault_op_type'),
           )
           result['response'] = response
         except CMApiException as api_e:
