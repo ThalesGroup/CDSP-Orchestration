@@ -388,7 +388,7 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'cancel-synchronization-job':
+    elif module.params.get('op_type') == 'cancel-sync-job':
       try:
         response = cancelSyncJob(
           node=module.params.get('localNode'),

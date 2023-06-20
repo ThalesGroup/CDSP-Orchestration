@@ -20,21 +20,11 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
 import json
 import ast
 
 from ansible_collections.thales.ciphertrust.plugins.module_utils.cm_api import POSTData, PATCHData, POSTWithoutData
 from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
-
-def is_json(myjson):
-  try:
-    json.loads(myjson)
-  except ValueError as e:
-    return False
-  return True
 
 def addCCKMCloudAsset(**kwargs):
   request = {}
@@ -72,6 +62,15 @@ def addCCKMCloudAsset(**kwargs):
       endpoint = 'cckm/aws/templates'
     elif resource_type == "kms":
       endpoint = 'cckm/aws/kms'
+    else:
+      raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "gcp":
+    if resource_type == "ekm":
+      endpoint = 'cckm/ekm/endpoints'
+    elif resource_type == "project":
+      endpoint = 'cckm/google/projects'
+    elif resource_type == "key":
+      endpoint = 'cckm/google/keys'
     else:
       raise AnsibleCMException(message="invalid asset type")
   else:
@@ -124,6 +123,13 @@ def editCCKMCloudAsset(**kwargs):
       endpoint = 'cckm/aws/kms/' + kwargs['id']
     else:
       raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "gcp":
+    if resource_type == "ekm":
+      endpoint = 'cckm/ekm/endpoints/' + kwargs['id']
+    elif resource_type == "key":
+      endpoint = 'cckm/google/keys/' + kwargs['id']
+    else:
+      raise AnsibleCMException(message="invalid asset type")
   else:
       raise AnsibleCMException(message="Cloud provider not supported")
 
@@ -168,6 +174,11 @@ def createSyncJob(**kwargs):
       endpoint = 'cckm/aws/synchronization-jobs'
     else:
       raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "gcp":
+    if resource_type == "key":
+      endpoint = 'cckm/google/synchronization-jobs'
+    else:
+      raise AnsibleCMException(message="invalid asset type")
   else:
       raise AnsibleCMException(message="Cloud provider not supported")
 
@@ -209,6 +220,11 @@ def cancelSyncJob(**kwargs):
       endpoint = "cckm/aws/custom-key-stores/synchronization-jobs/" + kwargs['id'] + "/cancel"
     elif resource_type == "key":
       endpoint = "cckm/aws/synchronization-jobs/" + kwargs['id'] + "/cancel"
+    else:
+      raise AnsibleCMException(message="invalid asset type")
+  elif cloud == "gcp":
+    if resource_type == "key":
+      endpoint = "cckm/google/synchronization-jobs" + kwargs['id'] + "/cancel"
     else:
       raise AnsibleCMException(message="invalid asset type")
   else:
