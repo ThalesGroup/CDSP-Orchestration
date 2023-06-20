@@ -69,9 +69,104 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, patch]
+        choices: [create, update, key_op, upload-key, create-sync-job, cancel-sync-job]
         required: true
         type: str
+    key_id:
+        description: Id of the key to be acted upon
+        type: str
+    job_id:
+        description: Synchronization job to be deleted
+        type: str
+    key_op_type:
+        description: Operation to be performed on the key
+        type: str
+        choices: [soft-delete, hard-delete, restore, recover, delete-backup, enable-rotation-job, disable-rotation-job]
+    azure_param:
+        description: Azure key parameters.
+        type: dict
+    key_name:
+        description: Name for the key on Azure. Key names can only contain alphanumeric characters and dashes.
+        type: str
+    key_vault:
+        description: Id or name of the key vault where the key will be created on Azure.
+        type: str
+    attributes:
+        description: Key attributes to be updated.
+        type: dict
+    key_ops:
+        description: Key operations to be updated.
+        type: list
+        choices: [encrypt, decrypt, sign, verify, wrapKey, unwrapKey]
+    tags:
+        description: Application specific metadata in the form of key-value pair.
+        type: dict
+    key_vaults:
+        description: Name or ID of key vaults from which Azure keys will be synchronized. synchronize_all and key_vaults are mutually exclusive. Specify either the synchronize_all or key_vaults.
+        type: list
+    synchronize_all:
+        description: Set true to synchronize all keys from all vaults. synchronize_all and key_vaults are mutually exclusive. Specify either the synchronize_all or key_vaults.
+        type: bool
+    dsm_key_identifier:
+        description: Identifier of the dsm key. It is a required parameter if source key tier is dsm.
+        type: str
+    exportable:
+        description: Allow private key to be exported from Azure. Currently, it is only valid when key source is hsm-luna and vault is a premium vault or a managed-hsm vault.
+        type: bool
+    kek_kid:
+        description: Identifier of azure key encryption key.
+        type: str
+    local_key_identifier:
+        description: Identifier of the CipherTrust Manager key to upload. Key name or ID can be specified. It is a required parameter if source key tier is local.
+        type: str
+    luna_key_identifier:
+        description: Identifier of the luna hsm key. It is a required parameter if source key tier is hsm-luna.
+        type: str
+    password:
+        description: PFX password. Specify only if the PFX certificate is provided.
+        type: str
+    pfx:
+        description: PFX key. Specify a Base64 encoded key.
+        type: str
+    release_policy:
+        description: Key release policy. Must be set if exportable is true.
+        type: dict
+    source_key_tier:
+        description: Source key tier. Options are local, pfx, dsm, and hsm-luna. Default is local.
+        type: str
+        choices: [local', pfx, dsm, hsm-luna]
+        default: local
+    auto_rotate_key_source:
+        description: Source of the key material. Options are native, hsm-luna, dsm and ciphertrust.
+        type: str
+        choices: [native, hsm-luna, dsm, ciphertrust]
+    auto_rotate_key_type:
+        description: Algorithm for the key.
+        type: str
+        choices: [EC, EC-HSM, RSA, RSA-HSM]
+    job_config_id:
+        description: Id of the scheduler job that will perform key rotation.
+        type: str
+    auto_rotate_domain_id:
+        description: Id of the domain in which dsm key will be created.
+        type: str
+    auto_rotate_ec_name:
+        description: Name of the Elliptical curve key. Required only when key_type is EC
+        type: str
+        choices: [P-256, P-384, P-521, SECP256K1]
+    auto_rotate_enable_key:
+        description: Whether to enable the newly rotated key.
+        type: bool
+    auto_rotate_key_size:
+        description: Size of the new rotated key. Required only when key_type is RSA.
+        type: str
+        choices: [2048, 3072, 4096]
+    auto_rotate_partition_id:
+        description: Id of the partition in which hsm key will be created.
+        type: str
+    auto_rotate_release_policy:
+        description: Optional, new key release policy for exportable keys.
+        type: dict
 '''
 
 EXAMPLES = '''
@@ -137,7 +232,7 @@ argument_spec = dict(
     release_policy=dict(type='dict', options=_schema_less),
     source_key_tier=dict(type='str', options=['local', 'pfx', 'dsm', 'hsm-luna'], default='local'),
     # op_type = key_op, key_op_type = enable-rotation-job
-    auto_rotate_key_source=dict(type='str'),
+    auto_rotate_key_source=dict(type='str', options=['native', 'hsm-luna', 'dsm', 'ciphertrust']),
     auto_rotate_key_type=dict(type='str', options=['EC', 'EC-HSM', 'RSA', 'RSA-HSM']),
     job_config_id=dict(type='str'),
     auto_rotate_domain_id=dict(type='str'),

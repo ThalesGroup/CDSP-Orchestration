@@ -69,9 +69,34 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, patch]
+        choices: [create, update, vault_op, update-acls]
         required: true
         type: str
+    vault_id:
+        description: Azure Key Vault to be acted upon
+        type: str
+    connection:
+        description: Name or ID of the connection. Connection name must be associated with the key vault to which it belongs.
+        type: str
+    subscription_id:
+        description: Subscription ID of the vault.
+        type: str
+    vaults:
+        description: Azure vault parameters.
+        type: list
+    vault_op_type:
+        description: Operation that can be performed on an Azure Vault
+        choices: [enable-rotation-job, disable-rotation-job, update-acls, remove-vault]
+        type: str
+    acls:
+        description: acls
+        type: list
+    job_config_id:
+        description: Id of the scheduler job that will perform key rotation.
+        type: str
+    override_key_scheduler:
+        description: Whether to use key scheduler or vault scheduler if both exist.
+        type: bool
 '''
 
 EXAMPLES = '''

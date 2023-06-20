@@ -69,13 +69,45 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, patch]
+        choices: [create, update, secret_op, create-sync-job, cancel-sync-job]
         required: true
         type: str
+    secret_id:
+        description: Azure Secret Identifier to be acted upton
+        type: str
+    job_id:
+        description: Synchronization job ID to be cancelled
+        type: str
+    secret_op_type:
+        description: Operation to be performed
+        choices: [soft-delete, hard-delete, restore, recover]
+        type: str
+    azure_param:
+        description: Azure secret parameters.
+        type: dict
+    secret_name:
+        description: Name for the Azure secret. Secret names can only contain alphanumeric characters and hyphens.
+        type: dict
+    key_vault:
+        description: Azure secret parameters.
+        type: dict
+    attributes:
+        description: Secret attributes to be updated.
+        type: dict
+        choices: [nbf, exp, enabled ]
+    tags:
+        description: Application specific metadata in the form of key-value pair.
+        type: dict
+    key_vaults:
+        description: Name or ID of key vaults from which Azure secrets will be synchronized. synchronize_all and key_vaults are mutually exclusive. Specify either the synchronize_all or key_vaults.
+        type: dict
+    synchronize_all:
+        description: Set true to synchronize all secrets from all vaults. synchronize_all and key_vaults are mutually exclusive. Specify either the synchronize_all or key_vaults.
+        type: dict
 '''
 
 EXAMPLES = '''
-- name: "Create Azure Key"
+- name: "Create Azure Secret"
   thales.ciphertrust.cckm_az_secret:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
@@ -166,7 +198,7 @@ def main():
           asset_type="secret",
           cloud_type="az",
           azure_param=module.params.get('azure_param'),
-          secret_name=module.params.get('key_name'),
+          secret_name=module.params.get('secret_name'),
           key_vault=module.params.get('key_vault'),
         )
         result['response'] = response

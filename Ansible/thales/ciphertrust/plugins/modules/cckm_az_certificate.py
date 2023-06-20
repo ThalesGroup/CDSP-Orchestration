@@ -27,7 +27,7 @@ from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions impo
 
 DOCUMENTATION = '''
 ---
-module: cckm_az_vault
+module: cckm_az_certificate
 short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for Azure Certificates API
@@ -69,14 +69,57 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, patch]
+        choices: [create, update, certificate_op, create-sync-job, cancel-sync-job, import]
         required: true
+        type: str
+    certificate_id:
+        description: Azure Certificate ID to be acted upon
+        type: str
+    job_id:
+        description: Sync Job ID to be updated
+        type: str
+    certificate_op_type:
+        description: Action to be performed on Certificate
+        choices: [soft-delete, hard-delete, restore, recover]
+        type: str
+    azure_param:
+        description: Azure certificate parameters.
+        type: dict
+    cert_name:
+        description: Name for the certificate on Azure. Certificate names can only contain alphanumeric characters and hyphens (-).
+        type: str
+    key_vault:
+        description: ID or name of the Azure vault where the certificate will be created.
+        type: str
+    tags:
+        description: Application specific metadata in the form of key-value pair.
+        type: dict
+    attributes:
+        description: Secret attributes to be updated.
+        type: dict
+    key_vaults:
+        description: Name or ID of key vaults from which Azure secrets will be synchronized. synchronize_all and key_vaults are mutually exclusive. Specify either the synchronize_all or key_vaults.
+        type: list
+    synchronize_all:
+        description: Set true to synchronize all certificates from all vaults. synchronize_all and key_vaults are mutually exclusive. Specify either the synchronize_all or key_vaults.
+        type: bool
+    caid:
+        description: ID or name of the certificate authority.
+        type: str
+    private_key_pem:
+        description: Private key in PEM format.
+        type: str
+    source_cert_identifier:
+        description: ID of the certificate that will be imported into the Azure vault.
+        type: str
+    password:
+        description: Password of the private key, if encrypted.
         type: str
 '''
 
 EXAMPLES = '''
-- name: "Create Azure Vault"
-  thales.ciphertrust.cckm_az_vault:
+- name: "Create Azure Certificate"
+  thales.ciphertrust.cckm_az_certificate:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -179,7 +222,6 @@ argument_spec = dict(
     synchronize_all=dict(type='bool'),
     # op_type = import
     caid=dict(type='str'),
-    cert_name=dict(type='str'),
     private_key_pem=dict(type='str'),
     source_cert_identifier=dict(type='str'),
     password=dict(type='str'),
