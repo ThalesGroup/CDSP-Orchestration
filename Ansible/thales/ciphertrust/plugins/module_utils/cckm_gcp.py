@@ -186,3 +186,36 @@ def updateAllKeyVersions(**kwargs):
     raise
   except AnsibleCMException as custom_e:
     raise
+
+def performGCPWorkspaceEndpointOperation(**kwargs):
+  request = {}
+
+  for key, value in kwargs.items():
+    if key not in ['node', 'id', 'endpoint_op_type'] and value != None:
+      request[key] = value
+  
+  payload = json.dumps(request)
+
+  if kwargs['endpoint_op_type'] == "wrapprivatekey":
+    try:
+      response = POSTData(
+        payload=payload,
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/GoogleWorkspaceCSE/endpoints/" + kwargs['id'] + "/wrapprivatekey",
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise
+  else:
+    try:
+      response = POSTWithoutData(
+        cm_node=kwargs["node"],
+        cm_api_endpoint="cckm/GoogleWorkspaceCSE/endpoints/" + kwargs['id'] + "/" + kwargs['endpoint_op_type'],
+      )          
+      return ast.literal_eval(str(response))
+    except CMApiException as api_e:
+      raise
+    except AnsibleCMException as custom_e:
+      raise

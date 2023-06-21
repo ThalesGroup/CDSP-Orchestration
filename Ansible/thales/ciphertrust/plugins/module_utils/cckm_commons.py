@@ -71,6 +71,12 @@ def addCCKMCloudAsset(**kwargs):
       endpoint = 'cckm/google/projects'
     elif resource_type == "key":
       endpoint = 'cckm/google/keys'
+    elif resource_type == "keyring":
+      endpoint = 'cckm/google/add-key-rings'
+    elif resource_type == "workspace":
+      endpoint = 'cckm/GoogleWorkspaceCSE/issuers'
+    elif resource_type == "workspace_endpoint":
+      endpoint = 'cckm/GoogleWorkspaceCSE/endpoints'
     else:
       raise AnsibleCMException(message="invalid asset type")
   else:
@@ -128,6 +134,10 @@ def editCCKMCloudAsset(**kwargs):
       endpoint = 'cckm/ekm/endpoints/' + kwargs['id']
     elif resource_type == "key":
       endpoint = 'cckm/google/keys/' + kwargs['id']
+    elif resource_type == "keyring":
+      endpoint = 'cckm/google/key-rings' + kwargs['id']
+    elif resource_type == "workspace_endpoint":
+      endpoint = 'cckm/GoogleWorkspaceCSE/endpoints' + kwargs['id']
     else:
       raise AnsibleCMException(message="invalid asset type")
   else:
