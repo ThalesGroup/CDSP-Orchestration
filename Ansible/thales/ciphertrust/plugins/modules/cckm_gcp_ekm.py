@@ -72,6 +72,51 @@ options:
         choices: [create, update, ekm_op]
         required: true
         type: str
+    ekm_id:
+        description: ID of GCP EKM to be acted upon
+        type: str
+    ekm_op_type:
+        description: Operation to be performed on GCP EKM
+        choices: [rotate, enable, disable]
+        type: str
+    keyURIHostname:
+        description: Base url hostname for KeyURI
+        type: str
+    name:
+        description: Unique name for Endpoint
+        type: str
+    policy:
+        description: EKM Policy attributes
+        type: dict
+    algorithm:
+        description: EKM Key Algorithm. Default is AES256
+        choices: [AES256, RSA_SIGN_PSS_2048_SHA256, RSA_SIGN_PSS_3072_SHA256, RSA_SIGN_PSS_4096_SHA256, RSA_SIGN_PSS_4096_SHA512, RSA_SIGN_PKCS1_2048_SHA256, RSA_SIGN_PKCS1_3072_SHA256, RSA_SIGN_PKCS1_4096_SHA256, RSA_SIGN_PKCS1_4096_SHA512, EC_SIGN_P256_SHA256, EC_SIGN_P384_SHA384]
+        type: str
+    cvm_required_for_decrypt:
+        description: Is a confidential VM (and valid attestation) required for decryption. Default is false. Applicable for UDE Endpoint only.
+        type: bool
+    cvm_required_for_encrypt:
+        description: Is a confidential VM (and valid attestation) required for encryption. Default is false. Applicable for UDE Endpoint only.
+        type: bool
+    endpoint_type:
+        description: EKM Endpoint type. Default is ekm
+        choices: [ekm, ekm-ude]
+        type: str
+        default: ekm
+    existing_key_id:
+        description: ID of existing key to use (if applicable for migration from another CM deployment). If not supplied, a new key will be created
+        type: str
+    key_type:
+        description: EKM Key type. Default is symmetric
+        choices: [symmetric, asymmetric]
+        type: str
+        default: symmetric
+    meta:
+        description: Additional information associated with this Endpoint
+        type: dict
+    raw_policy_enabled:
+        description: Flag to denote if the sent policy is in raw format. Default is false. EKM Policy in basic format is required if raw_policy_enabled is false.
+        type: bool
 '''
 
 EXAMPLES = '''
@@ -133,12 +178,12 @@ argument_spec = dict(
       'RSA_SIGN_PKCS1_4096_SHA512', 
       'EC_SIGN_P256_SHA256', 
       'EC_SIGN_P384_SHA384',
-      ]),
+      ], default='AES256'),
     cvm_required_for_decrypt=dict(type='bool'),
     cvm_required_for_encrypt=dict(type='bool'),
-    endpoint_type=dict(type='str', options=['ekm', 'ekm-ude']),
+    endpoint_type=dict(type='str', options=['ekm', 'ekm-ude'], default='ekm'),
     existing_key_id=dict(type='str'),
-    key_type=dict(type='str', options=['symmetric', 'asymmetric']),
+    key_type=dict(type='str', options=['symmetric', 'asymmetric'], default='symmetric'),
     meta=dict(type='dict', options=_schema_less),
     raw_policy_enabled=dict(type='bool'),
 )

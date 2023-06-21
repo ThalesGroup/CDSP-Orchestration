@@ -69,8 +69,87 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, create-sync-job, cancel-sync-job, key_op, upload-key-aws, verify-key-alias, create-aws-template, patch-aws-template]
+        choices: [create, update, key_op, key_version_op, upload-key, create-sync-job, cancel-sync-job, update-all-versions]
         required: true
+        type: str
+    key_id:
+        description: GCP Key ID to be acted upon
+        type: str
+    version_id:
+        description: Key version ID to be acted upon
+        type: str
+    job_id:
+        description: Synchronization job ID to be cancelled
+        type: str
+    key_op_type:
+        description: Operation to be performed
+        choices: [create-version, refresh, enable-auto-rotation, disable-auto-rotation]
+        type: str
+    key_version_op_type:
+        description: Operation to be performed
+        choices: [refresh, enable, disable, schedule-destroy, cancel-schedule-destroy, download-public-key]
+        type: str
+    gcp_key_params:
+        description: Google Cloud Key related parameters
+        type: dict
+    key_ring:
+        description: ID or Resource URL of the Google Cloud keyRing where key will be created.
+        type: str
+    labels:
+        description: Labels attached to the Google Cloud key in the form of string key,value json pair.
+        type: dict
+    next_rotation_time:
+        description: Next time the Google Cloud key will be automatically rotated by Google Cloud KMS (symmetric key only). Must be formatted as per RFC3339. Example "2022-07-31T17:18:37.085Z".
+        type: str
+    rotation_period:
+        description: Frequency at which the Google Cloud key will to be automatically rotated by Google Cloud KMS (symmetric key only). Must be formatted as a duration in seconds terminated by "s". Example "360000s".
+        type: str
+    primary_version_id:
+        description: Version number of the new primary version.
+        type: str
+    version_template_algorithm:
+        description: Algorithm of the asymmetric key (Symmetric key algorithm is not updatable).
+        choices: [RSA_SIGN_PSS_2048_SHA256, RSA_SIGN_PSS_3072_SHA256, RSA_SIGN_PSS_4096_SHA256, RSA_SIGN_PSS_4096_SHA512, RSA_SIGN_PKCS1_2048_SHA256, RSA_SIGN_PKCS1_3072_SHA256, RSA_SIGN_PKCS1_4096_SHA256, RSA_SIGN_PKCS1_4096_SHA512, RSA_DECRYPT_OAEP_2048_SHA256, RSA_DECRYPT_OAEP_3072_SHA256, RSA_DECRYPT_OAEP_4096_SHA256, RSA_DECRYPT_OAEP_4096_SHA512, EC_SIGN_P256_SHA256, EC_SIGN_P384_SHA384, EC_SIGN_SECP256K1_SHA256]
+        type: str
+    is_native:
+        description: This flag tells whether the key version will be created natively or will be uploaded.
+        type: bool
+    algorithm:
+        description: Algorithm of the key
+        choices: [RSA_SIGN_PSS_2048_SHA256, RSA_SIGN_PSS_3072_SHA256, RSA_SIGN_PSS_4096_SHA256, RSA_SIGN_PSS_4096_SHA512, RSA_SIGN_PKCS1_2048_SHA256, RSA_SIGN_PKCS1_3072_SHA256, RSA_SIGN_PKCS1_4096_SHA256, RSA_SIGN_PKCS1_4096_SHA512, RSA_DECRYPT_OAEP_2048_SHA256, RSA_DECRYPT_OAEP_3072_SHA256, RSA_DECRYPT_OAEP_4096_SHA256, RSA_DECRYPT_OAEP_4096_SHA512, EC_SIGN_P256_SHA256, EC_SIGN_P384_SHA384, EC_SIGN_SECP256K1_SHA256, GOOGLE_SYMMETRIC_ENCRYPTION]
+        type: str
+    source_key_id:
+        description: The key ID which will be uploaded from key source.
+        type: str
+    source_key_tier:
+        description: Key source from where the key will be uploaded. - local for keySecure - dsm for DSM - hsm-luna for Luna HSM
+        choices: [local, dsm, hsm-luna]
+        type: str
+    operation:
+        description: Operation to be performed on all versions of the Google Cloud key
+        choices: [enable, disable, schedule_destroy, cancel_destroy]
+        type: str
+    auto_rotate_algorithm:
+        description: Algorithm of the key.
+        choices: [RSA_SIGN_PSS_2048_SHA256, RSA_SIGN_PSS_3072_SHA256, RSA_SIGN_PSS_4096_SHA256, RSA_SIGN_PSS_4096_SHA512, RSA_SIGN_PKCS1_2048_SHA256, RSA_SIGN_PKCS1_3072_SHA256, RSA_SIGN_PKCS1_4096_SHA256, RSA_SIGN_PKCS1_4096_SHA512, RSA_DECRYPT_OAEP_2048_SHA256, RSA_DECRYPT_OAEP_3072_SHA256, RSA_DECRYPT_OAEP_4096_SHA256, RSA_DECRYPT_OAEP_4096_SHA512, EC_SIGN_P256_SHA256, EC_SIGN_P384_SHA384, EC_SIGN_SECP256K1_SHA256, GOOGLE_SYMMETRIC_ENCRYPTION, HMAC_SHA256]
+        type: str
+    auto_rotate_key_source:
+        description: Source of the key material. Options are native, hsm-luna, dsm and ciphertrust.
+        type: str
+    job_config_id:
+        description: Id of the scheduler job that will perform key rotation.
+        type: str
+    auto_rotate_domain_id:
+        description: Id of the domain in which dsm key will be created.
+        type: str
+    auto_rotate_partition_id:
+        description: Id of the partition in which hsm key will be created.
+        type: str
+    key_rings:
+        description: Name or ID of key rings from which Google Cloud keys will be synchronized. synchronize_all and key_rings are mutually exclusive. Specify either the synchronize_all or key_rings.
+        type: str
+    synchronize_all:
+        description: Set true to synchronize all keys from all rings. synchronize_all and key_rings are mutually exclusive. Specify either the synchronize_all or key_rings.
         type: str
 '''
 

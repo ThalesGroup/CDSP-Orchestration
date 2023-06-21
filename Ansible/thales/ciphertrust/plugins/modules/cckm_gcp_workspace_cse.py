@@ -69,8 +69,54 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, create-sync-job, cancel-sync-job, key_op, upload-key-aws, verify-key-alias, create-aws-template, patch-aws-template]
+        choices: [create_issuer, create_endpoint, update_endpoint, endpoint_op]
         required: true
+        type: str
+    endpoint_id:
+        description: ID of KACLS endpoint for Google Workspace CSE to be acted upon
+        type: str
+    endpoint_op_type:
+        description: Operation to be performed on KACLS endpoint for Google Workspace CSE
+        choices: [rotate-key, disable, enable, archive, recover, wrapprivatekey]
+        type: str
+    name:
+        description: Unique name for the KACLS issuer.
+        type: str
+    dryRun:
+        description: Set true to skip persisting the issuer. All the same validation checks, auto-discovery, and connectivity checks will be performed, and the server will return the same status codes and response body. It can be used to test creating the issuer without modifying the server state. Default value is set to False.
+        type: bool
+    iss:
+        description: Issuer claim of IDP JWT, e.g. https://dev-abc.auth.com
+        type: str
+    jwksURL:
+        description: JWKS url for IDP, e.g. https://dev-abc.auth.com/.well-known/jwks.json
+        type: str
+    meta:
+        description: Additional information associated with the issuer.
+        type: str
+    openidConfigurationURL:
+        description: IDP configuration URL, e.g. https://dev-abc.auth.com/.well-known/openid-configuration
+        type: str
+    authenticationAud:
+        description: List of supported audience for authentication JWT.
+        type: list
+    endpoint_url_hostname:
+        description: Endpoint base url hostname for KACLS endpoint.
+        type: str
+    authorizationAud:
+        description: List of supported audience for authorization JWT.
+        type: list
+    cors:
+        description: List of CORS (Cross-Origin Resource Sharing) to support.
+        type: list
+    issuer:
+        description: List of trusted issuer IDs to use with this endpoint. These are managed through the /GoogleWorkspaceCSE/issuers URL. If not specified, all the issuers will be trusted.
+        type: list
+    private_key:
+        description: PEM encoded PKCS#1 or PKCS#8 (unencrypted) RSA Private Key.
+        type: str
+    perimeter_id:
+        description: The perimeter ID to encrypt with the key
         type: str
 '''
 
