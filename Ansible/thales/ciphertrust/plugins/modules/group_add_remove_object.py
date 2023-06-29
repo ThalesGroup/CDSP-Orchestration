@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.groups import addUserToGroup, addClientToGroup, deleteUserFromGroup, deleteClientFromGroup
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.groups import addUserToGroup, addClientToGroup, deleteUserFromGroup, deleteClientFromGroup
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -99,7 +99,7 @@ options:
 
 EXAMPLES = '''
 - name: "Add User to a Group"
-  thales.ciphertrust.group_add_remove_object:
+  thalesgroup.ciphertrust.group_add_remove_object:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -113,7 +113,7 @@ EXAMPLES = '''
     name: "group_name"
 
 - name: "Add Client to a Group"
-  thales.ciphertrust.group_add_remove_object:
+  thalesgroup.ciphertrust.group_add_remove_object:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -127,7 +127,7 @@ EXAMPLES = '''
     name: "group_name"
 
 - name: "Remove User from a Group"
-  thales.ciphertrust.group_add_remove_object:
+  thalesgroup.ciphertrust.group_add_remove_object:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -141,7 +141,7 @@ EXAMPLES = '''
     name: "group_name"
 
 - name: "Remove Client from a Group"
-  thales.ciphertrust.group_add_remove_object:
+  thalesgroup.ciphertrust.group_add_remove_object:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

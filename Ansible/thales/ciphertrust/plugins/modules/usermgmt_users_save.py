@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.users import create, patch, changepw, patch_self
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.users import create, patch, changepw, patch_self
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 module = None
 
@@ -178,7 +178,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create new user"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       localNode: 
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -193,7 +193,7 @@ EXAMPLES = '''
       name: "John Doe"
 
 - name: "Update user info"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       localNode: 
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -208,7 +208,7 @@ EXAMPLES = '''
       name: "New Name"
 
 - name: "Change user password"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       localNode: 
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -222,7 +222,7 @@ EXAMPLES = '''
       new_password: "newPassword12!"
 
 - name: "Update self"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       localNode: 
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

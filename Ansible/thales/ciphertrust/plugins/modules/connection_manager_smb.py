@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -125,7 +125,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create SMB Connection"
-  thales.ciphertrust.connection_manager_smb:
+  thalesgroup.ciphertrust.connection_manager_smb:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -144,7 +144,7 @@ EXAMPLES = '''
     port: 445
 
 - name: "Update SMB Connection"
-  thales.ciphertrust.connection_manager_smb:
+  thalesgroup.ciphertrust.connection_manager_smb:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

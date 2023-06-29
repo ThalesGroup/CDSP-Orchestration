@@ -37,7 +37,7 @@
 ## Validate the create user module
 - block:
   - name: "Create Key"
-    thales.ciphertrust.vault_keys2_save:
+    thalesgroup.ciphertrust.vault_keys2_save:
       op_type: create
       name: "{{ key_name }}"
       algorithm: "{{ key_algo }}"
@@ -56,7 +56,7 @@
       key_id: "{{ _result_create.response.id }}"
 
   - name: "Patch Key"
-    thales.ciphertrust.vault_keys2_save:
+    thalesgroup.ciphertrust.vault_keys2_save:
       op_type: "patch"
       cm_key_id: "{{ key_id }}"
       unexportable: false
@@ -69,7 +69,7 @@
         - _result_patch.response.message is match("Resource updated succesfully")
 
   - name: "Create Version"
-    thales.ciphertrust.vault_keys2_save:
+    thalesgroup.ciphertrust.vault_keys2_save:
       op_type: create_version
       cm_key_id: "{{ key_id }}"
       encoding: "base64"
@@ -82,7 +82,7 @@
         - _result_create_version.response.message is match("Resource created sucessfully")
 
   - name: "Archive Key"
-    thales.ciphertrust.vault_keys2_op:
+    thalesgroup.ciphertrust.vault_keys2_op:
       op_type: archive
       cm_key_id: "{{ key_id }}"
       localNode: "{{ this_node_connection_string }}"
@@ -94,7 +94,7 @@
         - _result_archive.response.message is match("Resource created succesfully")
 
   - name: "Recover Key"
-    thales.ciphertrust.vault_keys2_op:
+    thalesgroup.ciphertrust.vault_keys2_op:
       op_type: recover
       cm_key_id: "{{ key_id }}"
       localNode: "{{ this_node_connection_string }}"
@@ -106,7 +106,7 @@
         - _result_recover.response.message is match("Resource created succesfully")
 
   - name: "Revoke Key"
-    thales.ciphertrust.vault_keys2_op:
+    thalesgroup.ciphertrust.vault_keys2_op:
       op_type: revoke
       cm_key_id: "{{ key_id }}"
       reason: "{{ key_revocation_reason }}"
@@ -120,7 +120,7 @@
         - _result_revoke.response.message is match("Resource created succesfully")
 
   - name: "Reactivate Key"
-    thales.ciphertrust.vault_keys2_op:
+    thalesgroup.ciphertrust.vault_keys2_op:
       op_type: reactivate
       cm_key_id: "{{ key_id }}"
       reason: "{{ key_reactivation_reason }}"
@@ -134,7 +134,7 @@
         - _result_reactivate.response.message is match("Resource created succesfully")
 
   - name: "Destroy Key"
-    thales.ciphertrust.vault_keys2_op:
+    thalesgroup.ciphertrust.vault_keys2_op:
       op_type: destroy
       cm_key_id: "{{ key_id }}"
       localNode: "{{ this_node_connection_string }}"
@@ -146,7 +146,7 @@
         - _result_destroy.response.message is match("Resource created succesfully")
 
   - name: "Delete Key"
-    thales.ciphertrust.cm_resource_delete:
+    thalesgroup.ciphertrust.cm_resource_delete:
       key: "{{ key_id }}"
       resource_type: "keys"
       localNode: "{{ this_node_connection_string }}"

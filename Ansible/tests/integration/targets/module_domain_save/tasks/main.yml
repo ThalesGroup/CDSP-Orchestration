@@ -31,7 +31,7 @@
 ## Validate the create domain module
 - block:
   - name: "Create Domain"
-    thales.ciphertrust.domain_save:
+    thalesgroup.ciphertrust.domain_save:
       op_type: create
       name: "{{ domain_name }}"
       admins: "{{ admins }}"
@@ -46,7 +46,7 @@
         - _result_create.response.id is string
 
   - name: "Patch Domain"
-    thales.ciphertrust.domain_save:
+    thalesgroup.ciphertrust.domain_save:
       op_type: patch
       domain_id: "{{ _result_create.response.id }}"
     register: _result_patch

@@ -23,9 +23,9 @@ __metaclass__ = type
 import os
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cte import createCSIStorageGroup, updateCSIStorageGroup, csiGroupAddClient, csiGroupAddGuardPoint, csiGroupRemoveClient, csiGroupUpdateGuardPoint, csiGroupRemoveGuardPoint
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cte import createCSIStorageGroup, updateCSIStorageGroup, csiGroupAddClient, csiGroupAddGuardPoint, csiGroupRemoveClient, csiGroupUpdateGuardPoint, csiGroupRemoveGuardPoint
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -119,7 +119,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create CSI Storage Group"
-  thales.ciphertrust.cte_csi_storage_group:
+  thalesgroup.ciphertrust.cte_csi_storage_group:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

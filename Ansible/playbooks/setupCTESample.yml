@@ -25,7 +25,7 @@
 
     tasks:
     - name: "Create Key"
-      thales.ciphertrust.vault_keys2_save:
+      thalesgroup.ciphertrust.vault_keys2_save:
         op_type: create
         name: "CTE_standard_pol_key"
         algorithm: aes
@@ -63,7 +63,7 @@
       ignore_errors: true
 
     - name: "Create CTE Policy Element - Resource Set"
-      thales.ciphertrust.cte_resource_set:
+      thalesgroup.ciphertrust.cte_resource_set:
         localNode: "{{ this_node_connection_string }}"
         op_type: create
         name: "RS-Ans-001"
@@ -77,7 +77,7 @@
       ignore_errors: true
       
     - name: "Create CTE Policy"
-      thales.ciphertrust.cte_policy_save:
+      thalesgroup.ciphertrust.cte_policy_save:
         localNode: "{{ this_node_connection_string }}"
         op_type: create
         name: "Policy-Ans-001"
@@ -107,7 +107,7 @@
       register: policy
 
     - name: "Create CTE Client"
-      thales.ciphertrust.cte_client:
+      thalesgroup.ciphertrust.cte_client:
         localNode: "{{ this_node_connection_string }}"
         op_type: create
         name: "CTE-Client-Ans-001"
@@ -120,7 +120,7 @@
       register: client
 
     - name: "Add Guard Paths to the CTE Client"
-      thales.ciphertrust.cte_client:
+      thalesgroup.ciphertrust.cte_client:
         localNode: "{{ this_node_connection_string }}"
         op_type: add_guard_point
         id: "{{ client['response']['id'] }}"

@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.dpg import createUserSet, updateUserSet
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.dpg import createUserSet, updateUserSet
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -96,7 +96,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create Access Policy"
-  thales.ciphertrust.dpg_user_set_save:
+  thalesgroup.ciphertrust.dpg_user_set_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -107,7 +107,7 @@ EXAMPLES = '''
     op_type: create
 
 - name: "Patch Access Policy"
-  thales.ciphertrust.dpg_user_set_save:
+  thalesgroup.ciphertrust.dpg_user_set_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.keys2 import create, patch, version_create
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.keys2 import create, patch, version_create
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -578,7 +578,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create Key"
-  thales.ciphertrust.vault_keys2_create:
+  thalesgroup.ciphertrust.vault_keys2_create:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -593,7 +593,7 @@ EXAMPLES = '''
     usageMask: 3145740
 
 - name: "Patch Key"
-  thales.ciphertrust.vault_keys2_create:
+  thalesgroup.ciphertrust.vault_keys2_create:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

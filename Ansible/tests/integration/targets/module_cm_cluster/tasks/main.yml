@@ -30,7 +30,7 @@
 ## Validate the create new cluster
 - block:
   - name: "Create New Cluster"
-    thales.ciphertrust.cm_cluster:
+    thalesgroup.ciphertrust.cm_cluster:
       op_type: new      
       localNode: "{{ this_node_connection_string }}"
     register: _result_create
@@ -43,7 +43,7 @@
 ## Validate the cluster node join operation
 - block:
   - name: "Join Nodes to above Cluster"
-    thales.ciphertrust.cm_cluster:
+    thalesgroup.ciphertrust.cm_cluster:
       op_type: join
       nodes: "{{ nodes }}"
     register: _result_join

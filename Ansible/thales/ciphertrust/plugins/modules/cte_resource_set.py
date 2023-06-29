@@ -23,9 +23,9 @@ __metaclass__ = type
 import os
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cte import createResourceSet, updateResourceSet, addResourceToSet, updateResourceInSetByIndex, deleteResourceInSetByIndex
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cte import createResourceSet, updateResourceSet, addResourceToSet, updateResourceInSetByIndex, deleteResourceInSetByIndex
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -125,7 +125,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create CTE ResourceSet"
-  thales.ciphertrust.cte_resource_set:
+  thalesgroup.ciphertrust.cte_resource_set:
     localNode:
       server_ip: "IP/FQDN of CipherTrust Manager"
       server_private_ip: "Private IP in case that is different from above"

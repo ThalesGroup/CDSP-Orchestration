@@ -23,9 +23,9 @@ __metaclass__ = type
 import os
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cte import createClientGroup, updateClientGroup, clientGroupAddClients, clientGroupAddGuardPoint, clientGroupAuthBinaries, clientGroupDeleteClient, clientGroupLDTPause
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cte import createClientGroup, updateClientGroup, clientGroupAddClients, clientGroupAddGuardPoint, clientGroupAuthBinaries, clientGroupDeleteClient, clientGroupLDTPause
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -82,7 +82,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create CTE Policy"
-  thales.ciphertrust.dpg_policy_save:
+  thalesgroup.ciphertrust.dpg_policy_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -93,7 +93,7 @@ EXAMPLES = '''
     op_type: create
 
 - name: "Patch DPG Policy"
-  thales.ciphertrust.dpg_policy_save:
+  thalesgroup.ciphertrust.dpg_policy_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

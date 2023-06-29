@@ -26,7 +26,7 @@
     tasks:
     #Skip this task if there is already a cluster with at least one member
     - name: "Create new cluster"
-      thales.ciphertrust.cm_cluster:
+      thalesgroup.ciphertrust.cm_cluster:
         localNode: "{{ this_node_connection_string }}"
         op_type: new
 
@@ -35,7 +35,7 @@
         minutes: 1
 
     - name: "Join nodes to the cluster"
-      thales.ciphertrust.cm_cluster_join:
+      thalesgroup.ciphertrust.cm_cluster_join:
         localNode: "{{ this_node_connection_string }}"
         op_type: join
         nodes: "{{ cluster_nodes }}"

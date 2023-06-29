@@ -85,7 +85,8 @@
         "DataProtection/CipherTrustManager-ClientProfiles",
         "Interfaces/CipherTrustManager-Interfaces",
         "Keys/CipherTrustManager-Keys",
-        "Users/CipherTrustManager-Users"
+        "Users/CipherTrustManager-Users",
+        "CCKM/CipherTrustManager-AWS-CKS"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -128,7 +129,13 @@
         "Remove-CMClientProfiles",        
         "Get-CMJWT",
         "Test-CMJWT",
-        "Write-HashtableArray"
+        "Write-HashtableArray",
+        "New-CKSAWSParam",
+        "New-CKSLocalHostedParam",
+        "New-CKS",
+        "Remove-CKS",
+        "Edit-CKS",
+        "Update-CKSPerformOperation"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

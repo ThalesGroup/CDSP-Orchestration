@@ -25,7 +25,7 @@
     tasks:
     # Get and delete DPG Client Profile
     - name: "Get Client Profile ID from Name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         localNode: "{{ this_node_connection_string }}"
         query_param: "name"
         query_param_value: AnsibleClientProfile
@@ -34,7 +34,7 @@
       ignore_errors: true
 
     - name: "Delete Client Profile"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ clientProfile['response']['id'] }}"
         resource_type: "client-profiles"
@@ -42,7 +42,7 @@
 
     # Get and delete DPG Policy
     - name: "Get DPG Policy from Name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         localNode: "{{ this_node_connection_string }}"
         query_param: "name"
         query_param_value: "{{ dpg_policy_name }}"
@@ -51,7 +51,7 @@
       ignore_errors: true
 
     - name: "Delete DPG Policy"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ dpgPolicy['response']['id'] }}"
         resource_type: "dpg-policies"
@@ -59,7 +59,7 @@
 
     # Get and delete Access Policy
     - name: "Get Access Policy from Name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         localNode: "{{ this_node_connection_string }}"
         query_param: "name"
         query_param_value: "{{ access_policy_name }}"
@@ -68,7 +68,7 @@
       ignore_errors: true
 
     - name: "Delete Access Policy"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ accessPolicy['response']['id'] }}"
         resource_type: "access-policies"
@@ -76,7 +76,7 @@
 
     # Get and delete User Set
     - name: "Get UserSet from Name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         localNode: "{{ this_node_connection_string }}"
         query_param: "name"
         query_param_value: "{{ var_user_set_name }}"
@@ -85,7 +85,7 @@
       ignore_errors: true
 
     - name: "Delete UserSet"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ userset['response']['id'] }}"
         resource_type: "user-sets"
@@ -93,14 +93,14 @@
 
     # Delete Protection Policies
     - name: "Delete Protection Policy"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ fpe_card_protection_policy_name }}"
         resource_type: "protection-policies"
       ignore_errors: true
 
     - name: "Delete Protection Policy"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ non_card_protection_policy_name }}"
         resource_type: "protection-policies"
@@ -108,7 +108,7 @@
 
     # Get and delete character Set
     - name: "Get Character Set from Name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         localNode: "{{ this_node_connection_string }}"
         query_param: "name"
         query_param_value: "{{ char_set_name }}"
@@ -117,7 +117,7 @@
       ignore_errors: true
 
     - name: "Delete Character Set"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ charset['response']['id'] }}"
         resource_type: "character-sets"
@@ -125,7 +125,7 @@
 
     # Delete NAE Interface
     - name: "Delete Interface"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "nae_all_9006"
         resource_type: "interfaces"
@@ -133,7 +133,7 @@
 
     # Get and delete key
     - name: "Get Key ID from its name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         localNode: "{{ this_node_connection_string }}"
         query_param: "name"
         query_param_value: "{{ dpg_key_name }}"
@@ -142,7 +142,7 @@
       ignore_errors: true
 
     - name: "Delete Key"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ key['response']['id'] }}"
         resource_type: "keys"

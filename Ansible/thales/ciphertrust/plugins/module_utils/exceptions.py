@@ -18,7 +18,7 @@
 
 In order to use this module, include it as part of a custom
 module as shown below.
-  from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException
+  from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException
 """
 
 from ansible.module_utils._text import to_native

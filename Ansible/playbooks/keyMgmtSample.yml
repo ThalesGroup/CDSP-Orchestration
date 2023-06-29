@@ -24,7 +24,7 @@
 
     tasks:
     - name: "Create Key"
-      thales.ciphertrust.vault_keys2_save:
+      thalesgroup.ciphertrust.vault_keys2_save:
         op_type: create
         name: "{{ key_name }}"
         algorithm: aes
@@ -34,21 +34,21 @@
       register: output
 
     - name: "Get Key ID from its name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         query_param: "name"
         query_param_value: "{{ key_name }}"
         resource_type: "keys"
       register: key
 
     - name: "Patch Key"
-      thales.ciphertrust.vault_keys2_save:
+      thalesgroup.ciphertrust.vault_keys2_save:
         op_type: patch
         cm_key_id: "{{ key['id'] }}"
         unexportable: false
         localNode: "{{ this_node_connection_string }}"
 
     - name: "Create Version"
-      thales.ciphertrust.vault_keys2_save:
+      thalesgroup.ciphertrust.vault_keys2_save:
         op_type: create_version
         cm_key_id: "{{ key['id'] }}"
         encoding: "base64"

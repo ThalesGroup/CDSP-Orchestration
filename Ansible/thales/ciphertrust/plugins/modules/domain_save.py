@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.domains import create, patch
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.domains import create, patch
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -130,7 +130,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create Domain"
-  thales.ciphertrust.domain_save:
+  thalesgroup.ciphertrust.domain_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -146,7 +146,7 @@ EXAMPLES = '''
     parent_ca_id: a5e0fa8a-a7f7-434c-ade8-f84de040269a
 
 - name: "Patch Domain"
-  thales.ciphertrust.domain_save:
+  thalesgroup.ciphertrust.domain_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

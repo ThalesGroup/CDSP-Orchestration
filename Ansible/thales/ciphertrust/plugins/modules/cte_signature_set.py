@@ -23,9 +23,9 @@ __metaclass__ = type
 import os
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cte import createSignatureSet, updateSignatureSet, addSignatureToSet, deleteSignatureInSetById, sendSignAppRequest, querySignAppRequest, cancelSignAppRequest
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cte import createSignatureSet, updateSignatureSet, addSignatureToSet, deleteSignatureInSetById, sendSignAppRequest, querySignAppRequest, cancelSignAppRequest
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -108,7 +108,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create CTE Policy"
-  thales.ciphertrust.cte_signature_set:
+  thalesgroup.ciphertrust.cte_signature_set:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

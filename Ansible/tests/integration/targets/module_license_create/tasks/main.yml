@@ -30,7 +30,7 @@
 ## Validate the add license module
 - block:
   - name: "Add License"
-    thales.ciphertrust.license_create:
+    thalesgroup.ciphertrust.license_create:
       localNode: "{{ this_node_connection_string }}"
       license: "{{ license_string }}"
     register: _result_add

@@ -152,3 +152,10 @@ Export-ModuleMember -Function New-CMDPGJSONRequestResponse
 Export-ModuleMember -Function Find-CMClientProfiles
 Export-ModuleMember -Function New-CMClientProfiles
 Export-ModuleMember -Function Remove-CMClientProfiles
+#CCKM
+Export-ModuleMember -Function New-CKSAWSParam
+Export-ModuleMember -Function New-CKSLocalHostedParam
+Export-ModuleMember -Function New-CKS
+Export-ModuleMember -Function Remove-CKS
+Export-ModuleMember -Function Edit-CKS
+Export-ModuleMember -Function Update-CKSPerformOperation

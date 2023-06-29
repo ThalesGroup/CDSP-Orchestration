@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -163,7 +163,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create LDAP Connection"
-  thales.ciphertrust.connection_manager_ldap:
+  thalesgroup.ciphertrust.connection_manager_ldap:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -183,7 +183,7 @@ EXAMPLES = '''
     search_filter: "(objectclass=User)"
 
 - name: "Update LDAP Connection"
-  thales.ciphertrust.connection_manager_ldap:
+  thalesgroup.ciphertrust.connection_manager_ldap:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

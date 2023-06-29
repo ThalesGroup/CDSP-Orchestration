@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.licensing import activateTrial, deactivateTrial
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.licensing import activateTrial, deactivateTrial
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -85,7 +85,7 @@ options:
 
 EXAMPLES = '''
 - name: "Activate Trial License"
-  thales.ciphertrust.license_trial_action:
+  thalesgroup.ciphertrust.license_trial_action:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -97,7 +97,7 @@ EXAMPLES = '''
     trialId: trial_id
 
 - name: "De-activate Trial License"
-  thales.ciphertrust.license_trial_action:
+  thalesgroup.ciphertrust.license_trial_action:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

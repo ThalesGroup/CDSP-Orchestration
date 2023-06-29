@@ -25,7 +25,7 @@ import urllib3
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.licensing import getLockdata
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.licensing import getLockdata
 
 DOCUMENTATION = '''
 ---
@@ -73,7 +73,7 @@ options:
 
 EXAMPLES = '''
 - name: "Get Licensing Lockdata"
-  thales.ciphertrust.licensing_lockdata_get:
+  thalesgroup.ciphertrust.licensing_lockdata_get:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

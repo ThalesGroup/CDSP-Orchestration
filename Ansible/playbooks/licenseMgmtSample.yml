@@ -24,12 +24,12 @@
 
     tasks:
     - name: "Get trial license ID from CM"
-      thales.ciphertrust.license_trial_get:
+      thalesgroup.ciphertrust.license_trial_get:
         localNode: "{{ this_node_connection_string }}"
       register: license
 
     - name: "Activate Trial License"
-      thales.ciphertrust.license_trial_action:
+      thalesgroup.ciphertrust.license_trial_action:
         action_type: activate
         trialId: "{{ license['id'] }}"
         localNode: "{{ this_node_connection_string }}"
@@ -39,14 +39,14 @@
       ansible.builtin.pause:
 
     - name: "De-activate Trial License"
-      thales.ciphertrust.license_trial_action:
+      thalesgroup.ciphertrust.license_trial_action:
         action_type: deactivate
         trialId: "{{ license['id'] }}"
         localNode: "{{ this_node_connection_string }}"
 
     # The next one requires a valid license file/information
     - name: "Add License"
-      thales.ciphertrust.license_create:
+      thalesgroup.ciphertrust.license_create:
         localNode: "{{ this_node_connection_string }}"
         license: "{{ license_string }}"
       ignore_errors: true # Set to true if it is ok to ignore error and continue to next step 

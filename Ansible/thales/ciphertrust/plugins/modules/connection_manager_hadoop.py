@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection, addHadoopNode, updateHadoopNode, deleteHadoopNode
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection, addHadoopNode, updateHadoopNode, deleteHadoopNode
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -160,7 +160,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create Hadoop Connection"
-  thales.ciphertrust.connection_manager_hadoop:
+  thalesgroup.ciphertrust.connection_manager_hadoop:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -185,7 +185,7 @@ EXAMPLES = '''
 
 
 - name: "Update Hadoop Connection"
-  thales.ciphertrust.connection_manager_hadoop:
+  thalesgroup.ciphertrust.connection_manager_hadoop:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

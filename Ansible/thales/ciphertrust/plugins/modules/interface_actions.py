@@ -26,9 +26,9 @@ import urllib3
 import json
 import ast
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.interfaces import addCertificateToInterface, enableInterface, disableInterface, restoreDefaultTlsCiphers, createCsr, autogenServerCert, useCertificate
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.interfaces import addCertificateToInterface, enableInterface, disableInterface, restoreDefaultTlsCiphers, createCsr, autogenServerCert, useCertificate
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -150,7 +150,7 @@ options:
 
 EXAMPLES = '''
 - name: "Add Cert to Interface"
-  thales.ciphertrust.interface_actions:
+  thalesgroup.ciphertrust.interface_actions:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -164,7 +164,7 @@ EXAMPLES = '''
     format: PEM
 
 - name: "Enable Interface"
-  thales.ciphertrust.interface_actions:
+  thalesgroup.ciphertrust.interface_actions:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -176,7 +176,7 @@ EXAMPLES = '''
     interface_id: "interface_identifier"
 
 - name: "Disable Interface"
-  thales.ciphertrust.interface_actions:
+  thalesgroup.ciphertrust.interface_actions:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -188,7 +188,7 @@ EXAMPLES = '''
     interface_id: "interface_identifier"
 
 - name: "Restore default TLS Ciphers"
-  thales.ciphertrust.interface_actions:
+  thalesgroup.ciphertrust.interface_actions:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -200,7 +200,7 @@ EXAMPLES = '''
     interface_id: "interface_identifier"
 
 - name: "Create CSR"
-  thales.ciphertrust.interface_actions:
+  thalesgroup.ciphertrust.interface_actions:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -213,7 +213,7 @@ EXAMPLES = '''
     cn: "csr_cn"
 
 - name: "Auto Generate Server Certificate"
-  thales.ciphertrust.interface_actions:
+  thalesgroup.ciphertrust.interface_actions:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -225,7 +225,7 @@ EXAMPLES = '''
     interface_id: "interface_identifier"
 
 - name: "Use certificate"
-  thales.ciphertrust.interface_actions:
+  thalesgroup.ciphertrust.interface_actions:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

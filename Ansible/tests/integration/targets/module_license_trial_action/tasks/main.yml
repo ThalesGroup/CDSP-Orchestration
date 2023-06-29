@@ -30,7 +30,7 @@
 - block:
 
   - name: "Get trial license ID from CM"
-    thales.ciphertrust.license_trial_get:
+    thalesgroup.ciphertrust.license_trial_get:
       localNode: "{{ this_node_connection_string }}"
     register: license
 
@@ -44,7 +44,7 @@
       trial_license_id_reg: "{{ license.response.id }}"
 
   - name: "Activate Trial License"
-    thales.ciphertrust.license_trial_action:
+    thalesgroup.ciphertrust.license_trial_action:
       action_type: activate
       trialId: "{{ trial_license_id_reg }}"
       localNode: "{{ this_node_connection_string }}"
@@ -56,7 +56,7 @@
         - _result_activate.response.message is match("Resource created sucessfully")
 
   - name: "Deactivate Trial License"
-    thales.ciphertrust.license_trial_action:
+    thalesgroup.ciphertrust.license_trial_action:
       action_type: deactivate
       trialId: "{{ trial_license_id_reg }}"
       localNode: "{{ this_node_connection_string }}"

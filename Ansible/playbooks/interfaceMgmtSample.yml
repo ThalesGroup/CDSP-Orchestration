@@ -25,7 +25,7 @@
 
     tasks:
     - name: "Create Interface"
-      thales.ciphertrust.interface_save:
+      thalesgroup.ciphertrust.interface_save:
         localNode: "{{ this_node_connection_string }}"
         op_type: create
         port: 9006
@@ -40,14 +40,14 @@
       ansible.builtin.pause:
 
     - name: "Patch Interface"
-      thales.ciphertrust.interface_save:
+      thalesgroup.ciphertrust.interface_save:
         localNode: "{{ this_node_connection_string }}"
         op_type: patch
         interface_id: nae_all_9006
         port: 9007
 
     - name: "Add Cert to Interface"
-      thales.ciphertrust.interface_actions:
+      thalesgroup.ciphertrust.interface_actions:
         localNode: "{{ this_node_connection_string }}"
         op_type: put_certificate
         interface_id: "interface_identifier"
@@ -55,38 +55,38 @@
         format: PEM
 
     - name: "Enable Interface"
-      thales.ciphertrust.interface_actions:
+      thalesgroup.ciphertrust.interface_actions:
         localNode: "{{ this_node_connection_string }}"
         op_type: enable
         interface_id: "interface_identifier"
 
     - name: "Disable Interface"
-      thales.ciphertrust.interface_actions:
+      thalesgroup.ciphertrust.interface_actions:
         localNode: "{{ this_node_connection_string }}"
         op_type: disable
         interface_id: "interface_identifier"
 
     - name: "Restore default TLS Ciphers"
-      thales.ciphertrust.interface_actions:
+      thalesgroup.ciphertrust.interface_actions:
         localNode: "{{ this_node_connection_string }}"
         op_type: restore-default-tls-ciphers
         interface_id: "interface_identifier"
 
     - name: "Create CSR"
-      thales.ciphertrust.interface_actions:
+      thalesgroup.ciphertrust.interface_actions:
         localNode: "{{ this_node_connection_string }}"
         op_type: csr
         interface_id: "interface_identifier"
         cn: "csr_cn"
 
     - name: "Auto Generate Server Certificate"
-      thales.ciphertrust.interface_actions:
+      thalesgroup.ciphertrust.interface_actions:
         localNode: "{{ this_node_connection_string }}"
         op_type: auto-gen-server-cert
         interface_id: "interface_identifier"
 
     - name: "Use certificate"
-      thales.ciphertrust.interface_actions:
+      thalesgroup.ciphertrust.interface_actions:
         localNode: "{{ this_node_connection_string }}"
         op_type: use-certificate
         interface_id: "interface_identifier"

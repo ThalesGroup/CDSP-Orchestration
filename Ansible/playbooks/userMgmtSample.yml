@@ -24,7 +24,7 @@
 
     tasks:
     - name: "Create new user"
-      thales.ciphertrust.usermgmt_users_save:
+      thalesgroup.ciphertrust.usermgmt_users_save:
         localNode: "{{ this_node_connection_string }}"
         op_type: "create"
         username: "{{ var_username }}"
@@ -34,14 +34,14 @@
       register: output
 
     - name: "Get user ID from its name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         query_param: "username"
         query_param_value: "{{ var_username }}"
         resource_type: "users"
       register: user
 
     - name: "Update user info"
-      thales.ciphertrust.usermgmt_users_save:
+      thalesgroup.ciphertrust.usermgmt_users_save:
         localNode: "{{ this_node_connection_string }}"
         op_type: "patch"
         cm_user_id: "{{ user['id] }}"
@@ -50,7 +50,7 @@
         name: "{{ var_new_name }}"
 
     - name: "Change user password"
-      thales.ciphertrust.usermgmt_users_save:
+      thalesgroup.ciphertrust.usermgmt_users_save:
         localNode: "{{ this_node_connection_string }}"
         op_type: "changepw"
         username: "{{ user['id] }}"
@@ -58,7 +58,7 @@
         new_password: "{{ var_new_password }}"
 
     - name: "Update self"
-      thales.ciphertrust.usermgmt_users_save:
+      thalesgroup.ciphertrust.usermgmt_users_save:
         localNode: "{{ this_node_connection_string }}"
         op_type: "patch_self"
         name: "{{ var_new_self_name }}"

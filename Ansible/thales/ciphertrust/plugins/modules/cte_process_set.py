@@ -23,9 +23,9 @@ __metaclass__ = type
 import os
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.cte import createProcessSet, updateProcessSet, addProcessToSet, updateProcessInSetByIndex, deleteProcessInSetByIndex
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cte import createProcessSet, updateProcessSet, addProcessToSet, updateProcessInSetByIndex, deleteProcessInSetByIndex
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -110,7 +110,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create CTE ProcessSet"
-  thales.ciphertrust.cte_process_set:
+  thalesgroup.ciphertrust.cte_process_set:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -127,7 +127,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create Syslog Connection"
-  thales.ciphertrust.connection_manager_syslog:
+  thalesgroup.ciphertrust.connection_manager_syslog:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -147,7 +147,7 @@ EXAMPLES = '''
       - logger
 
 - name: "Update Syslog Connection"
-  thales.ciphertrust.connection_manager_syslog:
+  thalesgroup.ciphertrust.connection_manager_syslog:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

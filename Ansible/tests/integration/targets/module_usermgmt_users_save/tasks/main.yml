@@ -37,7 +37,7 @@
 ## Validate the create user module
 - block:
   - name: "Create User"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       localNode: "{{ this_node_connection_string }}"
       op_type: "create"
       username: "{{ username }}"
@@ -56,7 +56,7 @@
       user_id: "{{ _result_create.response.id }}"
 
   - name: "Patch User"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       op_type: "patch"
       cm_user_id: "{{ user_id }}"
       username: "{{ username }}"
@@ -71,7 +71,7 @@
         - _result_patch.response.message is match("Resource updated succesfully")
 
   - name: "Change Password"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       op_type: "changepw"
       username: "{{ username }}"
       password: "{{ password }}"
@@ -85,7 +85,7 @@
         - _result_changepw.response.message is match("Resource updated succesfully")
 
   - name: "Update Self"
-    thales.ciphertrust.usermgmt_users_save:
+    thalesgroup.ciphertrust.usermgmt_users_save:
       op_type: "patch_self"
       name: "{{ new_self_name }}"
       localNode: "{{ this_node_connection_string }}"

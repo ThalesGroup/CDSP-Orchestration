@@ -25,9 +25,9 @@ import requests
 import urllib3
 import json
 
-from ansible_collections.thales.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thales.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
-from ansible_collections.thales.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
@@ -161,7 +161,7 @@ options:
 
 EXAMPLES = '''
 - name: "Create Azure Connection"
-  thales.ciphertrust.connection_manager_azure:
+  thalesgroup.ciphertrust.connection_manager_azure:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -179,7 +179,7 @@ EXAMPLES = '''
     tenant_id: 3bf0dbe6-a2c7-431d-9a6f-4843b74c71285nfjdu2
 
 - name: "Update Azure Connection"
-  thales.ciphertrust.connection_manager_azure:
+  thalesgroup.ciphertrust.connection_manager_azure:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"

@@ -24,7 +24,7 @@
 
     tasks:
     - name: "Create Group"
-      thales.ciphertrust.group_save:
+      thalesgroup.ciphertrust.group_save:
         op_type: create
         name: "{{ group_name }}"
         localNode: "{{ this_node_connection_string }}"
@@ -35,7 +35,7 @@
       ansible.builtin.pause:
 
     - name: "Patch Group"
-      thales.ciphertrust.group_save:
+      thalesgroup.ciphertrust.group_save:
         op_type: patch
         old_name: "{{ group_name }}"
         name: "{{ new_group_name }}"
@@ -46,7 +46,7 @@
       ansible.builtin.pause:
 
     - name: "Add User to Group"
-      thales.ciphertrust.group_add_remove_object:
+      thalesgroup.ciphertrust.group_add_remove_object:
         op_type: add
         object_type: user
         object_id: "{{ user_id }}"
@@ -55,7 +55,7 @@
       ignore_errors: true # Set to true if it is ok to ignore error and continue to next step 
 
     - name: "Add Client to Group"
-      thales.ciphertrust.group_add_remove_object:
+      thalesgroup.ciphertrust.group_add_remove_object:
         op_type: add
         object_type: client
         object_id: "{{ client_id }}"
@@ -67,7 +67,7 @@
       ansible.builtin.pause:
 
     - name: "Remove User from Group"
-      thales.ciphertrust.group_add_remove_object:
+      thalesgroup.ciphertrust.group_add_remove_object:
         op_type: remove
         object_type: user
         object_id: "{{ user_id }}"
@@ -76,7 +76,7 @@
       ignore_errors: true # Set to true if it is ok to ignore error and continue to next step 
 
     - name: "Remove Client to Group"
-      thales.ciphertrust.group_add_remove_object:
+      thalesgroup.ciphertrust.group_add_remove_object:
         op_type: remove
         object_type: client
         object_id: "{{ client_id }}"

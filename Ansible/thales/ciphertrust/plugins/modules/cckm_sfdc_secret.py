@@ -21,16 +21,16 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cckm_aws import updateACLs
-from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cckm_commons import addCCKMCloudAsset, editCCKMCloudAsset
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cckm_sfdc import updateSFDCOrgACLs
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cckm_commons import addCCKMCloudAsset, editCCKMCloudAsset, createSyncJob, cancelSyncJob
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''
 ---
-module: cckm_aws_kms
+module: cckm_sfdc_secret
 short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for AWS KMS
+    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for SFDC Cloud Certificates and Tenant Secrets
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -69,38 +69,41 @@ options:
             default: false     
     op_type:
         description: Operation to be performed
-        choices: [create, update, update-acls]
+        choices: [create, update_acls, add_cache_only_key_endpoint, update_cache_only_key_endpoint]
         required: true
         type: str
-    kms_id:
-        description: AWS KMS ID to be acted upton
+    sfdc_org_id:
+        description: ID of the SFDC organization to be added
         type: str
-    account_id:
-        description: ID of the AWS account.
-        type: str
-    name:
-        description: Unique name for the KMS.
+    endpoint_id:
+        description: ID of the SFDC cache only key endpoint to be updated
         type: str
     connection:
-        description: Name or ID of the connection in which the account is managed.
+        description: Name or ID of the SFDC connection
         type: str
-    regions:
-        description: AWS regions to be added to the CCKM.
-        type: list
-    assume_role_arn:
-        description: Amazon Resource Name (ARN) of the role to be assumed.
-        type: str
-    assume_role_external_id:
-        description: External ID for the role to be assumed. This parameter can be specified only with "assume_role_arn".
+    org_id:
+        description: ID of the SFDC organization to be updated
         type: str
     acls:
         description: acls
         type: list
+    name:
+        description: name for endpoint
+        type: str
+    organization_id:
+        description: SFDC Organization ID to which this endpoint should belong to
+        type: str
+    password_authentication:
+        description: endpoint password Authentication details
+        type: dict
+    url_hostname:
+        description: Base hostname of url
+        type: str
 '''
 
 EXAMPLES = '''
-- name: "Create CCKM AWS KMS"
-  thalesgroup.ciphertrust.cckm_aws_kms:
+- name: "Create SFDC Cloud Certificate"
+  thalesgroup.ciphertrust.cckm_sfdc_secret:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -114,40 +117,58 @@ EXAMPLES = '''
 RETURN = '''
 
 '''
-
-_acl = dict(
-  actions=dict(type='list', element='str'),
-  group=dict(type='str'),
-  permit=dict(type='bool'),
-  user_id=dict(type='str'),
-)
-
 argument_spec = dict(
     op_type=dict(type='str', options=[
-       'create', 
-       'update',
-       'update-acls',
+       'create_cert',
+       'create_key',
+       'update_key',
+       'key_op',
+       'create_sync_job',
+       'cancel_sync_job',
+       'upload_cache_only_key',
+       'upload_key',
        ], required=True),
-    kms_id=dict(type='str'),
-    account_id=dict(type='str'),
+    key_id=dict(type='str'),
+    job_id=dict(type='str'),
+    key_op_type=dict(type='str', options=[
+       'destroy',
+       'import',
+       'activate',
+       'delete-backup',
+       ]),
+    secret_type=dict(type='str', options=[
+       'key',
+       'certificate',
+       ]),
     name=dict(type='str'),
-    connection=dict(type='str'),
-    regions=dict(type='list', element='str'),
-    assume_role_arn=dict(type='str'),
-    assume_role_external_id=dict(type='str'),
-    acls=dict(type='list', element='dict', options=_acl),
+    organization_id=dict(type='str'),
+    organization_ids=dict(type='list', element='str'),
+    synchronize_all=dict(type='bool'),
+    type=dict(type='str', options=[
+       'Data',
+       'EventBus',
+       'SearchIndex',
+       'DeterministicData',
+       'Analytics',
+       ]),
+    sfdc_named_credential_id=dict(type='str'),
+    source_key_identifier=dict(type='str'),
+    source_key_tier=dict(type='str', options=['local', 'dsm', 'hsm-luna']),
+    certificate_id=dict(type='str'),
+    key_derivation_mode=dict(type='str', options=['NONE', 'PBKDF2']),
 )
 
-def validate_parameters(cckm_aws_kms_module):
+def validate_parameters(cckm_sfdc_secret_module):
     return True
 
 def setup_module_object():
     module = ThalesCipherTrustModule(
         argument_spec=argument_spec,
         required_if=(
-            ['op_type', 'create', ['account_id', 'connection', 'name', 'regions']],
-            ['op_type', 'update', ['kms_id']],
-            ['op_type', 'update-acls', ['kms_id']],
+            ['op_type', 'create_cert', ['name', 'organization_id']],
+            ['op_type', 'create_key', ['organization_id', 'type']],
+            ['op_type', 'update_key', ['key_id']],
+            ['op_type', 'key_op', ['key_id']],
         ),
         mutually_exclusive=[],
         supports_check_mode=True,
@@ -160,7 +181,7 @@ def main():
     
     module = setup_module_object()
     validate_parameters(
-        cckm_aws_kms_module=module,
+        cckm_sfdc_secret_module=module,
     )
 
     result = dict(
@@ -171,14 +192,10 @@ def main():
       try:
         response = addCCKMCloudAsset(
           node=module.params.get('localNode'),
-          asset_type="kms",
-          cloud_type="aws",
-          account_id=module.params.get('account_id'),
+          asset_type="org",
+          cloud_type="sfdc",
+          sfdc_org_id=module.params.get('sfdc_org_id'),
           connection=module.params.get('connection'),
-          name=module.params.get('name'),
-          regions=module.params.get('regions'),
-          assume_role_arn=module.params.get('assume_role_arn'),
-          assume_role_external_id=module.params.get('assume_role_external_id'),
         )
         result['response'] = response
       except CMApiException as api_e:
@@ -187,31 +204,47 @@ def main():
       except AnsibleCMException as custom_e:
         module.fail_json(msg=custom_e.message)
 
-    elif module.params.get('op_type') == 'update':
+    elif module.params.get('op_type') == 'update_acls':
+      try:
+        response = updateSFDCOrgACLs(
+          node=module.params.get('localNode'),
+          id=module.params.get('org_id'),
+          acls=module.params.get('acls'),
+        )
+        result['response'] = response
+      except CMApiException as api_e:
+        if api_e.api_error_code:
+          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+      except AnsibleCMException as custom_e:
+        module.fail_json(msg=custom_e.message)
+
+    elif module.params.get('op_type') == 'add_cache_only_key_endpoint':
+      try:
+        response = addCCKMCloudAsset(
+          node=module.params.get('localNode'),
+          asset_type="cache_only_key_endpoint",
+          cloud_type="sfdc",
+          name=module.params.get('name'),
+          organization_id=module.params.get('organization_id'),
+          password_authentication=module.params.get('password_authentication'),
+          url_hostname=module.params.get('url_hostname'),
+        )
+        result['response'] = response
+      except CMApiException as api_e:
+        if api_e.api_error_code:
+          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
+      except AnsibleCMException as custom_e:
+        module.fail_json(msg=custom_e.message)
+
+    elif module.params.get('op_type') == 'update_cache_only_key_endpoint':
       try:
         response = editCCKMCloudAsset(
-          asset_type="kms",
-          cloud_type="aws",
           node=module.params.get('localNode'),
-          id=module.params.get('kms_id'),
-          connection=module.params.get('connection'),
-          regions=module.params.get('regions'),
-          assume_role_arn=module.params.get('assume_role_arn'),
-          assume_role_external_id=module.params.get('assume_role_external_id'),        
-        )
-        result['response'] = response
-      except CMApiException as api_e:
-        if api_e.api_error_code:
-          module.fail_json(msg="status code: " + str(api_e.api_error_code) + " message: " + api_e.message)
-      except AnsibleCMException as custom_e:
-        module.fail_json(msg=custom_e.message)
-
-    elif module.params.get('op_type') == 'update-acls':
-      try:
-        response = updateACLs(
-          node=module.params.get('localNode'),
-          id=module.params.get('kms_id'),
-          acls=module.params.get('acls'),
+          id=module.params.get('endpoint_id'),
+          asset_type="cache_only_key_endpoint",
+          cloud_type="sfdc",
+          password_authentication=module.params.get('password_authentication'),
+          url_hostname=module.params.get('url_hostname'),
         )
         result['response'] = response
       except CMApiException as api_e:

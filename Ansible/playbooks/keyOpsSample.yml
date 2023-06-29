@@ -24,14 +24,14 @@
 
     tasks:
     - name: "Get Key ID from its name"
-      thales.ciphertrust.cm_resource_get_id_from_name:
+      thalesgroup.ciphertrust.cm_resource_get_id_from_name:
         query_param: "name"
         query_param_value: "{{ key_name }}"
         resource_type: "keys"
       register: key
 
     - name: "Archive Key"
-      thales.ciphertrust.vault_keys2_op:
+      thalesgroup.ciphertrust.vault_keys2_op:
         op_type: archive
         cm_key_id: "{{ key['id'] }}"
         localNode: "{{ this_node_connection_string }}"
@@ -41,7 +41,7 @@
       ansible.builtin.pause:
 
     - name: "Recover Key"
-      thales.ciphertrust.vault_keys2_op:
+      thalesgroup.ciphertrust.vault_keys2_op:
         op_type: recover
         cm_key_id: "{{ key['id'] }}"
         localNode: "{{ this_node_connection_string }}"
@@ -51,7 +51,7 @@
       ansible.builtin.pause:
 
     - name: "Revoke Key"
-      thales.ciphertrust.vault_keys2_op:
+      thalesgroup.ciphertrust.vault_keys2_op:
         op_type: revoke
         cm_key_id: "{{ key['id'] }}"
         reason: "{{ key_revocation_reason }}"
@@ -63,7 +63,7 @@
       ansible.builtin.pause:
 
     - name: "Reactivate Key"
-      thales.ciphertrust.vault_keys2_op:
+      thalesgroup.ciphertrust.vault_keys2_op:
         op_type: revoke
         cm_key_id: "{{ key['id'] }}"
         reason: "{{ key_reactivation_reason }}"
@@ -75,7 +75,7 @@
       ansible.builtin.pause:
 
     - name: "Destroy Key"
-      thales.ciphertrust.vault_keys2_op:
+      thalesgroup.ciphertrust.vault_keys2_op:
         op_type: destroy
         cm_key_id: "{{ key['id'] }}"
         localNode: "{{ this_node_connection_string }}"
@@ -85,7 +85,7 @@
       ansible.builtin.pause:
 
     - name: "Delete Key"
-      thales.ciphertrust.cm_resource_delete:
+      thalesgroup.ciphertrust.cm_resource_delete:
         localNode: "{{ this_node_connection_string }}"
         key: "{{ key['id'] }}"
         resource_type: "keys"

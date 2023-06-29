@@ -19,12 +19,12 @@ ansible-galaxy collection install thales-ciphertrust-1.0.0.tar.gz
 ```
 
 ## Using this collection
-You can call modules by their Fully Qualified Collection Name (FQCN), such as thales.ciphertrust.cm_cluster
+You can call modules by their Fully Qualified Collection Name (FQCN), such as thalesgroup.ciphertrust.cm_cluster
 
 ```
 ---
 - name: "Create new cluster"
-  thales.ciphertrust.cm_cluster:
+  thalesgroup.ciphertrust.cm_cluster:
     localNode:
       server_ip: "{{ <IP or FQDN of CipherTrust Manager Server> }}"
       server_private_ip: "{{ <Private IP of CipherTrust Manager Server...If different from server_ip> }}"
