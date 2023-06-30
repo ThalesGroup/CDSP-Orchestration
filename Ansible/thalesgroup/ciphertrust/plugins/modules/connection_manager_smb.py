@@ -27,7 +27,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: connection_manager_smb
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Manage connections to file shares using the Server Message Block (SMB) protocol
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with Connection Manager API for AWS
 version_added: "1.0.0"

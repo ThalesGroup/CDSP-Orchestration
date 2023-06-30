@@ -29,7 +29,7 @@ module = None
 DOCUMENTATION = '''
 ---
 module: usermgmt_users_save
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Create and manage users in CipherTrust Manager
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with user management API
 version_added: "1.0.0"

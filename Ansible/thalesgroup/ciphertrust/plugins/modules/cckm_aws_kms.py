@@ -28,7 +28,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: cckm_aws_kms
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: CCKM module for AWS Key Management System
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for AWS KMS
 version_added: "1.0.0"

@@ -27,7 +27,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: connection_manager_scp
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Manage SCP connections to external systems
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with Connection Manager API for SCP
 version_added: "1.0.0"

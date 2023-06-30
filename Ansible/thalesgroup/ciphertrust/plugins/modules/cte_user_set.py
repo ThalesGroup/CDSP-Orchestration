@@ -20,9 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cte import createUserSet, updateUserSet, addUserToSet, updateUserInSetByIndex, deleteUserInSetByIndex
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -30,7 +27,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: cte_user_set
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Create and manage CTE user-sets
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE UserSet Management
 version_added: "1.0.0"

@@ -20,12 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-import ast
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.interfaces import addCertificateToInterface, enableInterface, disableInterface, restoreDefaultTlsCiphers, createCsr, autogenServerCert, useCertificate
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -33,7 +27,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: interface_actions
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Perform operations on CipherTrust Manager interface
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with interface actions API
 version_added: "1.0.0"

@@ -20,11 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.licensing import activateTrial, deactivateTrial
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -32,7 +27,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: license_trial_action
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Activate or deactivate CipherTrust Manager trial license
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with trials activation and deactivation API
 version_added: "1.0.0"

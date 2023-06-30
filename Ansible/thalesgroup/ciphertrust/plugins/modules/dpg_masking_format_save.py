@@ -27,9 +27,10 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: dpg_masking_format_save
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Manage masking formats for DPG
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with domains management API
+    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with DPG Masking Format API
+    - Refer https://thalesdocs.com/ctp/con/dpg/latest/admin/index.html for API documentation
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:

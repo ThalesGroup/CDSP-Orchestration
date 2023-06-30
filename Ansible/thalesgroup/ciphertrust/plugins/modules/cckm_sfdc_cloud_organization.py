@@ -28,7 +28,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: cckm_sfdc_cloud_organization
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: CCKM module for SFDC Cloud organization
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CCKM for SFDC Cloud Organization
 version_added: "1.0.0"

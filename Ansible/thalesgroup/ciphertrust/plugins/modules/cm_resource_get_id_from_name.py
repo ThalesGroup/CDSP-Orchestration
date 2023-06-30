@@ -26,7 +26,7 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: cm_resource_get_id_from_name
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Get CipherTrust Manager resource ID from resource name
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically List API with some filter.
 version_added: "1.0.0"

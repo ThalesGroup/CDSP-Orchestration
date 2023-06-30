@@ -20,11 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.dpg import createProtectionPolicy, updateProtectionPolicy
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -32,9 +27,10 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 DOCUMENTATION = '''
 ---
 module: domain_save
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Manage DPG protection policies governing crypto operations
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with domains management API
+    - Refer https://thalesdocs.com/ctp/con/dpg/latest/admin/index.html for API documentation
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:

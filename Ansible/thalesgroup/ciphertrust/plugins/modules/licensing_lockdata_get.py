@@ -19,18 +19,13 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.licensing import getLockdata
 
 DOCUMENTATION = '''
 ---
 module: licensing_lockdata_get
-short_description: This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs.
+short_description: Get license lockdata used to get license code
 description:
     - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with create group API
 version_added: "1.0.0"
