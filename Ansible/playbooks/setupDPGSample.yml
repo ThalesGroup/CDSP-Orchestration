@@ -132,7 +132,6 @@
         name: "{{ client_profile_name }}"
         op_type: create
         app_connector_type: DPG
-        name: AnsibleClientProfile
         lifetime: 30d
         cert_duration: 730
         max_clients: 200

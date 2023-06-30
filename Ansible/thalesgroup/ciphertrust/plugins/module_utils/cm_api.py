@@ -364,8 +364,6 @@ def DeleteWithoutData(cm_node=None, cm_api_endpoint=None):
 def GETData(cm_node=None, cm_api_endpoint=None):
   # Create the session object
   node = ast.literal_eval(cm_node)
-  pattern_2xx = re.compile(r'20[0-9]')
-  pattern_4xx = re.compile(r'40[0-9]')
   cmSessionObject = CMAPIObject(
     cm_api_user=node["user"],
     cm_api_pwd=node["password"],
@@ -430,8 +428,6 @@ def GETIdByName(name=None, cm_node=None, cm_api_endpoint=None):
 def GETIdByQueryParam(param=None, value=None, cm_node=None, cm_api_endpoint=None, id=None):
     # Create the session object
     node = ast.literal_eval(cm_node)
-    pattern_2xx = re.compile(r'20[0-9]')
-    pattern_4xx = re.compile(r'40[0-9]')
     cmSessionObject = CMAPIObject(
       cm_api_user=node["user"],
       cm_api_pwd=node["password"],

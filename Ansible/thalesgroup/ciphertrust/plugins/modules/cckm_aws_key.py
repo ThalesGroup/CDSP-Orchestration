@@ -149,7 +149,7 @@ options:
         description: Whether to disable encryption on key which is getting rotated .
         type: bool
     source_key_identifier:
-        description: description:
+        description:
           - If source_key_tier is local, source_key_identifier is the key identifier of the ciphertrust manager key to be uploaded. source_key_identifier is the mandatory parameter in case of dsm.
           - If source_key_tier is dsm, source_key_identifier is the key identifier of the dsm key to be uploaded. By default, a new CipherTrust Manager key would be generated automatically.
           - If key material is re-imported, AWS allows re-importing the same key material only, therefore it is mandatory to provide source key identifier of the same CipherTrust Manager key which was imported previously.

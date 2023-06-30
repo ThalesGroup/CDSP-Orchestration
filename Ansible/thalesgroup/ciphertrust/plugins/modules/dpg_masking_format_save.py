@@ -20,11 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.dpg import createMaskingFormat, updateMaskingFormat
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -98,7 +93,6 @@ options:
     starting_characters:
       description: Number of starting characters to be masked
       type: str
-      required: int
 '''
 
 EXAMPLES = '''

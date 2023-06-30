@@ -20,11 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -93,12 +88,10 @@ options:
     meta:
         description: Optional end-user or service data stored with the connection
         required: false
-        default: none
         type: dict
     products:
         description: Array of the CipherTrust products associated with the connection.
         required: false
-        default: none
         type: list
         element: str
     client_id:
@@ -115,7 +108,7 @@ options:
         type: str
     cert_duration:
         description: Duration in days for which the salesforce server certificate is valid, default (730 i.e. 2 Years)
-        default: none
+        default: 730
         type: int
     certificate:
         description: User has the option to upload external certificate for Salesforce Cloud connection. This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 1024, 2048 or 4096. User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
@@ -127,7 +120,6 @@ options:
         type: str
     is_certificate_used:
         description: User has the option to choose the Certificate Authentication method instead of Client Credentials (password and client_secret) Authentication for Salesforce Cloud connection. In order to use the Certificate, set this field to true. Once the connection is created, in the response user will get a certificate
-        default: none
         type: bool
 '''
 

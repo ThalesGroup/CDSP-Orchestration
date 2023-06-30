@@ -20,11 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -93,7 +88,6 @@ options:
     meta:
         description: Optional end-user or service data stored with the connection
         required: false
-        default: none
         type: dict
     products:
         description: Array of the CipherTrust products associated with the connection.
@@ -107,11 +101,9 @@ options:
         type: str
     port:
         description: Port of the log-forwarder server
-        default: none
         type: int
     loki_params:
         description: Loki connection specific params
-        default: none
         type: dict
         suboptions:
           ca_cert:

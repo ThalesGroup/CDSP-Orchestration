@@ -20,11 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection, addHadoopNode, updateHadoopNode, deleteHadoopNode
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -96,7 +91,6 @@ options:
     meta:
         description: Optional end-user or service data stored with the connection
         required: false
-        default: none
         type: dict
     products:
         description: Array of the CipherTrust products associated with the connection.
@@ -106,7 +100,6 @@ options:
         element: str
     nodes:
         description: Hadoop nodes information
-        default: none
         type: list
         elements: dict
         suboptions:
@@ -130,7 +123,7 @@ options:
         default: none
         type: str
     service:
-        description: Name of the third-party service associated with the resource. Examples: aws, azure, gcp, luna network, hadoop-knox
+        description: Name of the third-party service associated with the resource. Examples are aws, azure, gcp, luna network, and hadoop-knox
         default: none
         type: str
     username:

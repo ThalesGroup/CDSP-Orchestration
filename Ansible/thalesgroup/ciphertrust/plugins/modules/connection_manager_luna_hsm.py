@@ -20,11 +20,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.connection_management import createConnection, patchConnection, addLunaPartition, deleteLunaPartition, enableSTC, disableSTC, addHSMServer, addLunaSTCPartition
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
@@ -94,7 +89,6 @@ options:
     meta:
         description: Optional end-user or service data stored with the connection
         required: false
-        default: none
         type: dict
     products:
         description: Array of the CipherTrust products associated with the connection.
@@ -103,7 +97,6 @@ options:
         element: str
     partitions:
         description: One partition for a Non HA connection or a list for an HA group.
-        default: none
         type: list
         elements: dict
         suboptions:
@@ -122,7 +115,6 @@ options:
         type: str
     is_ha_enabled:
         description: Password associated with the Partition of the Luna Network HSM.
-        default: none
         type: boolean
     partition_identity:
         description: Contents of Luna Network HSM STC Partition Identity(pid) file in base64 form.

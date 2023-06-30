@@ -19,14 +19,8 @@
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
-import os
-import requests
-import urllib3
-import json
-
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.modules import ThalesCipherTrustModule
-from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cm_api import CMAPIObject, GETIdByQueryParam
+from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.cm_api import GETIdByQueryParam
 from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions import CMApiException, AnsibleCMException
 
 DOCUMENTATION = '''

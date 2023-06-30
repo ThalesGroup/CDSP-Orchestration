@@ -94,7 +94,6 @@ options:
     attributes:
         description: Secret attributes to be updated.
         type: dict
-        choices: [nbf, exp, enabled ]
     tags:
         description: Application specific metadata in the form of key-value pair.
         type: dict
