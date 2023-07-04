@@ -26,10 +26,10 @@ from ansible_collections.thalesgroup.ciphertrust.plugins.module_utils.exceptions
 
 DOCUMENTATION = '''
 ---
-module: cte_resource_set
-short_description: Create and manage CTE signature-sets
+module: cte_signature_set
+short_description: Create and manage CTE Signature Sets
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE SignatureSet Management
+    - Create and edit CTE signature set or add, edit, or remove a signature to or from the signature set
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -104,7 +104,7 @@ options:
 '''
 
 EXAMPLES = '''
-- name: "Create CTE Policy"
+- name: "Create CTE Signature Set"
   thalesgroup.ciphertrust.cte_signature_set:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
@@ -118,6 +118,48 @@ EXAMPLES = '''
     source_list:
       - "/usr/bin"
         "/usr/sbin"
+  register: signature_set
+
+- name: "Add signature to a Signature Set"
+  thalesgroup.ciphertrust.cte_signature_set:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_signature
+    id: "{{ signature_set['response']['id'] }}"
+    source_list:
+      - "/usr/bin"
+  register: signature
+
+- name: "Remove a signature from a Signature Set"
+  thalesgroup.ciphertrust.cte_signature_set:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: delete_signature
+    id: "{{ signature_set['response']['id'] }}"
+    signature_id: "{{ signature['response']['id'] }}"
+
+- name: "Sends a signature signing request to the client"
+  thalesgroup.ciphertrust.cte_signature_set:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: sign_app
+    id: "{{ signature_set['response']['id'] }}"
+    client_id: Client1
 '''
 
 RETURN = '''

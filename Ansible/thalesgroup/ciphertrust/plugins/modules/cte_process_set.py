@@ -29,7 +29,7 @@ DOCUMENTATION = '''
 module: cte_process_set
 short_description: Create and manage CTE process-sets
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE ProcessSet Management
+    - Create and edit CTE Process set or add, edit, or remove a process to or from the process set
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -125,6 +125,23 @@ EXAMPLES = '''
       - signature: TestSignSet
         directory: "/home/test"
         file: "test.bin"
+  register: process_set
+
+- name: "Add process to ProcessSet"
+  thalesgroup.ciphertrust.cte_process_set:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_process
+    id: "{{ process_set['response']['id'] }}"
+    processes:
+      - signature: TestSignSet
+        directory: "/home/testAnother"
+        file: "*"
 '''
 
 RETURN = '''

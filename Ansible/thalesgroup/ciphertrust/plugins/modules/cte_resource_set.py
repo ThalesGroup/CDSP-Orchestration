@@ -29,7 +29,7 @@ DOCUMENTATION = '''
 module: cte_resource_set
 short_description: Create and manage CTE resource-sets
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE ResourceSet Management
+    - Create and edit CTE resource set or add, edit, or remove a resource to or from the resource set
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -136,6 +136,24 @@ EXAMPLES = '''
     type: Directory
     resources:
       - directory: "/"
+        file: "*"
+        include_subfolders: true
+        hdfs: false
+  register: resource_set
+
+- name: "Add resource to a ResourceSet"
+  thalesgroup.ciphertrust.cte_resource_set:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_resource
+    id: "{{ resource_set['response']['id'] }}"
+    resources:
+      - directory: "/tmp"
         file: "*"
         include_subfolders: true
         hdfs: false

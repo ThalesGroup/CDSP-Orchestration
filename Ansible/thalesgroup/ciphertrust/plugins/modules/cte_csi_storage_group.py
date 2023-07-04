@@ -29,7 +29,8 @@ DOCUMENTATION = '''
 module: cte_csi_storage_group
 short_description: Manage CTE CSI Storage Group
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE CSI Storage Group management
+    - Define and manage CipherTrust Transparent Encryption (CTE) Container Storage Interface (CSI) and also add guard policies and clients to the same.
+    - This will allow administrator to apply data protection/reveal based on the client or the guard points.  
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -125,11 +126,56 @@ EXAMPLES = '''
         password: "CipherTrust Manager Password"
         verify: false
     op_type: create
-    name: CSIStorageGroup_1
-    k8s_namespace: K8sNamespace_1
-    k8s_storage_class: K8sStorageClass_1
+    name: AnsibleCSI_SG_1
+    k8s_namespace: AnsibleK8s_NS_1
+    k8s_storage_class: AnsibleK8s_SC_1
     description: "Test CSIStorageGroup"
     client_profile: DefaultClientProfile
+  register: csi_sg
+
+- name: "Edit CSI Storage Group"
+  thalesgroup.ciphertrust.cte_csi_storage_group:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: create
+    id: "{{ csi_sg['response']['id'] }}"
+    description: "Test CSIStorageGroup Updated"
+    client_profile: DefaultClientProfile
+
+- name: "Add clients to the CSI Storage Group"
+  thalesgroup.ciphertrust.cte_csi_storage_group:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_client
+    id: "{{ csi_sg['response']['id'] }}"
+    client_list:
+      - Client1
+      - Client2
+
+- name: "Add guarpolicy to the CSI Storage Group"
+  thalesgroup.ciphertrust.cte_csi_storage_group:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_guard_point
+    id: "{{ csi_sg['response']['id'] }}"
+    policy_list:
+      - CSI_Policy_1
+      - CSI_Policy_2
 '''
 
 RETURN = '''

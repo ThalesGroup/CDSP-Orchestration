@@ -29,7 +29,7 @@ DOCUMENTATION = '''
 module: cte_client_group
 short_description: Manage CTE client groups
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE Client Group management
+    - This module lets administrator create r manage client groups so that group level policies can be applied to multiple clients
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -68,18 +68,80 @@ options:
           default: false     
     op_type:
       description: Operation to be performed
-      choices: [create, patch]
+      choices: [create, patch, add_client, add_guard_point, auth-binaries, remove_client, ldt_pause]
       required: true
       type: str
-    sg_id:
-      description:
-        - Identifier of the CTE CSI Storage Group to be patched
+    id:
+      description: Identifier of the Client Group to be acted upon
       type: str
+    client_id:
+      description: Identifier of the client within the group that needs to be acted upon
+      type: str     
+    cluster_type:
+      description: Cluster type of the ClientGroup, valid values are NON-CLUSTER and HDFS.
+      choices: [NON-CLUSTER, HDFS]
+      type: str
+    name:
+      description: Name of the ClientGroup
+      type: str
+    description:
+      description: Description of the ClientGroup
+      type: str
+    communication_enabled:
+      description: Whether the File System communication is enabled
+      type: bool
+    password:
+      description: User supplied password if password_creation_method is MANUAL. The password MUST be minimum 8 characters and MUST contain one alphabet, one number, and one of the !@#$%^&*(){}[] special characters
+      type: str
+    password_creation_method:
+      description: Password creation method, GENERATE or MANUAL
+      choices: [GENERATE, MANUAL]
+      type: str
+    profile_id:
+      description: ID of the client group profile that is used to schedule custom configuration for logger, logging, and Quality of Service (QoS)
+      type: str
+    client_locked:
+      description: Is FS Agent locked? Enables locking the configuration of the File System Agent on the client. This will prevent updates to any policies on the client. Default value is false.
+      type: bool
+      default: false
+    enable_domain_sharing:
+      description: Whether to enable domain sharing for ClientGroup
+      type: bool
+    enabled_capabilities:
+      description: Comma separated agent capabilities which are enabled. Currently only RESIGN for re-signing client settings can be enabled.
+      type: str
+    shared_domain_list:
+      description: List of domains with which ClientGroup needs to be shared.
+      type: list
+    system_locked:
+      description: Whether the system is locked. The default value is false. Enable this option to lock the important operating system files of the client. When enabled, patches to the operating system of the client will fail due to the protection of these files.
+      type: bool
+    client_list:
+      description: List of Client identifier which are to be associated with clientgroup. This identifier can be the Name, ID (a UUIDv4), URI, or slug of the client
+      type: list
+    inherit_attributes:
+      description: Whether the client should inherit attributes from the ClientGroup
+      type: bool
+    guard_paths:
+      description: List of GuardPaths to be created
+      type: list
+    guard_point_params:
+      description: Parameters for creating a GuardPoint
+      type: dict
+    auth_binaries:
+      description: Array of authorized binaries in the privilege-filename pair JSON format
+      type: str
+    re_sign:
+      description: Whether to re-sign the client settings
+      type: bool
+    paused:
+      description: Mouse over a property in the schema to view its details
+      type: bool
 '''
 
 EXAMPLES = '''
-- name: "Create CTE Policy"
-  thalesgroup.ciphertrust.dpg_policy_save:
+- name: "Create CTE Client Group"
+  thalesgroup.ciphertrust.cte_client_group:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -88,9 +150,11 @@ EXAMPLES = '''
         password: "CipherTrust Manager Password"
         verify: false
     op_type: create
+    cluster_type: NON-CLUSTER
+    name: ClientGroup1
 
-- name: "Patch DPG Policy"
-  thalesgroup.ciphertrust.dpg_policy_save:
+- name: "Add client to CTE client group"
+  thalesgroup.ciphertrust.cte_client_group:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -98,7 +162,32 @@ EXAMPLES = '''
         user: "CipherTrust Manager Username"
         password: "CipherTrust Manager Password"
         verify: false
-    op_type: patch
+    op_type: add_client
+    client_list:
+      - Client1
+      - Client2
+    inherit_attributes: true
+
+- name: "Add guard point to CTE client group"
+  thalesgroup.ciphertrust.cte_client_group:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_guard_point
+    guard_paths:
+      - "/opt/path1/"
+      - "/opt/path2/"
+    guard_point_params:
+      guard_point_type: directory_auto
+      policy_id: TestPolicy
+      data_classification_enabled: false
+      data_lineage_enabled: false
+      early_access: true
+      preserve_sparse_regions: true
 '''
 
 RETURN = '''

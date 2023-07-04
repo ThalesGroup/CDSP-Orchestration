@@ -29,7 +29,7 @@ DOCUMENTATION = '''
 module: cte_user_set
 short_description: Create and manage CTE user-sets
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE UserSet Management
+    - Create and edit CTE User set or add, edit, or remove a user to or from the user set
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -68,18 +68,45 @@ options:
           default: false
     op_type:
       description: Operation to be performed
-      choices: [create, patch]
+      choices: [create, patch, add_user, patch_user, delete_user]
       required: true
       type: str
     id:
+      description: Identifier of the CTE CSI Storage Group to be patched
+      type: str
+    userIndex:
       description:
-        - Identifier of the CTE CSI Storage Group to be patched
+        - Identifier of the CTE User within UserSet to be patched or deleted
+      type: str
+    name:
+      description: Name of the user set
+      type: str
+    description
+      description: Description of the user set
+      type: str
+    users
+      description: List of users to be added to the user set
+      type: list
+    gid
+      description: Group id of the user which shall be added in user-set
+      type: int
+    gname
+      description: Group name of the user which shall be added in user-set
+      type: str
+    os_domain
+      description: OS domain name in case of windows environment
+      type: str
+    uid
+      description: User id of the user which shall be added in user-set
+      type: int
+    uname
+      description: Name of the user which shall be added in user-set
       type: str
 '''
 
 EXAMPLES = '''
-- name: "Create CTE Policy"
-  thalesgroup.ciphertrust.dpg_policy_save:
+- name: "Create CTE Userset"
+  thalesgroup.ciphertrust.cte_user_set:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -88,9 +115,21 @@ EXAMPLES = '''
         password: "CipherTrust Manager Password"
         verify: false
     op_type: create
+    name: UserSet1
+    description: "Using Ansible"
+    users:
+      - uname: root1234
+        uid: 1000
+        gname: rootGroup
+        gid: 1000
+      - uname: test1234
+        uid: 1234
+        gname: testGroup
+        gid: 1234
+  register: userset
 
-- name: "Patch DPG Policy"
-  thalesgroup.ciphertrust.dpg_policy_save:
+- name: "Add user to UserSet"
+  thalesgroup.ciphertrust.cte_user_set:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -98,7 +137,13 @@ EXAMPLES = '''
         user: "CipherTrust Manager Username"
         password: "CipherTrust Manager Password"
         verify: false
-    op_type: patch
+    op_type: add_user
+    id: "{{ userset['response']['id'] }}"
+    users:
+      - uname: root0001
+        uid: 1001
+        gname: rootGroup
+        gid: 1000
 '''
 
 RETURN = '''

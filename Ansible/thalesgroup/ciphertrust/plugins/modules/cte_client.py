@@ -29,7 +29,8 @@ DOCUMENTATION = '''
 module: cte_client
 short_description: Manage CTE clients
 description:
-    - This is a Thales CipherTrust Manager module for working with the CipherTrust Manager APIs, more specifically with CTE Client management
+    - Create, manage, and perform operations on a CTE client
+    - A client is a computer system where the data needs to be protected. A compatible CTE Agent software is installed on the client. The CTE Agent can protect data on the client or devices connected to it. A client can be associated with multiple GuardPoints for encryption of various paths. 
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -198,8 +199,8 @@ options:
 '''
 
 EXAMPLES = '''
-- name: "Create CTE Policy"
-  thalesgroup.ciphertrust.dpg_policy_save:
+- name: "Create CTE Client"
+  thalesgroup.ciphertrust.cte_client:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
         server_private_ip: "Private IP in case that is different from above"
@@ -208,29 +209,33 @@ EXAMPLES = '''
         password: "CipherTrust Manager Password"
         verify: false
     op_type: create
-    name: "Policy-Ans-001"
+    name: "CTE-Client-Ans-001"
     description: "Created via Ansible"
-    never_deny: false
-    metadata:
-      restrict_update: false
-    security_rules:
-      - action: key_op
-        effect: "permit,applykey"
-        partial_match: true
-      - resource_set_id: RS-Ans-001
-        exclude_resource_set: false
-        partial_match: true
-        action: all_ops
-        effect: "permit,audit,applykey"
-    policy_type: Standard
-    key_rules:
-      - key_id: CTE_standard_pol_key
-        resource_set_id: RS-Ans-001
-    data_transform_rules:
-      - key_id: CTE_standard_pol_key
-        resource_set_id: RS-Ans-001
-    name: Ansible-CTE-Policy-001
-    description: "Created using Ansible"
+    communication_enabled: false
+    client_type: FS
+  register: client
+
+- name: "Add Guard Point to the CTE Client"
+  thalesgroup.ciphertrust.cte_client:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_guard_point
+    guard_paths:
+      - "/opt/path1/"
+      - "/opt/path2/"
+    guard_point_params:
+      guard_point_type: directory_auto
+      policy_id: TestPolicy
+      data_classification_enabled: false
+      data_lineage_enabled: false
+      early_access: true
+      preserve_sparse_regions: true
+    id: "{{ client['response']['id'] }}"
 '''
 
 RETURN = '''

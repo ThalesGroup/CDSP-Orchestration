@@ -229,6 +229,37 @@ EXAMPLES = '''
         resource_set_id: RS-Ans-001
     name: Ansible-CTE-Policy-001
     description: "Created using Ansible"
+  register: policy
+
+- name: "Add new data transformation rule to a CTE Policy"
+  thalesgroup.ciphertrust.dpg_policy_save:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: add_data_transfer_rule
+    policy_id: "{{ policy['response']['id'] }}"
+    rule_name="datatxrules"
+    key_id=key_id: CTE_standard_pol_key
+    resource_set_id: RS-Ans-002
+  register: datatxrule
+
+- name: "Delete a data transformation rule from a CTE Policy"
+  thalesgroup.ciphertrust.dpg_policy_save:
+    localNode:
+        server_ip: "IP/FQDN of CipherTrust Manager"
+        server_private_ip: "Private IP in case that is different from above"
+        server_port: 5432
+        user: "CipherTrust Manager Username"
+        password: "CipherTrust Manager Password"
+        verify: false
+    op_type: remove_data_transfer_rule
+    policy_id: "{{ policy['response']['id'] }}"
+    rule_name="datatxrules"
+    rule_id="{{ datatxrule['response']['id'] }}"
 '''
 
 RETURN = '''
