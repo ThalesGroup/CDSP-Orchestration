@@ -1,4 +1,4 @@
-# CDSP_Orchestration
+# CDSP-Orchestration
 A set of modules, playbooks and scripts for CipherTrust Data Security Platform that can be consumed by different orchestrators. Feel free to help augment and improve them.
 
 ## PowerShell
