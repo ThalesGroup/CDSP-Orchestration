@@ -25,7 +25,7 @@
     GUID              = '26a7684c-a2f4-4a44-814b-23fa6871d0e7'
 
     # Author of this module
-    Author            = 'Anurag Jain, Developer Advocate', 'Marc Seguin, Developer Advocate'
+    Author            = 'Anurag Jain & Marc Seguin, Developer Advocates'
 
     # Company or vendor of this module
     CompanyName       = 'Thales Group'
@@ -76,7 +76,6 @@
         "Utils/CipherTrustManager-Utils",
         "CertificateAuthority/CipherTrustManager-CAs",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
-#        "Client-Management/CipherTrustManager-Tokens",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
         "DataProtection/CipherTrustManager-MaskingFormats",
@@ -93,6 +92,7 @@
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
         "Connect-CipherTrustManager",
+        "Disconnect-CipherTrustManager",
         "Find-CMKeys",
         "New-CMKey",
         "Remove-CMKey",
@@ -101,6 +101,7 @@
         "Get-CMUser",
         "Remove-CMUser",
         "Get-CMInfo",
+        "Get-CMVersion",
         "Set-CMName",
         "Find-CMInterfaces",
         "New-CMInterface",
@@ -132,13 +133,13 @@
         "Remove-CMClientProfiles",        
         "Get-CMJWT",
         "Test-CMJWT",
-        "Write-HashtableArray",
-        "New-CKSAWSParam",
-        "New-CKSLocalHostedParam",
-        "New-CKS",
-        "Remove-CKS",
-        "Edit-CKS",
-        "Update-CKSPerformOperation"
+        "Write-HashtableArray" #,
+#        "New-CKSAWSParam",
+#        "New-CKSLocalHostedParam",
+#        "New-CKS",
+#        "Remove-CKS",
+#        "Edit-CKS",
+#        "Update-CKSPerformOperation"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

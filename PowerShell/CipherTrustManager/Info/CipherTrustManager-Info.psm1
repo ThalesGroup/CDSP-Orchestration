@@ -11,7 +11,7 @@
 ####
 # Local Variables
 ####
-$target_uri = "/v1/system/info"
+$target_uri = "/system/info"
 ####
 
 #This project mirrors the "INfo" section of the API Playground of CM (/playground_v2/api/Info)
@@ -64,6 +64,10 @@ function Get-CMInfo {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
+        elseif ([int]$StatusCode -EQ 0) {
+            Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+            return
+        }
         else {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
@@ -73,12 +77,47 @@ function Get-CMInfo {
     return $response
 }    
     
+<#
+    .SYNOPSIS
+        Get Version
+    .DESCRIPTION
+        Helper fucntion to Get-CMInfo that returns the CM version (major, minor) only
+    .EXAMPLE
+        PS> Get-CMVersion
+
+        Returns the major and minor version numbers as an object 
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
+function Get-CMVersion {
+    param()
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+    
+    Write-Debug "Getting the version of CipherTrust Manager"    
+    $CM_Info = Get-CMInfo
+    Write-Debug "Info data was: $($CM_Info)"    
+    
+    $CM_Version = @{}
+    $version_info = ($CM_Info.version).Split(".")
+    Write-Debug "vsrion_info was: $($version_info)"    
+    $CM_Version.add('major', $version_info[0]) 
+    $CM_Version.add('minor', $version_info[1])
+    $patch_info = $version_info[2].Split("-") 
+    $CM_Version.add('patch', $patch_info[0]) 
+    $CM_Version.add('build', $patch_info[1])
+    Write-Debug "Version data is: $($CM_Version)"    
+    
+
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return $CM_Version
+}    
+
 #Info
 #"#/v1/system/info/"
 
 <#
     .SYNOPSIS
-        Set-CMName
+        Set Name of CipherTrust Manager server
     .DESCRIPTION
         Set the NAME of CipherTrust Manager server through system info. Only the name can be set - other attributes in the body are invalid.    
     .PARAMETER name
@@ -146,4 +185,5 @@ function Set-CMName {
 #Info
 #"#/v1/system/info/"
 Export-ModuleMember -Function Get-CMInfo    #List (get)
+Export-ModuleMember -Function Get-CMVersion #List (get)
 Export-ModuleMember -Function Set-CMName    #Change (patch)

@@ -190,6 +190,7 @@ function New-CKSAWSKeyParamTags {
 
     if ($key) { $temp_hash.add('TagKey', $key) }
     if ($value) { $temp_hash.add('TagValue', $value) }
+    Write-Debug "temp_hash: $($temp_hash)"
 
     #Add this current policy to the list of user set policies
     $tags += $temp_hash
