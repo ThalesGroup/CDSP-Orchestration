@@ -25,7 +25,7 @@
     GUID              = '26a7684c-a2f4-4a44-814b-23fa6871d0e7'
 
     # Author of this module
-    Author            = 'Anurag Jain, Developer Advocate'
+    Author            = 'Anurag Jain, Developer Advocate', 'Marc Seguin, Developer Advocate'
 
     # Company or vendor of this module
     CompanyName       = 'Thales Group'
@@ -75,6 +75,7 @@
         "JWTDetails",
         "Utils/CipherTrustManager-Utils",
         "CertificateAuthority/CipherTrustManager-CAs",
+        "CCKM/CipherTrustManager-CCKM-AWSCKS",
 #        "Client-Management/CipherTrustManager-Tokens",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -83,10 +84,10 @@
         "DataProtection/CipherTrustManager-AccessPolicies",
         "DataProtection/CipherTrustManager-DPGPolicies",
         "DataProtection/CipherTrustManager-ClientProfiles",
+        "Info/CipherTrustManager-Info",
         "Interfaces/CipherTrustManager-Interfaces",
         "Keys/CipherTrustManager-Keys",
-        "Users/CipherTrustManager-Users",
-        "CCKM/CipherTrustManager-AWS-CKS"
+        "Users/CipherTrustManager-Users"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -99,6 +100,8 @@
         "New-CMUser",
         "Get-CMUser",
         "Remove-CMUser",
+        "Get-CMInfo",
+        "Set-CMName",
         "Find-CMInterfaces",
         "New-CMInterface",
         "Remove-CMInterface",

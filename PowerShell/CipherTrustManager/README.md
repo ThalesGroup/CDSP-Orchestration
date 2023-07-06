@@ -38,6 +38,8 @@ Connect-CipherTrustManager `
     │   ├── CipherTrustManager-MaskingFormats.psm1          # Create a set of Masking Formats that determine HOW data will be revealed (e.g. Show last four chars, Hide first six chars)
     │   ├── CipherTrustManager-ProtectionPolicies.psm1      # Manage how specific data is protected by defining critical parameters like the cipher and key to use through the `Protect` API
     │   ├── CipherTrustManager-UserSets.psm1                # Manage lists of users that can be assigned to HOW data is presented by the `Reveal` API
+    ├── Info                                                # These endpoints allow the user to query for some basic information from CipherTrust Manager - the name, version and model number, vendor of the platform. It is also possible to update the platform name to something that is illustrative to the user.
+    │   ├── CipherTrustManager-Info.psm1                    # Manage System Information inclding ability to change name of CipherTrust Manager server
     ├── Interfaces                                          # Interfaces are the services the CipherTrust Manager is hosting. Most interfaces are listening on a particular port, but may also represent other input channels, like local shell access or serial port access.
     │   ├── CipherTrustManager-Interfaces.psm1              # Manage interfaces
     ├── Keys                                                # Keys are the cryptographic material used in crypto operations.
