@@ -28,6 +28,8 @@ Connect-CipherTrustManager `
     ├── CipherTrustManager.psm1                             # Primary Module (Loads all submodules)
     ├── CertificateAuthority                                # A Certificate Authority (CA) issues and installs digital certificates and certificate signing requests (CSR).
     │   ├── CipherTrustManager-CAs.psm1                     # Module to configure the Certificat Authority (CA).    
+    ├── CCKM                                                # CipherTrust Cloud Key Manager can manage the lifecycle of CSP keys as well as create them
+    │   ├── CipherTrustManager-CCKM-AWSCKS.psm1             # Manage keys within AWS
     ├── DataProtection                                      # Data protection is a centralized place for all Application and Database encryption configuration.
     │   ├── CipherTrustManager-AccessPolicies.psm1          # Manage how a user/app can `access` data through the `Reveal` API
     │   ├── CipherTrustManager-ClientProfiles.psm1          # Create the Client Profile of how an Application or Database is protected as seen in `Application Data Protection` tile of CipherTrust Manager

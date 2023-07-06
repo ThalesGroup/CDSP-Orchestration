@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-AWS-CKS.psm1                                                        #
+# File:             CipherTrustManager-CCKM-AWSCKS.psm1                                                               #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Author:           Marc Seguin, Developer Advocate                                                                   #
 # Publisher:        Thales Group                                                                                      #
@@ -13,7 +13,7 @@
 ####
 #Custom Key Store Types
 Add-Type -TypeDefinition @"
-   public enum CM_CKSTypes {
+public enum CM_CKSTypes {
     EKS,
     CloudHSM
 }
@@ -21,27 +21,27 @@ Add-Type -TypeDefinition @"
 #XKS Proxy Connectivity Types
 Add-Type -TypeDefinition @"
 public enum CM_XKSProxyConnTypes {
- VPC,
- Public
+    VPC,
+    Public
 }
 "@
 #XKS Proxy Connectivity Types
 Add-Type -TypeDefinition @"
 public enum CM_SourceKeyTiers {
- Local,
- HSM
+    Local,
+    HSM
 }
 "@
 #CKS OPs Types
 Add-Type -TypeDefinition @"
 public enum CM_CKSOps {
- CreateAWSKey,
- Block,
- UnBlock,
- Connect,
- Disconnect,
- Link,
- RotateCred
+    CreateAWSKey,
+    Block,
+    UnBlock,
+    Connect,
+    Disconnect,
+    Link,
+    RotateCred
 }
 "@
 ####
@@ -130,7 +130,7 @@ function New-CKSAWSParam {
     [string] $custom_key_store_type,
     [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
-    [securestring] $key_store_password,
+    [SecureString] $key_store_password,
     [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
     [string] $trust_anchor_certificate,
@@ -479,7 +479,7 @@ function Update-CKSPerformOperation {
         # Below params are for connect op in a CKS
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $false )]
-        [string] $key_store_password,
+        [SecureString] $key_store_password,
         # Below params are for link op in a CKS
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
