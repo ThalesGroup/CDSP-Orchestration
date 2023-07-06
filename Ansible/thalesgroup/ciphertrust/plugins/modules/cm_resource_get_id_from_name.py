@@ -224,6 +224,9 @@ def main():
         query_id='id'
     elif resource_type == "cte-client-group":
         endpoint='transparent-encryption/clientgroups'
+        query_id='id'        
+    elif resource_type == "cte-client":
+        endpoint='transparent-encryption/clients'
         query_id='id'
     elif resource_type == "csigroup":
         endpoint='transparent-encryption/csigroups'

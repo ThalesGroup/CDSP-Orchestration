@@ -1,0 +1,54 @@
+---
+  - name: remote deploy CTE
+    hosts: cte-clients
+    become: yes
+
+    vars_files:
+      - vars/cte.yml
+
+    tasks:
+      - name: create registration token
+        thalesgroup.ciphertrust.cm_regtoken:
+          localNode: "{{ this_node_connection_string }}"
+          op_type: create
+          ca_id: c118120d-cae2-4ed9-9bbd-32690e2ca94b
+          cert_duration: 730
+          label:
+            ClientProfile: DefaultClientProfile
+          lifetime: 30d
+          max_clients: 100
+          name_prefix: "ansible_client"
+        register: token
+
+      - name: set vars for silent installer
+        set_fact:
+          kms_ip: "20.232.34.182"
+          reg_token: "{{ token['response']['id'] }}"
+          agent_ip: "{{ ansible_ssh_host }}"
+
+      - name: Create the Jinja2 based template
+        template:
+          src: "silent.conf.j2"
+          dest: "/tmp/silent.txt"
+
+      - name: Copy file with owner and permissions
+        ansible.builtin.copy:
+          src: vee-fs-7.4.0-101-ubuntu22-x86_64.bin
+          dest: /tmp/vee-fs-7.4.0-101-ubuntu22-x86_64.bin
+          mode: '0777'
+
+      - name: Install lsof
+        ansible.builtin.apt:
+          name: 
+            - lsof
+            - libcpprest2.10
+          state: present
+
+      - name: "Install CTE Agent"
+        shell: |
+          cd /tmp
+          ./vee-fs-7.4.0-101-ubuntu22-x86_64.bin -s silent.txt
+        register: install_logs
+
+      - name: Debug Output
+        debug: var=install_logs

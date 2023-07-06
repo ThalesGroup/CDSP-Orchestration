@@ -121,12 +121,16 @@ RETURN = '''
 
 _schema_less = dict()
 
+_label = dict(
+   ClientProfile=dict(type='str'),
+)
+
 argument_spec = dict(
     op_type=dict(type='str', options=['create', 'patch'], required=True),
     id=dict(type='str'),
     ca_id=dict(type='str'),
     cert_duration=dict(type='int'),
-    label=dict(type='dict', options=_schema_less),
+    label=dict(type='dict', options=_label),
     lifetime=dict(type='str'),
     max_clients=dict(type='int'),
     name_prefix=dict(type='str'),
