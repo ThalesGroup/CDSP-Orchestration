@@ -28,6 +28,8 @@ Connect-CipherTrustManager `
     ├── CipherTrustManager.psm1                             # Primary Module (Loads all submodules)
     ├── CertificateAuthority                                # A Certificate Authority (CA) issues and installs digital certificates and certificate signing requests (CSR).
     │   ├── CipherTrustManager-CAs.psm1                     # Module to configure the Certificat Authority (CA).    
+    ├── CCKM                                                # CipherTrust Cloud Key Manager can manage the lifecycle of CSP keys as well as create them
+    │   ├── CipherTrustManager-CCKM-AWSCKS.psm1             # Manage keys within AWS
     ├── DataProtection                                      # Data protection is a centralized place for all Application and Database encryption configuration.
     │   ├── CipherTrustManager-AccessPolicies.psm1          # Manage how a user/app can `access` data through the `Reveal` API
     │   ├── CipherTrustManager-ClientProfiles.psm1          # Create the Client Profile of how an Application or Database is protected as seen in `Application Data Protection` tile of CipherTrust Manager
@@ -36,6 +38,8 @@ Connect-CipherTrustManager `
     │   ├── CipherTrustManager-MaskingFormats.psm1          # Create a set of Masking Formats that determine HOW data will be revealed (e.g. Show last four chars, Hide first six chars)
     │   ├── CipherTrustManager-ProtectionPolicies.psm1      # Manage how specific data is protected by defining critical parameters like the cipher and key to use through the `Protect` API
     │   ├── CipherTrustManager-UserSets.psm1                # Manage lists of users that can be assigned to HOW data is presented by the `Reveal` API
+    ├── Info                                                # These endpoints allow the user to query for some basic information from CipherTrust Manager - the name, version and model number, vendor of the platform. It is also possible to update the platform name to something that is illustrative to the user.
+    │   ├── CipherTrustManager-Info.psm1                    # Manage System Information inclding ability to change name of CipherTrust Manager server
     ├── Interfaces                                          # Interfaces are the services the CipherTrust Manager is hosting. Most interfaces are listening on a particular port, but may also represent other input channels, like local shell access or serial port access.
     │   ├── CipherTrustManager-Interfaces.psm1              # Manage interfaces
     ├── Keys                                                # Keys are the cryptographic material used in crypto operations.

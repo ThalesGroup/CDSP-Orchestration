@@ -68,12 +68,24 @@ function Test-CMJWT {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
     Write-Debug "Time to expire (sec): $((get-jwtdetails $CM_Session.AuthToken).timeToExpiry.TotalSeconds)"
-    if ((get-jwtdetails $CM_Session.AuthToken).timeToExpiry.TotalSeconds -lt 60) {
-        Write-Debug "JWT is close to or past expiry. Refreshing token."
-        Get-CMJWT
+    try {
+        if ((get-jwtdetails $CM_Session.AuthToken).timeToExpiry.TotalSeconds -lt 60) {
+            Write-Debug "JWT is close to or past expiry. Refreshing token."
+            Get-CMJWT
+        }
+        else {
+            Write-Debug "JWT not close to or past expiry"
+        }
     }
-    else {
-        Write-Debug "JWT not close to or past expiry"
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ([int]$StatusCode -EQ 0) {
+            Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+            return
+        }        
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
     }
 
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"

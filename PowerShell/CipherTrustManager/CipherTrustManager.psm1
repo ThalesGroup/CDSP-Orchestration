@@ -95,11 +95,59 @@ function Connect-CipherTrustManager {
     return
 }
 
+<#
+    .SYNOPSIS
+    Create a connection to CipherTrust Manager and store AuthToken for use in future calls
+
+    .DESCRIPTION
+    Create a connection to CipherTrust Manager and store AuthToken (JWT) for use in future calls. It uses Get-JWT to manage the lifecycle of your JWT token so it is `set and forget`
+
+    .PARAMETER server
+    Specifies the IP Address or FQDN of CipherTrust Manager.
+
+    .PARAMETER user
+    Specifies the username for the account authorized to connect with CipherTrust manager.
+
+    .PARAMETER pass
+    Specifies the password (in plaintext for now) for the user.
+
+    .INPUTS
+    None. You cannot pipe objects to Connect-CipherTrustManager.
+
+    .OUTPUTS
+    None. Connect-CipherTrustManager returns a proxy to this connection.
+
+    .EXAMPLE
+    PS> Connect-CipherTrustManager -server 10.23.104.40 -user "user1" -pass "P@ssw0rd!"
+
+    .LINK
+    Online version: https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
+
+function Disconnect-CipherTrustManager {
+    param()
+
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    $CM_Session.KMS_IP    = $null
+    $CM_Session.User      = $null
+    $CM_Session.Pass      = $null
+    $CM_Session.REST_URL  = $null
+    $CM_Session.AuthToken = $null
+
+    Write-Debug "Session Variables have been cleared"
+
+
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return
+}
+
 ###
 # Exports
 ###
 #This module
 Export-ModuleMember -Function Connect-CipherTrustManager
+Export-ModuleMember -Function Disconnect-CipherTrustManager
 #Utils
 Export-ModuleMember -Function Get-CMJWT
 Export-ModuleMember -Function Test-CMJWT
@@ -138,6 +186,10 @@ Export-ModuleMember -Function Find-CMAccessPolicies
 Export-ModuleMember -Function New-CMAccessPolicy
 Export-ModuleMember -Function Remove-CMAccessPolicy
 Export-ModuleMember -Function New-CMUserSetPolicy
+#Info
+Export-ModuleMember -Function Get-CMInfo
+Export-ModuleMember -Function Get-CMVersion
+Export-ModuleMember -Function Set-CMName
 #Interfaces
 Export-ModuleMember -Function Find-CMInterfaces
 Export-ModuleMember -Function New-CMInterface
@@ -159,3 +211,5 @@ Export-ModuleMember -Function New-CKS
 Export-ModuleMember -Function Remove-CKS
 Export-ModuleMember -Function Edit-CKS
 Export-ModuleMember -Function Update-CKSPerformOperation
+#Syslog Connections
+Export-ModuleMember -Function Find-CMSyslogs
