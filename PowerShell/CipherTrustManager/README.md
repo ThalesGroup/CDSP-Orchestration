@@ -44,6 +44,8 @@ Connect-CipherTrustManager `
     │   ├── CipherTrustManager-Interfaces.psm1              # Manage interfaces
     ├── Keys                                                # Keys are the cryptographic material used in crypto operations.
     │   ├── CipherTrustManager-Keys.psm1                    # Manage keys
+    ├── Syslog Connections                                  # Users are unique individuals or systems using the API.
+    │   ├── CipherTrustManager-SyslogConnections.psm1       # Manage connections to remote syslog servers.
     ├── Users                                               # Users are unique individuals or systems using the API.
     │   ├── CipherTrustManager-Users.psm1                   # Manage Users.
     └── Utils                                               # Miscellaneous Utilities including managing lifecycle of the Authentication Token (JWT).

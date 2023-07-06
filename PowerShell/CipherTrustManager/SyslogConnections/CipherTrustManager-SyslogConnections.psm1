@@ -122,7 +122,13 @@ function Find-CMSyslogs {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        if ([int]$StatusCode -EQ 0) {
+            Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+            return
+        }        
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
     }
     Write-Debug "List of users created"
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
@@ -176,17 +182,9 @@ function Find-CMSyslogs {
             leef
         Currently supported transport types are listed in [CM_SyslogMessageFormats] enum
     .EXAMPLE
-        PS> New-CMUser -email <email> -name <full name> -ps_creds <PSCredential>
+        PS> New-CMSyslog -host <ip address>
 
-        This creates a User with basic settings using a PSCredential.
-    .EXAMPLE
-        PS> New-CMUser -email <email> -name <full name> -username <account name> -secure_password <SecureString>
-
-        This creates a User with basic settings. Password is provided in SecureString
-    .EXAMPLE
-        PS> New-CMUser -email <email> -name <full name> -username <account name> -password <plaintext>
-
-        This creates a User with basic settings. Password is provided in plaintext (least secure)
+        This creates a syslog connection overUser udp with the default message format of rfc5424
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
@@ -217,13 +215,20 @@ function New-CMSyslog {
 
     # Mandatory Parameters
     $body = @{
-        'host' = $hostname
+        'host'      = $hostname
         'transport' = $transport.ToString()
     }
 
-    if($caCert -And $transport -eq [CM_SyslogTransportTypes]::tls) {$body.add('caCert',$caCert)}
-    if($messageFormat) {$body.add('messageFormat',$messageFormat.ToString())}
-    if($port) {$body.add('port',$port)}
+    # Optional Parameters
+    if ($caCert -And $transport -eq [CM_SyslogTransportTypes]::tls) { $body.add('caCert', $caCert) }
+    if ($null -ne $messageFormat) { 
+        $body.add('messageFormat', $messageFormat.ToString()) 
+    }
+    else {
+        $body.add('messageFormat', ([CM_SyslogMessageFormats]::rfc5424).ToString()) 
+    }
+    if ($messageFormat) { $body.add('messageFormat', $messageFormat.ToString()) }
+    if ($port) { $body.add('port', $port) }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -240,7 +245,13 @@ function New-CMSyslog {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        if ([int]$StatusCode -EQ 0) {
+            Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+            return
+        }        
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
     }
     Write-Debug "User created"
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
@@ -251,16 +262,265 @@ function New-CMSyslog {
 #Syslog Connections
 #"#/v1/configs/syslogs/{id}"
 #"#/v1/configs/syslogs/{id}-get"
+<#
+    .SYNOPSIS
+        Get a specific Syslog Connection by id
+    .DESCRIPTION
+        This returns the details of a single syslog connection
+    .PARAMETER syslog_id
+        ID of the syslog connection to retrieve
+    .EXAMPLE
+        PS> Get-CMSyslog -syslog_id <syslog id>
+
+        This will return the information related to the syslog connection of id `syslog_id`
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
+function Get-CMSyslog {
+    param
+    (
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $syslog_id
+    )
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+    
+    Write-Debug "Getting a Syslog Connection by ID in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Endpoint: $($endpoint)"
+    
+    #Set query
+    if ($syslog_id) {
+        $endpoint += "/"
+        $endpoint += $syslog_id
+    }
+    
+    Write-Debug "Endpoint w Query: $($endpoint)"
+    
+    Try {
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: "
+        Write-HashtableArray $($headers)      
+        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"  
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+            return
+        }
+        elseif ([int]$StatusCode -EQ 0) {
+            Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+            return
+        }        
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "Syslog Connection information found"
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return $response
+}
+    
 
 
 #Syslog Connections
 #"#/v1/configs/syslogs/{id}"
 #"#/v1/configs/syslogs/{id}-delete"
 
+<#
+    .SYNOPSIS
+        Delete Syslog Connection
+    .DESCRIPTION
+        Deletes a syslog connection given the connections's syslog-id. 
+    .PARAMETER syslog_id
+        The ID of the syslog conenction to be deleted. Can be obtained through Find-CMSyslogs
+    .EXAMPLE
+        PS> $toDelete = Find-CMSyslogs -transport edp #assuming there is only ONE `udp` syslog connection in CipherTrust Manager
+        PS> Remove-CMSyslog -id $toDelete.resources[0].id
+
+        Deletes the `udp` syslog connection by the connection's id
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
+function Remove-CMSyslog {
+    param
+    (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $syslog_id
+    )
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    Write-Debug "Deleting a Syslog Connection by ID in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Endpoint: $($endpoint)"
+
+    #Set ID
+    $endpoint += "/$syslog_id"
+
+    Write-Debug "Endpoint with ID: $($endpoint)"
+
+    Try {
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: "
+        Write-HashtableArray $($headers)      
+        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'DELETE' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"  
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Syslog Connection already exists"
+            return
+        }
+        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+            return
+        }
+        elseif ([int]$StatusCode -EQ 0) {
+            Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+            return
+        }        
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "Syslog Connection deleted"
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return
+} 
 
 #Syslog Connections
 #"#/v1/configs/syslogs/{id}"
 #"#/v1/configs/syslogs/{id}-patch"
+
+<#
+    .SYNOPSIS
+        Update a Syslog Connection
+    .DESCRIPTION
+        Change the properties of a syslog connection.
+    .PARAMETER syslog_id
+        The id of the Syslog Connection to update. Use Find-CMSyslogs to get the syslog_id 
+    .PARAMETER transport
+        Transport type of the syslog connection ('udp', 'tcp', or 'tls')
+        Currently supported transport types are listed in [CM_SyslogTransportTypes] enum
+    .PARAMETER host
+        Hostname or ip address of the syslog connection
+    .PARAMETER port 
+        Port of the syslog connection
+    .PARAMETER caCert
+        The trusted CA cert in PEM format. Only used in TLS transport mode
+    .PARAMETER messageFormat
+        The log message format for new log messages:
+            rfc5424 (default)
+            plain_message
+            cef
+            leef
+        Currently supported transport types are listed in [CM_SyslogMessageFormats] enum
+    .EXAMPLE
+        PS> Set-CMSyslog -syslog_id <syslog id> -transport tcp
+
+        This updates a connection's transport type to tcp.
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
+function Set-CMSyslog {
+    param
+    (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $syslog_id,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [CM_SyslogTransportTypes] $transport, 
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $hostname,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $port,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $caCert,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [CM_SyslogMessageFormats] $messageFormat
+    )
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    Write-Debug "Updating a SYslog Connection by ID in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Endpoint: $($endpoint)"
+
+    #Set ID
+    $endpoint += "/$syslog_id"
+
+    Write-Debug "Endpoint with ID: $($endpoint)"
+
+    Write-Debug "Transport: $($transport)"
+    Write-Debug "Transport(string): $($transport.ToString())"
+    Write-Debug "Transport(type): $($transport.GetType())"
+
+    # Mandatory Parameters
+    $body = @{} #No manatory params
+
+    # Optional Parameters    
+    if ($null -ne $transport) { $body.add('transport', $transport.ToString()) }
+    if ($hostname) { $body.add('host', $hostame) }
+    if ($port) { $body.add('port', $port) }
+    if ($caCert) {
+        if($transport -Eq [CM_SyslogTransportTypes]::tls) { 
+            $body.add('caCert', $caCert) 
+        }
+        else {
+            Write-Output "Ignoring caCert when transport set to $($transport.ToString())"
+        }
+    }
+    if ($messageFormat) { $body.add('messageFormat', $messageFormat.ToString) }
+    
+    $jsonBody = $body | ConvertTo-Json -Depth 5
+    Write-Debug "JSON Body: $($jsonBody)"
+
+    Try {
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: "
+        Write-HashtableArray $($headers)      
+        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"  
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
+            return
+        }
+        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+            return
+        }
+        elseif ([int]$StatusCode -EQ 0) {
+            Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+            return
+        }        
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "Syslog Connection updated"
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return
+}    
 
 ####
 # Export Module Members
