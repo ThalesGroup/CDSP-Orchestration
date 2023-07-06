@@ -148,8 +148,7 @@ options:
       elements: str
     guard_point_params:
       description: Parameters for creating a GuardPoint.
-      type: list
-      elements: dict
+      type: dict
     client_id_list:
       description: IDs of the clients to be deleted. The IDs could be the name, ID (a UUIDv4), URI, or slug of the clients.
       type: list

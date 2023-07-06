@@ -112,11 +112,11 @@
           op_type: add_guard_point
           id: "{{ client['response']['id'] }}"
           guard_paths:
-            - "/tmp/"
+            - "/opt/path1/"
           guard_point_params:
-            - guard_point_type: directory_auto
-              policy_id: "{{ policy['response']['id'] }}"
-              automount_enabled: true
+            guard_point_type: directory_auto
+            policy_id: "{{ policy['response']['id'] }}"
+            automount_enabled: true
         register: output
 
       - name: Debug Output
