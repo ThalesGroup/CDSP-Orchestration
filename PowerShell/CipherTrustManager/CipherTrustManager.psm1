@@ -211,3 +211,5 @@ Export-ModuleMember -Function New-CKS
 Export-ModuleMember -Function Remove-CKS
 Export-ModuleMember -Function Edit-CKS
 Export-ModuleMember -Function Update-CKSPerformOperation
+#Syslog Connections
+Export-ModuleMember -Function Find-CMSyslogs
