@@ -91,7 +91,7 @@ options:
 '''
 
 EXAMPLES = '''
-- name: "Create Access Policy"
+- name: "Create UserSet"
   thalesgroup.ciphertrust.dpg_user_set_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
@@ -101,8 +101,13 @@ EXAMPLES = '''
         password: "CipherTrust Manager Password"
         verify: false
     op_type: create
+    name: AnsibleDPGUserSet
+    users:
+      - user1
+      - user2
+  register: userset
 
-- name: "Patch Access Policy"
+- name: "Patch UserSet"
   thalesgroup.ciphertrust.dpg_user_set_save:
     localNode:
         server_ip: "IP/FQDN of CipherTrust Manager"
@@ -112,6 +117,11 @@ EXAMPLES = '''
         password: "CipherTrust Manager Password"
         verify: false
     op_type: patch
+    user_set_id: "{{ userset['response']['id'] }}"
+    users:
+      - user1
+      - user2
+      - user3
 '''
 
 RETURN = '''
