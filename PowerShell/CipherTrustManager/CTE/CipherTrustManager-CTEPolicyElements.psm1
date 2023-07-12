@@ -18,6 +18,15 @@ public enum CM_CTEResourceSetTypes {
     Classification
 }
 "@
+# Policy Element Types
+Add-Type -TypeDefinition @"
+public enum CM_CTEPolicyElementTypes {
+    RESOURCE_SET,
+    USER_SET,
+    PROCESS_SET,
+    SIGNATURE_SET
+}
+"@
 ####
 
 ####
@@ -28,12 +37,19 @@ $CM_CTEResourceSetTypeDef = @{
     [CM_CKSTypes]::Directory        = "Directory" 
     [CM_CKSTypes]::Classification   = "Classification"
 }
+# Text string relating to CM_CTEPolicyElementTypes enum
+$CM_CTEPolicyElementTypeDef = @{
+    [CM_CKSTypes]::RESOURCE_SET     = "resourcesets" 
+    [CM_CKSTypes]::USER_SET         = "usersets"
+    [CM_CKSTypes]::PROCESS_SET      = "processsets"
+    [CM_CKSTypes]::SIGNATURE_SET    = "signaturesets"
+}
 ####
 
 ####
 # Local Variables
 ####
-$target_uri = "/transparent-encryption/resourcesets"
+$target_uri = "/transparent-encryption"
 ####
 
 <#
@@ -60,10 +76,13 @@ $target_uri = "/transparent-encryption/resourcesets"
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEResourceSet {
+function New-CTEPolicyElement {
     # classification_tags not supported yet
     param
     (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
         [string] $name,
@@ -75,14 +94,17 @@ function New-CTEResourceSet {
         [string] $type,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [hashtable[]] $resources
+        [hashtable[]] $elementsList,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string[]] $source_list
     )
 
-    Write-Debug "Creating a Resource Set for CTE policy in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Creating a policy element for a CTE policy in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
     Write-Debug "Endpoint: $($endpoint)"
 
-    $resourceSetId = $null
+    $elementId = $null
 
     # Mandatory Parameters
     $body = @{
@@ -91,8 +113,17 @@ function New-CTEResourceSet {
 
     # Optional Parameters
     if ($description) { $body.add('description', $description) }
-    if ($type) { $body.add('type', $CM_CTEResourceSetTypeDef[$type]) }
-    if ($resources.Length -gt 0) { $body.add('resources', $resources) }
+
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        if ($type) { $body.add('type', $CM_CTEResourceSetTypeDef[$type]) }
+        if ($elementsList.Length -gt 0) { $body.add('resources', $elementsList) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        if ($elementsList.Length -gt 0) { $body.add('users', $elementsList) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "signaturesets") {
+        if ($source_list.Length -gt 0) { $body.add('source_list', $source_list) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        if ($elementsList.Length -gt 0) { $body.add('processes', $elementsList) }
+    }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -105,7 +136,7 @@ function New-CTEResourceSet {
         Write-Debug "Headers: $($headers)"    
         $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
-        $resourceSetId = $response.id  
+        $elementId = $response.id  
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
@@ -121,17 +152,20 @@ function New-CTEResourceSet {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "Resource Set created"
-    return $resourceSetId
+    Write-Debug "Policy Element created"
+    return $elementId
 }
 
 # Create a new array to hold resourceSet resources
-function New-CTEResourceArray {
+function New-CTEElementsList {
     param(
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [AllowEmptyCollection()]
-        [hashtable[]]$resources,
+        [hashtable[]]$elementsList,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
         [string] $directory,
@@ -143,45 +177,108 @@ function New-CTEResourceArray {
         [bool] $hdfs,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [bool] $include_subfolders
+        [bool] $include_subfolders,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $signature,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $gid,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $gname,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $os_domain,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $uid,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $uname,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $file_name,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $hash_value
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    if ($resources) {
-        Write-Debug "resources: $($resources)"
+    if ($elementsList) {
+        Write-Debug "array: $($elementsList)"
     }
     else {
-        Write-Debug "resources is empty"
-        $resources = @()
+        Write-Debug "array is empty"
+        $elementsList = @()
     }
 
     $temp_hash = @{}
     
     #Optional
-    if ($directory) {
-        $temp_hash.add('directory', $directory)
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        if ($directory) {
+            $temp_hash.add('directory', $directory)
+        }
+        if ($file) {
+            $temp_hash.add('file', $file)
+        }    
+        if ($hdfs) {
+            $temp_hash.add('hdfs', $hdfs)
+        }
+        if ($include_subfolders) {
+            $temp_hash.add('include_subfolders', $include_subfolders)
+        }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        if ($gid) {
+            $temp_hash.add('gid', $gid)
+        }
+        if ($gname) {
+            $temp_hash.add('gname', $gname)
+        }    
+        if ($os_domain) {
+            $temp_hash.add('os_domain', $os_domain)
+        }
+        if ($uid) {
+            $temp_hash.add('uid', $uid)
+        }
+        if ($uname) {
+            $temp_hash.add('uname', $uname)
+        }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        if ($directory) {
+            $temp_hash.add('directory', $directory)
+        }
+        if ($file) {
+            $temp_hash.add('file', $file)
+        }
+        if ($signature) {
+            $temp_hash.add('signature', $signature)
+        }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "signaturesets") {
+        if ($file_name) {
+            $temp_hash.add('file_name', $file_name)
+        }
+        if ($hash_value) {
+            $temp_hash.add('hash_value', $hash_value)
+        }
     }
-    if ($file) {
-        $temp_hash.add('file', $file)
-    }    
-    if ($hdfs) {
-        $temp_hash.add('hdfs', $hdfs)
-    }
-    if ($include_subfolders) {
-        $temp_hash.add('include_subfolders', $include_subfolders)
-    }
+    
 
     #Add this current policy to the list of user set policies
-    $resources += $temp_hash
-    Write-Debug "resources updated: $($resources)"
+    $elementsList += $temp_hash
+    Write-Debug "array updated: $($elementsList)"
 
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
-    return $resources
+    return $elementsList
 }
 
-function Find-CTEResourceSets {
+function Find-CTEPolicyElementsByType {
     param
     (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
@@ -193,12 +290,11 @@ function Find-CTEResourceSets {
         [int] $limit
     )
 
-    Write-Debug "Getting a List of Resource Sets configured in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Getting a List of Policy Elements configured in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set query
-    #    $firstset = $false #can skip if there is only one mandatory element
     if ($name) {
         $endpoint += "?name="
         $endpoint += $name            
@@ -235,20 +331,23 @@ function Find-CTEResourceSets {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "List of Resource Sets created"
+    Write-Debug "List of Policy Elements created"
     return $response
 }
 
-function Remove-CTEResourceSet {
+function Remove-CTEPolicyElement {
     param
     (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id
     )
 
-    Write-Debug "Deleting a Resource Set by ID in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Deleting a Policy Element by ID in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set ID
@@ -275,13 +374,16 @@ function Remove-CTEResourceSet {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "Character Set deleted"
+    Write-Debug "CTE Policy Element deleted"
     return
 }
 
-function Update-CTEResourceSet {
+function Update-CTEPolicyElement {
     param
     (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id,
@@ -290,11 +392,14 @@ function Update-CTEResourceSet {
         [string] $description,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [hashtable[]] $resources
+        [hashtable[]] $elementsList,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string[]] $source_list
     )
 
-    Write-Debug "Update a Resource Set by ID in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Update a Policy Element by ID in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set ID
@@ -306,7 +411,16 @@ function Update-CTEResourceSet {
 
     # Optional Parameters
     if ($description) { $body.add('description', $description) }
-    if ($resources.Length -gt 0) { $body.add('resources', $resources) }
+
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        if ($elementsList.Length -gt 0) { $body.add('resources', $elementsList) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        if ($elementsList.Length -gt 0) { $body.add('users', $elementsList) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "signaturesets") {
+        if ($source_list.Length -gt 0) { $body.add('source_list', $source_list) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        if ($elementsList.Length -gt 0) { $body.add('processes', $elementsList) }
+    }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -334,30 +448,53 @@ function Update-CTEResourceSet {
     return
 }
 
-function Update-CTEResourceSetAddResources {
+function Update-CTEPolicyElementAddElements {
     param
     (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [hashtable[]] $resources
+        [hashtable[]] $elementsList,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string[]] $source_list
     )
 
-    Write-Debug "Add resources to a Resource Set by ID in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Add elements to a Policy Element by ID in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set ID
-    $endpoint += "/$id" + "/addresources"
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        $endpoint += "/$id" + "/addresources"
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        $endpoint += "/$id" + "/addusers"
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "signaturesets") {
+        $endpoint += "/$id" + "/addsignatures"
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        $endpoint += "/$id" + "/addprocesses"
+    }
+    
 
     Write-Debug "Endpoint with ID: $($endpoint)"
 
     $body = @{}
 
     # Optional Parameters
-    if ($resources.Length -gt 0) { $body.add('resources', $resources) }
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        if ($elementsList.Length -gt 0) { $body.add('resources', $elementsList) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        if ($elementsList.Length -gt 0) { $body.add('users', $elementsList) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "signaturesets") {
+        if ($elementsList.Length -gt 0) { $body.add('signatures', $elementsList) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        if ($elementsList.Length -gt 0) { $body.add('processes', $elementsList) }
+    }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -385,20 +522,29 @@ function Update-CTEResourceSetAddResources {
     return
 }
 
-function Remove-CTEResourceSetDeleteResources {
+function Remove-CTEPolicyElementDeleteElements {
     param
     (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id
     )
 
-    Write-Debug "Delete resources from a Resource Set by ID in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Delete elements from a Policy Element by ID in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set ID
-    $endpoint += "/$id" + "/delresources"
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        $endpoint += "/$id" + "/delresources"
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        $endpoint += "/$id" + "/delusers"
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        $endpoint += "/$id" + "/delprocesses"
+    }
 
     Write-Debug "Endpoint with ID: $($endpoint)"
 
@@ -425,7 +571,7 @@ function Remove-CTEResourceSetDeleteResources {
     return
 }
 
-function Update-CTEResourceSetUpdateResource {
+function Update-CTEPolicyElementUpdateElementByIndex {
     param
     (
         [Parameter(Mandatory = $true,
@@ -433,7 +579,7 @@ function Update-CTEResourceSetUpdateResource {
         [string] $id,
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $resourceIndex,
+        [string] $elementIndex,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $directory,
@@ -445,25 +591,62 @@ function Update-CTEResourceSetUpdateResource {
         [bool] $hdfs,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [bool] $include_subfolders
+        [bool] $include_subfolders,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $signature,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $gid,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $gname,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $os_domain,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $uid,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $uname
     )
 
-    Write-Debug "Update resource in a Resource Set by resourceIndex"
-    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Update resource in a Policy Element by index"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set ID
-    $endpoint += "/$id" + "/updateresource" + "/$resourceIndex"
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        $endpoint += "/$id" + "/updateresource" + "/" + $elementIndex
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        $endpoint += "/$id" + "/updateuser" + "/" + $elementIndex
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        $endpoint += "/$id" + "/updateprocess" + "/" + $elementIndex
+    }
 
     Write-Debug "Endpoint with ID: $($endpoint)"
 
     $body = @{}
 
     # Optional Parameters
-    if ($directory) { $body.add('directory', $directory) }
-    if ($file) { $body.add('file', $file) }
-    if ($include_subfolders) { $body.add('include_subfolders', $include_subfolders) }
-    if ($hdfs) { $body.add('hdfs', $hdfs) }
+    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+        if ($directory) { $body.add('directory', $directory) }
+        if ($file) { $body.add('file', $file) }
+        if ($include_subfolders) { $body.add('include_subfolders', $include_subfolders) }
+        if ($hdfs) { $body.add('hdfs', $hdfs) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+        if ($gid) { $body.add('gid', $gid) }
+        if ($gname) { $body.add('gname', $gname) }
+        if ($os_domain) { $body.add('os_domain', $os_domain) }
+        if ($uid) { $body.add('uid', $uid) }
+        if ($uname) { $body.add('uname', $uname) }
+    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+        if ($directory) { $body.add('directory', $directory) }
+        if ($file) { $body.add('file', $file) }
+        if ($signature) { $body.add('signature', $signature) }
+    }
+    
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -491,11 +674,11 @@ function Update-CTEResourceSetUpdateResource {
     return
 }
 
-Export-ModuleMember -Function New-CTEResourceSet
-Export-ModuleMember -Function New-CTEResourceArray
-Export-ModuleMember -Function Find-CTEResourceSets
-Export-ModuleMember -Function Remove-CTEResourceSet
-Export-ModuleMember -Function Update-CTEResourceSet
-Export-ModuleMember -Function Update-CTEResourceSetAddResources
-Export-ModuleMember -Function Remove-CTEResourceSetDeleteResources
-Export-ModuleMember -Function Update-CTEResourceSetUpdateResource
+Export-ModuleMember -Function New-CTEPolicyElement
+Export-ModuleMember -Function New-CTEElementsList
+Export-ModuleMember -Function Find-CTEPolicyElementsByType
+Export-ModuleMember -Function Remove-CTEPolicyElement
+Export-ModuleMember -Function Update-CTEPolicyElement
+Export-ModuleMember -Function Update-CTEPolicyElementAddElements
+Export-ModuleMember -Function Remove-CTEPolicyElementDeleteElements
+Export-ModuleMember -Function Update-CTEPolicyElementUpdateElementByIndex
