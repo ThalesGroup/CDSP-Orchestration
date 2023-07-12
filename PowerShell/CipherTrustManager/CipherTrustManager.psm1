@@ -217,3 +217,13 @@ Export-ModuleMember -Function New-CMSyslog
 Export-ModuleMember -Function Get-CMSyslog
 Export-ModuleMember -Function Remove-CMSyslog
 Export-ModuleMember -Function Set-CMSyslog 
+#CTE
+##ResourceSet
+Export-ModuleMember -Function New-CTEResourceSet
+Export-ModuleMember -Function New-CTEResourceArray
+Export-ModuleMember -Function Find-CTEResourceSets
+Export-ModuleMember -Function Remove-CTEResourceSet
+Export-ModuleMember -Function Update-CTEResourceSet
+Export-ModuleMember -Function Update-CTEResourceSetAddResources
+Export-ModuleMember -Function Remove-CTEResourceSetDeleteResources
+Export-ModuleMember -Function Update-CTEResourceSetUpdateResource

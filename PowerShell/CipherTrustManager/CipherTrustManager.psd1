@@ -145,7 +145,15 @@
         "New-CMSyslog",
         "Get-CMSyslog",
         "Remove-CMSyslog",
-        "Set-CMSyslog" 
+        "Set-CMSyslog" ,
+        "New-CTEResourceSet",
+        "New-CTEResourceArray",
+        "Find-CTEResourceSets",
+        "Remove-CTEResourceSet",
+        "Update-CTEResourceSet",
+        "Update-CTEResourceSetAddResources",
+        "Remove-CTEResourceSetDeleteResources",
+        "Update-CTEResourceSetUpdateResource"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
