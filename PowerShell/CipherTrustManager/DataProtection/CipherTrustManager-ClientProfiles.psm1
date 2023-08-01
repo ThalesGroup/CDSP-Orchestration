@@ -272,19 +272,36 @@ function Find-CMClientProfiles {
     }
 
     if ($skip) {
-        $endpoint += "&skip="
+        if ($firstset) {
+            $endpoint += "&skip="
+        }
+        else {
+            $endpoint += "?skip="
+            $firstset = $true
+        }
         $endpoint += $skip
     }
-
     if ($limit) {
-        $endpoint += "&limit="
+        if ($firstset) {
+            $endpoint += "&limit="
+        }
+        else {
+            $endpoint += "?limit="
+            $firstset = $true
+        }
         $endpoint += $limit
     }
-
     if ($sort) {
-        $endpoint += "&sort="
+        if ($firstset) {
+            $endpoint += "&sort="
+        }
+        else {
+            $endpoint += "?sort="
+            $firstset = $true
+        }
         $endpoint += $sort
     }
+
 
     Write-Debug "Endpoint w Query: $($endpoint)"
 
