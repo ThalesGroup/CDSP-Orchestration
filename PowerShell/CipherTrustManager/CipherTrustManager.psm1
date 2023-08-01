@@ -231,3 +231,7 @@ Export-ModuleMember -Function New-CMAkeylessToken
 Export-ModuleMember -Function Find-CMAlarms
 Export-ModuleMember -Function Clear-CMAlarm
 Export-ModuleMember -Function Ack-CMAlarm
+#AkeylessConfiguration
+Export-ModuleMember -Function Get-CMAkeylessConfiguration
+Export-ModuleMember -Function Set-CMAkeylessConfiguration
+

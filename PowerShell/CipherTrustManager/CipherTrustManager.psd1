@@ -89,7 +89,8 @@
         "Users/CipherTrustManager-Users",
         "SyslogConnections/CipherTrustManager-SyslogConnections",
         "Tokens/CipherTrustManager-Tokens",
-        "Alarms/CipherTrustManager-Alarms"
+        "Alarms/CipherTrustManager-Alarms",
+        "AkeylessConfiguration/CipherTrustManager-AkeylessConfiguration"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -159,7 +160,9 @@
         "New-CMAkeylessToken",
         "Find-CMAlarms",
         "Clear-CMAlarm",
-        "Ack-CMAlarm"
+        "Ack-CMAlarm",
+        "Get-CMAkeylessConfiguration",
+        "Set-CMAkeylessConfiguration"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
