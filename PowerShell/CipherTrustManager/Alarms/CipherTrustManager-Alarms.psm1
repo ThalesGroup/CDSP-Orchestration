@@ -173,10 +173,8 @@ function Find-CMAlarms {
     return $response
 }    
 
-
-
 #/v1/system/alarms/{id}/clear
-#/v1/system/alarms/{id}/clear/-post
+#/v1/system/alarms/{id}/clear-post
 
 <#
     .SYNOPSIS
@@ -253,7 +251,7 @@ function Clear-CMAlarm {
 }    
 
 #/v1/system/alarms/{id}/acknowledge
-#/v1/system/alarms/{id}/acknowledge/-post
+#/v1/system/alarms/{id}/acknowledge-post
 
 <#
     .SYNOPSIS
@@ -330,6 +328,17 @@ function Ack-CMAlarm {
     return $response
 }    
 
-Export-ModuleMember -Function Find-CMAlarms
-Export-ModuleMember -Function Clear-CMAlarm
-Export-ModuleMember -Function Ack-CMAlarm
+####
+# Export Module Members
+####
+#Alarms
+#/v1/system/alarms
+#/v1/system/alarms/-get
+Export-ModuleMember -Function Find-CMAlarms     #List (get)
+#/v1/system/alarms/{id}/clear
+#/v1/system/alarms/{id}/clear-post
+Export-ModuleMember -Function Clear-CMAlarm     #Clear (post)
+
+#/v1/system/alarms/{id}/acknowledge
+#/v1/system/alarms/{id}/acknowledge-post
+Export-ModuleMember -Function Ack-CMAlarm       #Ack (post)
