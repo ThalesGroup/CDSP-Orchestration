@@ -87,7 +87,9 @@
         "Interfaces/CipherTrustManager-Interfaces",
         "Keys/CipherTrustManager-Keys",
         "Users/CipherTrustManager-Users",
-        "SyslogConnections/CipherTrustManager-SyslogConnections"
+        "SyslogConnections/CipherTrustManager-SyslogConnections",
+        "Tokens/CipherTrustManager-Tokens",
+        "Alarms/CipherTrustManager-Alarms"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -145,7 +147,19 @@
         "New-CMSyslog",
         "Get-CMSyslog",
         "Remove-CMSyslog",
-        "Set-CMSyslog" 
+        "Set-CMSyslog",
+        "Find-CMTokens",
+        "New-CMToken",
+        "Get-CMToken",
+        "Remove-CMToken",
+        "Revoke-CMToken",
+        "Get-CMSelfDomains",
+        "Set-CMAuthKeyRotate",
+        "Get-CMAuthKey",
+        "New-CMAkeylessToken",
+        "Find-CMAlarms",
+        "Clear-CMAlarm",
+        "Ack-CMAlarm"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

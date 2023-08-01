@@ -217,3 +217,17 @@ Export-ModuleMember -Function New-CMSyslog
 Export-ModuleMember -Function Get-CMSyslog
 Export-ModuleMember -Function Remove-CMSyslog
 Export-ModuleMember -Function Set-CMSyslog 
+#Tokens
+Export-ModuleMember -Function Find-CMTokens
+Export-ModuleMember -Function New-CMToken
+Export-ModuleMember -Function Get-CMToken
+Export-ModuleMember -Function Remove-CMToken
+Export-ModuleMember -Function Revoke-CMToken
+Export-ModuleMember -Function Get-CMSelfDomains
+Export-ModuleMember -Function Set-CMAuthKeyRotate
+Export-ModuleMember -Function Get-CMAuthKey
+Export-ModuleMember -Function New-CMAkeylessToken
+#Alarms
+Export-ModuleMember -Function Find-CMAlarms
+Export-ModuleMember -Function Clear-CMAlarm
+Export-ModuleMember -Function Ack-CMAlarm
