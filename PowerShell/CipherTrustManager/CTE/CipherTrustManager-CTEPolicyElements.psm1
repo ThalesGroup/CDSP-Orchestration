@@ -21,10 +21,10 @@ public enum CM_CTEResourceSetTypes {
 # Policy Element Types
 Add-Type -TypeDefinition @"
 public enum CM_CTEPolicyElementTypes {
-    RESOURCE_SET,
-    USER_SET,
-    PROCESS_SET,
-    SIGNATURE_SET
+    resourcesets,
+    usersets,
+    processsets,
+    signaturesets
 }
 "@
 ####
@@ -34,16 +34,18 @@ public enum CM_CTEPolicyElementTypes {
 ####
 # Text string relating to CM_CTEResourceSetTypes enum
 $CM_CTEResourceSetTypeDef = @{
-    [CM_CKSTypes]::Directory        = "Directory" 
-    [CM_CKSTypes]::Classification   = "Classification"
+    [CM_CTEResourceSetTypes]::Directory      = "Directory" 
+    [CM_CTEResourceSetTypes]::Classification = "Classification"
 }
+#
 # Text string relating to CM_CTEPolicyElementTypes enum
 $CM_CTEPolicyElementTypeDef = @{
-    [CM_CKSTypes]::RESOURCE_SET     = "resourcesets" 
-    [CM_CKSTypes]::USER_SET         = "usersets"
-    [CM_CKSTypes]::PROCESS_SET      = "processsets"
-    [CM_CKSTypes]::SIGNATURE_SET    = "signaturesets"
+    [CM_CTEPolicyElementTypes]::resourcesets  = "resourcesets" 
+    [CM_CTEPolicyElementTypes]::usersets      = "usersets"
+    [CM_CTEPolicyElementTypes]::processsets   = "processsets"
+    [CM_CTEPolicyElementTypes]::signaturesets = "signaturesets"
 }
+#
 ####
 
 ####
@@ -101,7 +103,7 @@ function New-CTEPolicyElement {
     )
 
     Write-Debug "Creating a policy element for a CTE policy in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $policyElementType
     Write-Debug "Endpoint: $($endpoint)"
 
     $elementId = $null
@@ -114,14 +116,14 @@ function New-CTEPolicyElement {
     # Optional Parameters
     if ($description) { $body.add('description', $description) }
 
-    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
-        if ($type) { $body.add('type', $CM_CTEResourceSetTypeDef[$type]) }
+    if ([CM_CTEPolicyElementTypes]::resourcesets -eq $policyElementType) {
+        if ($type) { $body.add('type', $type) }
         if ($elementsList.Length -gt 0) { $body.add('resources', $elementsList) }
-    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+    } elseif ([CM_CTEPolicyElementTypes]::usersets -eq $policyElementType) {
         if ($elementsList.Length -gt 0) { $body.add('users', $elementsList) }
-    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "signaturesets") {
+    } elseif ([CM_CTEPolicyElementTypes]::processsets -eq $policyElementType) {
         if ($source_list.Length -gt 0) { $body.add('source_list', $source_list) }
-    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+    } elseif ([CM_CTEPolicyElementTypes]::signaturesets -eq $policyElementType) {
         if ($elementsList.Length -gt 0) { $body.add('processes', $elementsList) }
     }
 
@@ -129,6 +131,7 @@ function New-CTEPolicyElement {
     Write-Debug "JSON Body: $($jsonBody)"
 
     Try {
+        Write-Debug "Testing JWT"
         Test-CMJWT #Make sure we have an up-to-date jwt
         $headers = @{
             Authorization = "Bearer $($CM_Session.AuthToken)"
@@ -216,20 +219,20 @@ function New-CTEElementsList {
     $temp_hash = @{}
     
     #Optional
-    if ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "resourcesets") {
+    if ([CM_CTEPolicyElementTypes]::resourcesets -eq $policyElementType) {
         if ($directory) {
             $temp_hash.add('directory', $directory)
         }
         if ($file) {
             $temp_hash.add('file', $file)
         }    
-        if ($hdfs) {
+        if ($hdfs -ne $null) {
             $temp_hash.add('hdfs', $hdfs)
         }
-        if ($include_subfolders) {
+        if ($include_subfolders -ne $null) {
             $temp_hash.add('include_subfolders', $include_subfolders)
         }
-    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "usersets") {
+    } elseif ([CM_CTEPolicyElementTypes]::usersets -eq $policyElementType) {
         if ($gid) {
             $temp_hash.add('gid', $gid)
         }
@@ -245,7 +248,7 @@ function New-CTEElementsList {
         if ($uname) {
             $temp_hash.add('uname', $uname)
         }
-    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "processsets") {
+    } elseif ([CM_CTEPolicyElementTypes]::processsets -eq $policyElementType) {
         if ($directory) {
             $temp_hash.add('directory', $directory)
         }
@@ -255,7 +258,7 @@ function New-CTEElementsList {
         if ($signature) {
             $temp_hash.add('signature', $signature)
         }
-    } elseif ($CM_CTEPolicyElementTypeDef[$policyElementType] -eq "signaturesets") {
+    } elseif ([CM_CTEPolicyElementTypes]::signaturesets -eq $policyElementType) {
         if ($file_name) {
             $temp_hash.add('file_name', $file_name)
         }
@@ -291,7 +294,7 @@ function Find-CTEPolicyElementsByType {
     )
 
     Write-Debug "Getting a List of Policy Elements configured in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $policyElementType
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set query
@@ -347,7 +350,7 @@ function Remove-CTEPolicyElement {
     )
 
     Write-Debug "Deleting a Policy Element by ID in CM"
-    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $CM_CTEPolicyElementTypeDef[$policyElementType]
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $policyElementType
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set ID

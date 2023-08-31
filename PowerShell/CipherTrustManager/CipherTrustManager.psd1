@@ -75,7 +75,6 @@
         "JWTDetails",
         "Utils/CipherTrustManager-Utils",
         "CertificateAuthority/CipherTrustManager-CAs",
-        "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
         "DataProtection/CipherTrustManager-MaskingFormats",
@@ -87,7 +86,8 @@
         "Interfaces/CipherTrustManager-Interfaces",
         "Keys/CipherTrustManager-Keys",
         "Users/CipherTrustManager-Users",
-        "SyslogConnections/CipherTrustManager-SyslogConnections"
+        "SyslogConnections/CipherTrustManager-SyslogConnections",
+        "CTE/CipherTrustManager-CTEPolicyElements"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
