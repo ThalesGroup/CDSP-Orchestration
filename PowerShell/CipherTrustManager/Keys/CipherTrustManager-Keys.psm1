@@ -127,16 +127,16 @@ function New-CMKey {
         [int] $size,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $ownerId,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
         [switch] $Unexportable = $false,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [switch] $Undeletable = $false,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [switch] $NoVersionedKey = $false
+        [hashtable] $meta,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $xts
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
@@ -155,15 +155,8 @@ function New-CMKey {
     # Optional
     if ($Unexportable) { $body.add('unexportable', $true) }
     if ($Undeletable) { $body.add('undeletable', $true) }
-
-    if ($ownerId -OR $versionedKey) { 
-        $meta = @{}
-        if ($ownerId) {
-            $meta.add('ownerId', $ownerId) 
-        }
-        if (-NOT $NoVersionedKey) { $meta.add('versionedKey', $true) }
-        $body.add('meta', $meta)
-    }
+    if ($meta) { $body.add('meta', $meta) }
+    if ($xts -ne $null) { $body.add('xts', $xts) }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -191,7 +184,106 @@ function New-CMKey {
     Write-Debug $keyID
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $keyID
-}    
+}
+
+function New-CMKeyMeta {
+    param(
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [switch] $NoVersionedKey = $false,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String] $ownerId,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [hashtable] $permissions,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [hashtable] $cte
+    )
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    $response = @{}
+    if (-NOT $NoVersionedKey) { $meta.add('versionedKey', $true) }
+    if ($ownerId) { $response.add('ownerId', $ownerId) }
+    if ($permissions) { $response.add('permissions', $permissions) }
+    if ($cte) { $response.add('cte', $cte) }
+
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return $response
+}
+
+function New-CMKeyMetaPermission {
+    param(
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $DecryptWithKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $EncryptWithKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $ExportKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $MACVerifyWithKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $MACWithKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $ReadKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $SignVerifyWithKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $SignWithKey,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String[]] $UseKey
+    )
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    $response = @{}
+    
+    if ($DecryptWithKey.Length -gt 0) { $body.add('DecryptWithKey', $DecryptWithKey) }
+    if ($EncryptWithKey.Length -gt 0) { $body.add('EncryptWithKey', $EncryptWithKey) }
+    if ($ExportKey.Length -gt 0) { $body.add('ExportKey', $ExportKey) }
+    if ($MACVerifyWithKey.Length -gt 0) { $body.add('MACVerifyWithKey', $MACVerifyWithKey) }
+    if ($MACWithKey.Length -gt 0) { $body.add('MACWithKey', $MACWithKey) }
+    if ($ReadKey.Length -gt 0) { $body.add('ReadKey', $ReadKey) }
+    if ($SignVerifyWithKey.Length -gt 0) { $body.add('SignVerifyWithKey', $SignVerifyWithKey) }
+    if ($SignWithKey.Length -gt 0) { $body.add('SignWithKey', $SignWithKey) }
+    if ($UseKey.Length -gt 0) { $body.add('UseKey', $UseKey) }
+
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return $response
+}
+
+function New-CMKeyMetaCTEParams {
+    param(
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [bool] $persistent_on_client,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [String] $encryption_mode,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [bool] $cte_versioned
+    )
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    $response = @{}
+    
+    if ($persistent_on_client -ne $null) { $body.add('persistent_on_client', $persistent_on_client) }
+    if ($encryption_mode) { $body.add('encryption_mode', $encryption_mode) }
+    if ($cte_versioned -ne $null) { $body.add('cte_versioned', $cte_versioned) }
+
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return $response
+}
 
 #             "uri": [
 #                 string

@@ -87,7 +87,9 @@
         "Keys/CipherTrustManager-Keys",
         "Users/CipherTrustManager-Users",
         "SyslogConnections/CipherTrustManager-SyslogConnections",
-        "CTE/CipherTrustManager-CTEPolicyElements"
+        "CTE/CipherTrustManager-CTEPolicyElements",
+        "CTE/CipherTrustManager-CTEPolicies",
+        "CTE/CipherTrustManager-CTEClients"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -96,6 +98,10 @@
         "Disconnect-CipherTrustManager",
         "Find-CMKeys",
         "New-CMKey",
+        # Added next 3
+        "New-CMKeyMeta",
+        "New-CMKeyMetaPermission",
+        "New-CMKeyMetaCTEParams",
         "Remove-CMKey",
         "Find-CMUsers",
         "New-CMUser",
@@ -135,12 +141,12 @@
         "Get-CMJWT",
         "Test-CMJWT",
         "Write-HashtableArray",
-#        "New-CKSAWSParam",
-#        "New-CKSLocalHostedParam",
-#        "New-CKS",
-#        "Remove-CKS",
-#        "Edit-CKS",
-#        "Update-CKSPerformOperation",
+        #"New-CKSAWSParam",
+        #"New-CKSLocalHostedParam",
+        #"New-CKS",
+        #"Remove-CKS",
+        #"Edit-CKS",
+        #"Update-CKSPerformOperation",
         "Find-CMSyslogs",
         "New-CMSyslog",
         "Get-CMSyslog",
@@ -149,11 +155,23 @@
         "New-CTEPolicyElement",
         "New-CTEElementsList",
         "Find-CTEPolicyElementsByType",
-        "Remove-CTEPolicyElement",
-        "Update-CTEPolicyElement",
-        "Update-CTEPolicyElementAddElements",
-        "Remove-CTEPolicyElementDeleteElements",
-        "Update-CTEPolicyElementUpdateElementByIndex"
+        #"Remove-CTEPolicyElement",
+        #"Update-CTEPolicyElement",
+        #"Update-CTEPolicyElementAddElements",
+        #"Remove-CTEPolicyElementDeleteElements",
+        #"Update-CTEPolicyElementUpdateElementByIndex",
+        "New-CTEPolicy",
+        "New-CTEPolicyDataTxRulesList",
+        "New-CTEPolicyIDTKeyRulesList",
+        "New-CTEPolicyKeyRulesList",
+        "New-CTEPolicyLDTKeyRulesList",
+        "New-CTEPolicySecurityRulesList",
+        "New-CTEPolicySignatureRulesList",
+        "New-CTELDTKey",
+        "New-CTEPolicyMetadata",
+        "New-CTEPolicy",
+        "Find-CMDPGPolicies",
+        "Update-CTEClient"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

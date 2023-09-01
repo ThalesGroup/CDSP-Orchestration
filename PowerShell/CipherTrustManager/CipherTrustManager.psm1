@@ -156,6 +156,10 @@ Export-ModuleMember -Function Write-HashtableArray
 Export-ModuleMember -Function Find-CMKeys
 Export-ModuleMember -Function New-CMKey
 Export-ModuleMember -Function Remove-CMKey
+#Newly Added for keys
+Export-ModuleMember -Function New-CMKeyMeta
+Export-ModuleMember -Function New-CMKeyMetaPermission
+Export-ModuleMember -Function New-CMKeyMetaCTEParams
 #Users
 Export-ModuleMember -Function Find-CMUsers
 Export-ModuleMember -Function New-CMUser
@@ -222,8 +226,22 @@ Export-ModuleMember -Function Set-CMSyslog
 Export-ModuleMember -Function New-CTEPolicyElement
 Export-ModuleMember -Function New-CTEElementsList
 Export-ModuleMember -Function Find-CTEPolicyElementsByType
-Export-ModuleMember -Function Remove-CTEPolicyElement
-Export-ModuleMember -Function Update-CTEPolicyElement
-Export-ModuleMember -Function Update-CTEPolicyElementAddElements
-Export-ModuleMember -Function Remove-CTEPolicyElementDeleteElements
-Export-ModuleMember -Function Update-CTEPolicyElementUpdateElementByIndex
+#Export-ModuleMember -Function Remove-CTEPolicyElement
+#Export-ModuleMember -Function Update-CTEPolicyElement
+#Export-ModuleMember -Function Update-CTEPolicyElementAddElements
+#Export-ModuleMember -Function Remove-CTEPolicyElementDeleteElements
+#Export-ModuleMember -Function Update-CTEPolicyElementUpdateElementByIndex
+##Policy
+Export-ModuleMember -Function New-CTEPolicy
+Export-ModuleMember -Function New-CTEPolicyDataTxRulesList
+Export-ModuleMember -Function New-CTEPolicyIDTKeyRulesList
+Export-ModuleMember -Function New-CTEPolicyKeyRulesList
+Export-ModuleMember -Function New-CTEPolicyLDTKeyRulesList
+Export-ModuleMember -Function New-CTEPolicySecurityRulesList
+Export-ModuleMember -Function New-CTEPolicySignatureRulesList
+Export-ModuleMember -Function New-CTELDTKey
+Export-ModuleMember -Function New-CTEPolicyMetadata
+##Client
+Export-ModuleMember -Function New-CTEPolicy
+Export-ModuleMember -Function Find-CMDPGPolicies
+Export-ModuleMember -Function Update-CTEClient

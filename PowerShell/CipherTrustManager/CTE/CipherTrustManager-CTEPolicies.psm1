@@ -21,41 +21,12 @@ Add-Type -TypeDefinition @"
       CSI
    }
 "@
-# ResourceSet Types
-Add-Type -TypeDefinition @"
-public enum CM_CTEResourceSetTypes {
-    Directory,
-    Classification
-}
-"@
-# Policy Element Types
-Add-Type -TypeDefinition @"
-public enum CM_CTEPolicyElementTypes {
-    resourcesets,
-    usersets,
-    processsets,
-    signaturesets
-}
-"@
 ####
 
 ####
 # Support Variables
 ####
-# Text string relating to CM_CTEResourceSetTypes enum
-$CM_CTEResourceSetTypeDef = @{
-    [CM_CTEResourceSetTypes]::Directory      = "Directory" 
-    [CM_CTEResourceSetTypes]::Classification = "Classification"
-}
-#
-# Text string relating to CM_CTEPolicyElementTypes enum
-$CM_CTEPolicyElementTypeDef = @{
-    [CM_CTEPolicyElementTypes]::resourcesets  = "resourcesets" 
-    [CM_CTEPolicyElementTypes]::usersets      = "usersets"
-    [CM_CTEPolicyElementTypes]::processsets   = "processsets"
-    [CM_CTEPolicyElementTypes]::signaturesets = "signaturesets"
-}
-#
+
 ####
 
 ####
@@ -136,22 +107,19 @@ function New-CTEPolicy {
     # Mandatory Parameters
     $body = @{
         'name'        = $name
-        'policy_type' = $policy_type
+        'policy_type' = ([CTE_PolicyTypeEnum]$policy_type).ToString()
     }
 
     # Optional Parameters
     if ($description) { $body.add('description', $description) }
-
-    if ([CM_CTEPolicyElementTypes]::resourcesets -eq $policyElementType) {
-        if ($type) { $body.add('type', $type) }
-        if ($elementsList.Length -gt 0) { $body.add('resources', $elementsList) }
-    } elseif ([CM_CTEPolicyElementTypes]::usersets -eq $policyElementType) {
-        if ($elementsList.Length -gt 0) { $body.add('users', $elementsList) }
-    } elseif ([CM_CTEPolicyElementTypes]::processsets -eq $policyElementType) {
-        if ($source_list.Length -gt 0) { $body.add('source_list', $source_list) }
-    } elseif ([CM_CTEPolicyElementTypes]::signaturesets -eq $policyElementType) {
-        if ($elementsList.Length -gt 0) { $body.add('processes', $elementsList) }
-    }
+    if ($never_deny -ne $null) { $body.add('never_deny', $never_deny) }
+    if ($data_transform_rules.Length -gt 0) { $body.add('data_transform_rules', $data_transform_rules) }
+    if ($idt_key_rules.Length -gt 0) { $body.add('idt_key_rules', $idt_key_rules) }
+    if ($key_rules.Length -gt 0) { $body.add('key_rules', $key_rules) }
+    if ($ldt_key_rules.Length -gt 0) { $body.add('ldt_key_rules', $ldt_key_rules) }
+    if ($security_rules.Length -gt 0) { $body.add('security_rules', $security_rules) }
+    if ($signature_rules.Length -gt 0) { $body.add('signature_rules', $signature_rules) }
+    if ($metadata) { $body.add('metadata', $metadata) }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -199,7 +167,7 @@ function New-CTEPolicyDataTxRulesList {
         [string] $key_type,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [bool] $resource_set_id
+        [string] $resource_set_id
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
@@ -245,10 +213,10 @@ function New-CTEPolicyIDTKeyRulesList {
         [string] $current_key_type,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [bool] $transformation_key,
+        [string] $transformation_key,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [bool] $transformation_key_type
+        [string] $transformation_key_type
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
