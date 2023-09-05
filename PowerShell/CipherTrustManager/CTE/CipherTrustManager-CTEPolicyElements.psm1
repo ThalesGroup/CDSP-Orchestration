@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ResourceSets.psm1                                                             #
+# File:             CipherTrustManager-CTEPolicyElements.psm1                                                         #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Author:           Marc Seguin, Developer Advocate                                                                   #
 # Publisher:        Thales Group                                                                                      #
@@ -56,25 +56,15 @@ $target_uri = "/transparent-encryption"
 
 <#
     .SYNOPSIS
-        Create a new resource set
+        Create a new CTE Policy Element
     .DESCRIPTION
-        This allows you to create a resource set on CipherTrust Manager and control a series of its parameters. Those parameters include: type, resources, resourceSetName
+        This allows you to create a CTE Policy Element such as ProcessSet, ResourceSet, UserSet, or SignatureSet on CipherTrust Manager and control a series of its parameters. Those parameters include: name, description, type, resource list
     .EXAMPLE
-        PS> New-CMKey -keyname <keyname> -usageMask <usageMask> -algorithm <algorithm> -size <size>
-
-        This shows the minimum parameters necessary to create a key. By default, this key will be created as a versioned key that can be exported and can be deleted
+        PS> New-CTEPolicyElement -policyElementType <policyElementType> -name <name> -type <type> -elementsList <elementsList>
+        This shows the minimum parameters necessary to create a CTE Policy Element.
     .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -Undeleteable
-
-        This shows the minimum parameters necessary to create a key that CANNOT BE DELETED. By default, this key will be created as a versioned key that can be exported
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -Unexportable
-
-        This shows the minimum parameters necessary to create a key that CANNOT BE EXPORTED. By default, this key will be created as a versioned key that can be deleted
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -NoVersionedKey
-
-        This shows the minimum parameters necessary to create a key with NO VERSION CONTROL. By default, this key will be created can be exported and can be deleted
+        PS> New-CTEPolicyElement -policyElementType <policyElementType> -name <name> -type <type> source_list <source_list>
+        This shows the minimum parameters necessary to create a CTE SignatureSet.
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
@@ -132,7 +122,7 @@ function New-CTEPolicyElement {
 
     Try {
         Write-Debug "Testing JWT"
-        Test-CMJWT #Make sure we have an up-to-date jwt
+        Test-CMJWT
         $headers = @{
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
@@ -159,7 +149,24 @@ function New-CTEPolicyElement {
     return $elementId
 }
 
-# Create a new array to hold resourceSet resources
+# Create a new array to hold CTE Policy Element components
+<#
+    .SYNOPSIS
+        Create a new CTE Policy Element
+    .DESCRIPTION
+        This allows you to create a CTE Policy Element components list such as processes, resources, or users
+    .EXAMPLE
+        PS> New-CTEElementsList -policyElementType <policyElementType> -directory <directory> -file <file> -hdfs <hdfs> -include_subfolders <include_subfolders>
+        This shows the minimum parameters necessary to create a CTE ResourceSet.
+    .EXAMPLE
+        PS> New-CTEElementsList -policyElementType <policyElementType> -gid <gid> -gname <gname> -os_domain <os_domain> -uid <uid> -uname <uname>
+        This shows the minimum parameters necessary to create a CTE UserSet.
+    .EXAMPLE
+        PS> New-CTEElementsList -policyElementType <policyElementType> -directory <directory> -file <file> -signature <signature>
+        This shows the minimum parameters necessary to create a CTE SignatureSet.
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CTEElementsList {
     param(
         [Parameter(Mandatory = $true,
@@ -258,15 +265,16 @@ function New-CTEElementsList {
         if ($signature) {
             $temp_hash.add('signature', $signature)
         }
-    } elseif ([CM_CTEPolicyElementTypes]::signaturesets -eq $policyElementType) {
+    } 
+    # This parameter is relevant only for addsignatures action
+    elseif ([CM_CTEPolicyElementTypes]::signaturesets -eq $policyElementType) {
         if ($file_name) {
             $temp_hash.add('file_name', $file_name)
         }
         if ($hash_value) {
             $temp_hash.add('hash_value', $hash_value)
         }
-    }
-    
+    }    
 
     #Add this current policy to the list of user set policies
     $elementsList += $temp_hash
@@ -276,6 +284,21 @@ function New-CTEElementsList {
     return $elementsList
 }
 
+# Find CTE Policy Elements created on the CipherTrust Manager
+<#
+    .SYNOPSIS
+        Returns a list of CTE Policy Elements configured on the CipherTrust Manager
+    .DESCRIPTION
+        This will create and return a list of all CTE policy elements by type such as resourcesets, usersets, processsets, or signaturesets
+    .EXAMPLE
+        PS> Find-CTEPolicyElementsByType -policyElementType <policyElementType>
+        This will return all the Policy Elements of type policyElementType
+    .EXAMPLE
+        PS> Find-CTEPolicyElementsByType -policyElementType <policyElementType> -name <name>
+        This will return all the Policy Elements of type policyElementType where name matches $name
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Find-CTEPolicyElementsByType {
     param
     (
@@ -338,6 +361,18 @@ function Find-CTEPolicyElementsByType {
     return $response
 }
 
+# Remove CTE Policy Elements from CipherTrust Manager by the Policy Element ID
+<#
+    .SYNOPSIS
+        Deletes a CTE Policy Element from CipherTrust Manager
+    .DESCRIPTION
+        This will delete a CTE policy elements such as resourcesets, usersets, processsets, or signaturesets by the ID of the Policy Element
+    .EXAMPLE
+        PS> Remove-CTEPolicyElement -policyElementType <policyElementType> -id <id>
+        This will delete the CTE Policy Element with identifier id and type policyElementType
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CTEPolicyElement {
     param
     (
@@ -381,6 +416,20 @@ function Remove-CTEPolicyElement {
     return
 }
 
+<#
+    .SYNOPSIS
+        Updates a CTE Policy Element
+    .DESCRIPTION
+        This allows you to update a CTE Policy Element through a series of its parameters. Those parameters include: description, resource list
+    .EXAMPLE
+        PS> Update-CTEPolicyElement -policyElementType <policyElementType> -id <id> -elementsList <elementsList>
+        This shows the minimum parameters necessary to update a CTE Policy Element that is not signatureset.
+    .EXAMPLE
+        PS> Update-CTEPolicyElement -policyElementType <policyElementType> -id <id> -source_list <source_list>
+        This shows the minimum parameters necessary to update a signatureset.
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Update-CTEPolicyElement {
     param
     (
@@ -451,6 +500,21 @@ function Update-CTEPolicyElement {
     return
 }
 
+<#
+    .SYNOPSIS
+        Updates a CTE Policy Element by adding more components
+    .DESCRIPTION
+        This allows you to add more elements to a CTE Policy Element set depending on the element type.
+        Add resources to resourceset
+        Add processes to processset
+        Add users to userset
+        Add signatures to signatureset
+    .EXAMPLE
+        PS> Update-CTEPolicyElementAddElements -policyElementType <policyElementType> -id <id> -elementsList <elementsList>
+        This shows the minimum parameters necessary to add elements to a CTE Policy Element Set.
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Update-CTEPolicyElementAddElements {
     param
     (
@@ -462,10 +526,10 @@ function Update-CTEPolicyElementAddElements {
         [string] $id,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [hashtable[]] $elementsList,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [string[]] $source_list
+        [hashtable[]] $elementsList
+        #[Parameter(Mandatory = $false,
+        #    ValueFromPipelineByPropertyName = $true )]
+        #[string[]] $source_list
     )
 
     Write-Debug "Add elements to a Policy Element by ID in CM"
@@ -525,6 +589,17 @@ function Update-CTEPolicyElementAddElements {
     return
 }
 
+<#
+    .SYNOPSIS
+        Delete all components in a CTE Policy Element
+    .DESCRIPTION
+        This will take the ID and the Policy Element Type and remove all the components from the Policy Element
+    .EXAMPLE
+        PS> Remove-CTEPolicyElementDeleteElements -policyElementType <policyElementType> -id <id>
+        This shows the parameters required to remove elements from a CTE Policy Element Set.
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CTEPolicyElementDeleteElements {
     param
     (
@@ -574,9 +649,23 @@ function Remove-CTEPolicyElementDeleteElements {
     return
 }
 
+<#
+    .SYNOPSIS
+        Update the CTE Policy Element component by the Index of the component
+    .DESCRIPTION
+        This will take the ID and the Policy Element Type along with the index of the component to be updated. Index can be resourceIndex, processIndex, or userIndex depending on the Policy Element Type
+    .EXAMPLE
+        PS> Update-CTEPolicyElementUpdateElementByIndex -policyElementType <policyElementType> -id <id> -elementIndex <index> -directory <directory> -file <file> -hdfs <hdfs> -include_subfolders <include_subfolders>
+        This shows the parameters required to update the componet by Index within a CTE Policy Element Set.
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Update-CTEPolicyElementUpdateElementByIndex {
     param
-    (
+    (        
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policyElementType,
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id,
