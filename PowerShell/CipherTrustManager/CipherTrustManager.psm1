@@ -245,3 +245,12 @@ Export-ModuleMember -Function New-CTEPolicyMetadata
 Export-ModuleMember -Function New-CTEPolicy
 Export-ModuleMember -Function Find-CMDPGPolicies
 Export-ModuleMember -Function Update-CTEClient
+Export-ModuleMember -Function New-CTEGuardPointParams
+Export-ModuleMember -Function New-CTEClientGuardPoint
+Export-ModuleMember -Function Find-CTEClientGuardPoints
+Export-ModuleMember -Function Remove-CTEClientGuardPoint
+Export-ModuleMember -Function New-CTECSIStorageGroup
+Export-ModuleMember -Function Find-CTECSIStorageGroups
+Export-ModuleMember -Function Remove-CTECSIStorageGroup
+Export-ModuleMember -Function New-CTEAddClientsStorageGroup
+Export-ModuleMember -Function New-CTEAddGuardPoliciesStorageGroup

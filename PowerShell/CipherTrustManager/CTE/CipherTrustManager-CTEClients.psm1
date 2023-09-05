@@ -13,13 +13,16 @@
 ####
 # CTE Client Types
 Add-Type -TypeDefinition @"
+using System;
+using System.Reflection;
+using System.ComponentModel;
 public enum CTE_ClientTypesEnum
 {
-    CTE-U,
+    [DescriptionAttribute("CTE-U")]CTE_U,
     FS
 }
 "@
-# CTE Client Types
+# CTE Password Creation Methods
 Add-Type -TypeDefinition @"
 public enum CTE_PasswordCreationMethodsEnum
 {
@@ -27,13 +30,25 @@ public enum CTE_PasswordCreationMethodsEnum
     GENERATE
 }
 "@
-# CTE Client Types
+# CTE Client Capabilities
 Add-Type -TypeDefinition @"
 public enum CTE_ClientCapabilitiesEnum
 {
     LDT,
     EKP,
     ES
+}
+"@
+# CTE GuardPoint Types
+Add-Type -TypeDefinition @"
+public enum CTE_GuardPointTypesEnum
+{
+    directory_auto,
+    directory_manual,
+    rawdevice_manual,
+    rawdevice_auto,
+    cloudstorage_auto,
+    cloudstorage_manual
 }
 "@
 ####
@@ -46,9 +61,9 @@ $target_uri = "/transparent-encryption/clients"
 
 <#
     .SYNOPSIS
-        Create a new resource set
+        Create a new CTE Client
     .DESCRIPTION
-        This allows you to create a resource set on CipherTrust Manager and control a series of its parameters. Those parameters include: type, resources, resourceSetName
+        This allows you to create a CTE client on CipherTrust Manager and control a series of its parameters. Those parameters include: type, resources, resourceSetName
     .EXAMPLE
         PS> New-CMKey -keyname <keyname> -usageMask <usageMask> -algorithm <algorithm> -size <size>
 
@@ -68,7 +83,7 @@ $target_uri = "/transparent-encryption/clients"
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEPolicy {
+function New-CTEClient {
     # classification_tags not supported yet
     param
     (
@@ -158,7 +173,7 @@ function New-CTEPolicy {
     return $elementId
 }
 
-function Find-CMDPGPolicies {
+function Find-CTEClients {
     param
     (
         [Parameter(Mandatory = $false,
@@ -325,6 +340,247 @@ function Update-CTEClient {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "Resource Set updated"
+    Write-Debug "CTE Client updated"
     return
+}
+
+function New-CTEGuardPointParams {
+    param
+    (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [CTE_GuardPointTypesEnum] $guard_point_type,
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $policy_id,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $automount_enabled,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $cifs_enabled,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $data_classification_enabled,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $data_lineage_enabled,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $disk_name,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $diskgroup_name,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $early_access,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $intelligent_protection,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $is_esg_capable_device,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $is_idt_capable_device,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $mfa_enabled,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $network_share_credentials_id,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [bool] $preserve_sparse_regions
+    )
+
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    $response = @{}
+    
+    if ($guard_point_type) { $response.add('guard_point_type', ([CTE_GuardPointTypesEnum]$guard_point_type).ToString()) }
+    if ($policy_id) { $response.add('policy_id', $policy_id) }
+    if ($automount_enabled -ne $null) { $body.add('automount_enabled', $automount_enabled) }
+    if ($cifs_enabled -ne $null) { $body.add('cifs_enabled', $cifs_enabled) }
+    if ($data_classification_enabled -ne $null) { $body.add('data_classification_enabled', $data_classification_enabled) }
+    if ($data_lineage_enabled -ne $null) { $body.add('data_lineage_enabled', $data_lineage_enabled) }
+    if ($disk_name) { $response.add('disk_name', $disk_name) }
+    if ($diskgroup_name) { $response.add('diskgroup_name', $diskgroup_name) }
+    if ($early_access -ne $null) { $body.add('early_access', $early_access) }
+    if ($intelligent_protection -ne $null) { $body.add('intelligent_protection', $intelligent_protection) }
+    if ($is_esg_capable_device -ne $null) { $body.add('is_esg_capable_device', $is_esg_capable_device) }
+    if ($is_idt_capable_device -ne $null) { $body.add('is_idt_capable_device', $is_idt_capable_device) }
+    if ($mfa_enabled -ne $null) { $body.add('mfa_enabled', $mfa_enabled) }
+    if ($network_share_credentials_id) { $body.add('network_share_credentials_id', $network_share_credentials_id) }
+    if ($preserve_sparse_regions -ne $null) { $body.add('preserve_sparse_regions', $preserve_sparse_regions) }
+
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+    return $response
+}
+
+function New-CTEClientGuardPoint {
+    # classification_tags not supported yet
+    param
+    (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $client_id,
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string[]] $guard_paths,
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [hashtable] $guard_point_params
+    )
+
+    Write-Debug "Creating a CTE Client GuardPoint"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $client_id + "/guardpoints"
+    Write-Debug "Endpoint: $($endpoint)"
+
+    # Mandatory Parameters
+    $body = @{
+        'guard_paths' = $guard_paths
+        'guard_point_params' = $guard_point_params
+    }
+
+    $jsonBody = $body | ConvertTo-Json -Depth 5
+    Write-Debug "JSON Body: $($jsonBody)"
+
+    Try {
+        Write-Debug "Testing JWT"
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: $($headers)"    
+        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"
+        # $elementId = $response.id  
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Client GuardPoint already exists"
+            return
+        }
+        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+            return
+        }
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "CTE Client created"
+    return $response
+}
+
+function Find-CTEClientGuardPoints {
+    param
+    (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $client_id,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $guard_path, 
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $skip,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $limit
+    )
+
+    Write-Debug "Getting a List of CTE Client GuardPoints configured in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $client_id + "/guardpoints"
+    Write-Debug "Endpoint: $($endpoint)"
+
+    #Set query
+    #$firstset = $false
+    if ($name) {
+        $endpoint += "?guard_path="
+        $endpoint += $guard_path            
+    }
+
+    if ($skip) {
+        $endpoint += "&skip="
+        $endpoint += $skip
+    }
+
+    if ($limit) {
+        $endpoint += "&limit="
+        $endpoint += $limit
+    }
+
+    Write-Debug "Endpoint w Query: $($endpoint)"
+
+    Try {
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: $($headers)"    
+        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"  
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+            return
+        }
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "List of CTE Clients created"
+    return $response
+}
+
+function Remove-CTEClientGuardPoint {
+    param
+    (
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $client_id,
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [string[]] $guard_point_id_list
+    )
+
+    Write-Debug "Unguard a set of CTE Client GuardPoints"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $client_id + "/guardpoints/unguard"
+    Write-Debug "Endpoint: $($endpoint)"
+
+    # Mandatory Parameters
+    $body = @{
+        'guard_point_id_list' = $guard_point_id_list
+    }
+
+    $jsonBody = $body | ConvertTo-Json -Depth 5
+    Write-Debug "JSON Body: $($jsonBody)"
+
+    Try {
+        Write-Debug "Testing JWT"
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: $($headers)"    
+        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+            return
+        }
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "CTE Client GuardPoints Unguarded"
+    return $response
 }

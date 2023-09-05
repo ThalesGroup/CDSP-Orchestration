@@ -89,7 +89,8 @@
         "SyslogConnections/CipherTrustManager-SyslogConnections",
         "CTE/CipherTrustManager-CTEPolicyElements",
         "CTE/CipherTrustManager-CTEPolicies",
-        "CTE/CipherTrustManager-CTEClients"
+        "CTE/CipherTrustManager-CTEClients",
+        "CTE/CipherTrustManager-CSIStorageGroups"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -152,6 +153,7 @@
         "Get-CMSyslog",
         "Remove-CMSyslog",
         "Set-CMSyslog" ,
+        # CTE Specific Stuff
         "New-CTEPolicyElement",
         "New-CTEElementsList",
         "Find-CTEPolicyElementsByType",
@@ -171,7 +173,16 @@
         "New-CTEPolicyMetadata",
         "New-CTEPolicy",
         "Find-CMDPGPolicies",
-        "Update-CTEClient"
+        "Update-CTEClient",
+        "New-CTEGuardPointParams",
+        "New-CTEClientGuardPoint",
+        "Find-CTEClientGuardPoints",
+        "Remove-CTEClientGuardPoint",
+        "New-CTECSIStorageGroup",
+        "Find-CTECSIStorageGroups",
+        "Remove-CTECSIStorageGroup",
+        "New-CTEAddClientsStorageGroup",
+        "New-CTEAddGuardPoliciesStorageGroup"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
