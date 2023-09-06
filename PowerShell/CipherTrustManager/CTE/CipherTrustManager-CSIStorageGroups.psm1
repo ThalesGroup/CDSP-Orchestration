@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ResourceSets.psm1                                                             #
+# File:             CipherTrustManager-CSIStorageGroups.psm1                                                          #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Author:           Marc Seguin, Developer Advocate                                                                   #
 # Publisher:        Thales Group                                                                                      #
@@ -35,28 +35,14 @@ $target_uri = "/transparent-encryption/csigroups"
     .SYNOPSIS
         Create a new CSI Storage Group
     .DESCRIPTION
-        This allows you to create a CTE client on CipherTrust Manager and control a series of its parameters. Those parameters include: type, resources, resourceSetName
+        This method allows you to manage Storage Group resources related to Kubernetes Container Storage Interface (CSI) and control a series of its parameters. Those parameters include: kubernetes namespace, storage class, and name of the CSI storage group
     .EXAMPLE
-        PS> New-CMKey -keyname <keyname> -usageMask <usageMask> -algorithm <algorithm> -size <size>
-
-        This shows the minimum parameters necessary to create a key. By default, this key will be created as a versioned key that can be exported and can be deleted
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -Undeleteable
-
-        This shows the minimum parameters necessary to create a key that CANNOT BE DELETED. By default, this key will be created as a versioned key that can be exported
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -Unexportable
-
-        This shows the minimum parameters necessary to create a key that CANNOT BE EXPORTED. By default, this key will be created as a versioned key that can be deleted
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -NoVersionedKey
-
-        This shows the minimum parameters necessary to create a key with NO VERSION CONTROL. By default, this key will be created can be exported and can be deleted
+        PS> New-CTECSIStorageGroup -k8s_namespace <k8s_namespace> -k8s_storage_class <k8s_storage_class> -name <name> -client_profile <client_profile>
+        This shows the minimum parameters necessary to create a CSI Storage Group
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function New-CTECSIStorageGroup {
-    # classification_tags not supported yet
     param
     (
         [Parameter(Mandatory = $true,
@@ -125,6 +111,20 @@ function New-CTECSIStorageGroup {
     return $elementId
 }
 
+<#
+    .SYNOPSIS
+        Create and returns a list of CTE CSI Storage Groups created on CipherTrust Manager
+    .DESCRIPTION
+        This method allows you to retrieve a list of CTE CSI Storage Groups created on CipherTrust Manager using filters like name of the storage group
+    .EXAMPLE
+        PS> Find-CTECSIStorageGroups
+        This method will return all the CSI Storage Groups created on the CipherTrust Manager
+    .EXAMPLE
+        PS> Find-CTECSIStorageGroups -name <name>
+        This method will return all the CSI Storage Groups created on the CipherTrust Manager matching the filter "name"
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Find-CTECSIStorageGroups {
     param
     (
@@ -185,6 +185,17 @@ function Find-CTECSIStorageGroups {
     return $response
 }
 
+<#
+    .SYNOPSIS
+        Deletes a CSI Storage Group from CipherTrust Manager
+    .DESCRIPTION
+        This method allows you to delete a CSI Storage Group from CipherTrust Manager identified by the "sg_id"
+    .EXAMPLE
+        PS> Remove-CTECSIStorageGroup -sg_id <sg_id>
+        This method will delete the CSI Storage Groups with ID "sg_id"
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CTECSIStorageGroup {
     param
     (
@@ -221,6 +232,17 @@ function Remove-CTECSIStorageGroup {
     return $response
 }
 
+<#
+    .SYNOPSIS
+        Add a list of CTE clients to a CSI Storage Group
+    .DESCRIPTION
+        This method allows you to add a list of CTE Clients to a CSI Storage Group.
+    .EXAMPLE
+        PS> New-CTEAddClientsStorageGroup -sg_id <sg_id> -client_list <client_list>
+        This method will add the elemets of client_list in the CSI Storage Group with ID "sg_id"
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CTEAddClientsStorageGroup {
     # classification_tags not supported yet
     param
@@ -272,6 +294,17 @@ function New-CTEAddClientsStorageGroup {
     return $elementId
 }
 
+<#
+    .SYNOPSIS
+        Add a list of CTE Policies to a CSI Storage Group
+    .DESCRIPTION
+        This method allows you to add a list of CTE Policies to a CSI Storage Group.
+    .EXAMPLE
+        PS> New-CTEAddGuardPoliciesStorageGroup -sg_id <sg_id> -policy_list <policy_list>
+        This method will add the elemets of policy_list in the CSI Storage Group with ID "sg_id"
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CTEAddGuardPoliciesStorageGroup {
     param
     (

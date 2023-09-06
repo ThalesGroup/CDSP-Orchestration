@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ResourceSets.psm1                                                             #
+# File:             CipherTrustManager-CTEClients.psm1                                                                #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Author:           Marc Seguin, Developer Advocate                                                                   #
 # Publisher:        Thales Group                                                                                      #
@@ -61,25 +61,13 @@ $target_uri = "/transparent-encryption/clients"
 
 <#
     .SYNOPSIS
-        Create a new CTE Client
+        Create a new CTE Client on CipehrTrust Manager
     .DESCRIPTION
-        This allows you to create a CTE client on CipherTrust Manager and control a series of its parameters. Those parameters include: type, resources, resourceSetName
+        A client is a computer system where the data needs to be protected. A compatible CTE Agent software is installed on the client. The CTE Agent can protect data on the client or devices connected to it. A client can be associated with multiple GuardPoints for encryption of various paths. This method allows you to create a CTE client and control a series of its parameters.
     .EXAMPLE
-        PS> New-CMKey -keyname <keyname> -usageMask <usageMask> -algorithm <algorithm> -size <size>
-
-        This shows the minimum parameters necessary to create a key. By default, this key will be created as a versioned key that can be exported and can be deleted
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -Undeleteable
-
-        This shows the minimum parameters necessary to create a key that CANNOT BE DELETED. By default, this key will be created as a versioned key that can be exported
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -Unexportable
-
-        This shows the minimum parameters necessary to create a key that CANNOT BE EXPORTED. By default, this key will be created as a versioned key that can be deleted
-    .EXAMPLE
-        PS> New-CMKey -keyname $keyname -usageMask $usageMask -algorithm $algorithm -size $size -NoVersionedKey
-
-        This shows the minimum parameters necessary to create a key with NO VERSION CONTROL. By default, this key will be created can be exported and can be deleted
+        PS> New-CTEClient -name <name>
+        This shows the minimum parameters necessary to create a CTE client with default client_type FS (FileSystem), client_locked status as False, communication_enabled as False, password_creation_method as GENERATE, registration_allowed as False and system_locked as False.
+        You can create CTE client by providing non default values for the above fields.
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
@@ -173,6 +161,20 @@ function New-CTEClient {
     return $elementId
 }
 
+<#
+    .SYNOPSIS
+        Create and returns a list of CTE clients created on CipherTrust Manager
+    .DESCRIPTION
+        This method will allow you to retrieve a list of CTE clients that have been configured on the CipherTrust Manager manually or automatically 
+    .EXAMPLE
+        PS> Find-CTEClients
+        This example will return all the CTE clients configured on CipherTrust Manager
+    .EXAMPLE
+        PS> Find-CTEClients -name <name>
+        This example will return all the CTE clients where name matches "name"
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Find-CTEClients {
     param
     (
@@ -233,6 +235,17 @@ function Find-CTEClients {
     return $response
 }
 
+<#
+    .SYNOPSIS
+        Updates a CTE client
+    .DESCRIPTION
+        This method will allow you to update the behaviour of a CTE client
+    .EXAMPLE
+        PS> Update-CTEClient -id <id> -enabled_capabilities 'LDT'
+        This example will update the CTE client with id "id" and enable capabilities to allow Live Data Transformation
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Update-CTEClient {
     param
     (
@@ -344,6 +357,18 @@ function Update-CTEClient {
     return
 }
 
+<#
+    .SYNOPSIS
+        Create a HashTable to store CTE GuarPoint parameters
+    .DESCRIPTION
+        This method will allow you to creat a HashTable type variable that will store various CTE GuardPoint parameters.
+        This HashTable can then be provided to another method i.e. New-CTEClientGuardPoint that allows you to create a new GuardPoint within a CTE client
+    .EXAMPLE
+        PS> New-CTEGuardPointParams -guard_point_type <guard_point_type> -policy_id <policy_id>
+        This example shows minimum parameters required to create a new GuardPoint Params data structure
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CTEGuardPointParams {
     param
     (
@@ -418,6 +443,18 @@ function New-CTEGuardPointParams {
     return $response
 }
 
+<#
+    .SYNOPSIS
+        Create a new GuardPoint for a CTE client
+    .DESCRIPTION
+        A GuardPoint specifies the list of folders that contains paths to be protected. Access to files and encryption of files under the GuardPoint is controlled by security policies. GuardPoints created on a client group are applied to all members of the group.
+        This method will allow you to create a new Guard Point for a CTE client and control a series of its parameters.
+    .EXAMPLE
+        PS> New-CTEClientGuardPoint -guard_paths <guard_paths> -guard_point_params <guard_point_params>
+        This example shows minimum parameters required to create a new GuardPoint that includes an array of Guard Paths plus a HashTable type of variable that holds the GuardPoint params
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CTEClientGuardPoint {
     # classification_tags not supported yet
     param
@@ -475,6 +512,20 @@ function New-CTEClientGuardPoint {
     return $response
 }
 
+<#
+    .SYNOPSIS
+        List all guard points for a CTE client
+    .DESCRIPTION
+        This method will create and return a list of all GuardPoints created within a CTE client
+    .EXAMPLE
+        PS> Find-CTEClientGuardPoints -client_id <client_id>
+        This example will return a list of all the GuardPoints within a client i.e. "client_id"
+    .EXAMPLE
+        PS> Find-CTEClientGuardPoints -client_id <client_id> -guard_path <guard_path>
+        This example will return a list of all the GuardPoints where guard_path matches "guard_path" and within the client "client_id"
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Find-CTEClientGuardPoints {
     param
     (
@@ -538,6 +589,20 @@ function Find-CTEClientGuardPoints {
     return $response
 }
 
+<#
+    .SYNOPSIS
+        List all guard points for a CTE client
+    .DESCRIPTION
+        This method will create and return a list of all GuardPoints created within a CTE client
+    .EXAMPLE
+        PS> Find-CTEClientGuardPoints -client_id <client_id>
+        This example will return a list of all the GuardPoints within a client i.e. "client_id"
+    .EXAMPLE
+        PS> Find-CTEClientGuardPoints -client_id <client_id> -guard_path <guard_path>
+        This example will return a list of all the GuardPoints where guard_path matches "guard_path" and within the client "client_id"
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CTEClientGuardPoint {
     param
     (
