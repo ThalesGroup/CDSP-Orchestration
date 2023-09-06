@@ -25,7 +25,7 @@
     GUID              = '26a7684c-a2f4-4a44-814b-23fa6871d0e7'
 
     # Author of this module
-    Author            = 'Anurag Jain, Developer Advocate'
+    Author            = 'Anurag Jain & Marc Seguin, Developer Advocates'
 
     # Company or vendor of this module
     CompanyName       = 'Thales Group'
@@ -75,7 +75,6 @@
         "JWTDetails",
         "Utils/CipherTrustManager-Utils",
         "CertificateAuthority/CipherTrustManager-CAs",
-#        "Client-Management/CipherTrustManager-Tokens",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
         "DataProtection/CipherTrustManager-MaskingFormats",
@@ -83,21 +82,35 @@
         "DataProtection/CipherTrustManager-AccessPolicies",
         "DataProtection/CipherTrustManager-DPGPolicies",
         "DataProtection/CipherTrustManager-ClientProfiles",
+        "Info/CipherTrustManager-Info",
         "Interfaces/CipherTrustManager-Interfaces",
         "Keys/CipherTrustManager-Keys",
-        "Users/CipherTrustManager-Users"
+        "Users/CipherTrustManager-Users",
+        "SyslogConnections/CipherTrustManager-SyslogConnections",
+        "CTE/CipherTrustManager-CTEPolicyElements",
+        "CTE/CipherTrustManager-CTEPolicies",
+        "CTE/CipherTrustManager-CTEClients",
+        "CTE/CipherTrustManager-CSIStorageGroups"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
         "Connect-CipherTrustManager",
+        "Disconnect-CipherTrustManager",
         "Find-CMKeys",
         "New-CMKey",
+        # Added next 3
+        "New-CMKeyMeta",
+        "New-CMKeyMetaPermission",
+        "New-CMKeyMetaCTEParams",
         "Remove-CMKey",
         "Find-CMUsers",
         "New-CMUser",
         "Get-CMUser",
         "Remove-CMUser",
+        "Get-CMInfo",
+        "Get-CMVersion",
+        "Set-CMName",
         "Find-CMInterfaces",
         "New-CMInterface",
         "Remove-CMInterface",
@@ -128,7 +141,48 @@
         "Remove-CMClientProfiles",        
         "Get-CMJWT",
         "Test-CMJWT",
-        "Write-HashtableArray"
+        "Write-HashtableArray",
+        #"New-CKSAWSParam",
+        #"New-CKSLocalHostedParam",
+        #"New-CKS",
+        #"Remove-CKS",
+        #"Edit-CKS",
+        #"Update-CKSPerformOperation",
+        "Find-CMSyslogs",
+        "New-CMSyslog",
+        "Get-CMSyslog",
+        "Remove-CMSyslog",
+        "Set-CMSyslog" ,
+        # CTE Specific Stuff
+        "New-CTEPolicyElement",
+        "New-CTEElementsList",
+        "Find-CTEPolicyElementsByType",
+        #"Remove-CTEPolicyElement",
+        #"Update-CTEPolicyElement",
+        #"Update-CTEPolicyElementAddElements",
+        #"Remove-CTEPolicyElementDeleteElements",
+        #"Update-CTEPolicyElementUpdateElementByIndex",
+        "New-CTEPolicy",
+        "New-CTEPolicyDataTxRulesList",
+        "New-CTEPolicyIDTKeyRulesList",
+        "New-CTEPolicyKeyRulesList",
+        "New-CTEPolicyLDTKeyRulesList",
+        "New-CTEPolicySecurityRulesList",
+        "New-CTEPolicySignatureRulesList",
+        "New-CTELDTKey",
+        "New-CTEPolicyMetadata",
+        "New-CTEPolicy",
+        "Find-CMDPGPolicies",
+        "Update-CTEClient",
+        "New-CTEGuardPointParams",
+        "New-CTEClientGuardPoint",
+        "Find-CTEClientGuardPoints",
+        "Remove-CTEClientGuardPoint",
+        "New-CTECSIStorageGroup",
+        "Find-CTECSIStorageGroups",
+        "Remove-CTECSIStorageGroup",
+        "New-CTEAddClientsStorageGroup",
+        "New-CTEAddGuardPoliciesStorageGroup"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -189,3 +243,4 @@
     # DefaultCommandPrefix = ''
 
 }
+
