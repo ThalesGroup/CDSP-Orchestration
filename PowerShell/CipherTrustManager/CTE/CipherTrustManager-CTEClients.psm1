@@ -423,21 +423,21 @@ function New-CTEGuardPointParams {
 
     $response = @{}
     
-    if ($guard_point_type) { $response.add('guard_point_type', ([CTE_GuardPointTypesEnum]$guard_point_type).ToString()) }
-    if ($policy_id) { $response.add('policy_id', $policy_id) }
-    if ($automount_enabled -ne $null) { $body.add('automount_enabled', $automount_enabled) }
-    if ($cifs_enabled -ne $null) { $body.add('cifs_enabled', $cifs_enabled) }
-    if ($data_classification_enabled -ne $null) { $body.add('data_classification_enabled', $data_classification_enabled) }
-    if ($data_lineage_enabled -ne $null) { $body.add('data_lineage_enabled', $data_lineage_enabled) }
-    if ($disk_name) { $response.add('disk_name', $disk_name) }
-    if ($diskgroup_name) { $response.add('diskgroup_name', $diskgroup_name) }
-    if ($early_access -ne $null) { $body.add('early_access', $early_access) }
-    if ($intelligent_protection -ne $null) { $body.add('intelligent_protection', $intelligent_protection) }
-    if ($is_esg_capable_device -ne $null) { $body.add('is_esg_capable_device', $is_esg_capable_device) }
-    if ($is_idt_capable_device -ne $null) { $body.add('is_idt_capable_device', $is_idt_capable_device) }
-    if ($mfa_enabled -ne $null) { $body.add('mfa_enabled', $mfa_enabled) }
-    if ($network_share_credentials_id) { $body.add('network_share_credentials_id', $network_share_credentials_id) }
-    if ($preserve_sparse_regions -ne $null) { $body.add('preserve_sparse_regions', $preserve_sparse_regions) }
+    if ($null -ne $guard_point_type) { $response.add('guard_point_type', ([CTE_GuardPointTypesEnum]$guard_point_type).ToString()) }
+    if ($null -ne $policy_id) { $response.add('policy_id', $policy_id) }
+    if ($automount_enabled -eq $true) { $response.add('automount_enabled', $automount_enabled) }
+    if ($cifs_enabled -eq $true) { $response.add('cifs_enabled', $cifs_enabled) }
+    if ($data_classification_enabled -eq $true) { $response.add('data_classification_enabled', $data_classification_enabled) }
+    if ($data_lineage_enabled -eq $true) { $response.add('data_lineage_enabled', $data_lineage_enabled) }
+    if ($null -ne $disk_name) { $response.add('disk_name', $disk_name) }
+    if ($null -ne $diskgroup_name) { $response.add('diskgroup_name', $diskgroup_name) }
+    if ($early_access -eq $true) { $response.add('early_access', $early_access) }
+    if ($intelligent_protection -eq $true) { $response.add('intelligent_protection', $intelligent_protection) }
+    if ($is_esg_capable_device -eq $true) { $response.add('is_esg_capable_device', $is_esg_capable_device) }
+    if ($is_idt_capable_device -eq $true) { $response.add('is_idt_capable_device', $is_idt_capable_device) }
+    if ($mfa_enabled -eq $true) { $response.add('mfa_enabled', $mfa_enabled) }
+    if ($null -ne $network_share_credentials_id) { $response.add('network_share_credentials_id', $network_share_credentials_id) }
+    if ($preserve_sparse_regions -eq $true) { $response.add('preserve_sparse_regions', $preserve_sparse_regions) }
 
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
