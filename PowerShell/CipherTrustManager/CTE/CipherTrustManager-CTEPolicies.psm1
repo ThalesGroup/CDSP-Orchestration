@@ -590,3 +590,13 @@ function New-CTEPolicyMetadata {
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
 }
+
+Export-ModuleMember -Function New-CTEPolicy
+Export-ModuleMember -Function New-CTEPolicyDataTxRulesList
+Export-ModuleMember -Function New-CTEPolicyIDTKeyRulesList
+Export-ModuleMember -Function New-CTEPolicyKeyRulesList
+Export-ModuleMember -Function New-CTEPolicyLDTKeyRulesList
+Export-ModuleMember -Function New-CTEPolicySecurityRulesList
+Export-ModuleMember -Function New-CTEPolicySignatureRulesList
+Export-ModuleMember -Function New-CTELDTKey
+Export-ModuleMember -Function New-CTEPolicyMetadata

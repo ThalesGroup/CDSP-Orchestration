@@ -354,3 +354,9 @@ function New-CTEAddGuardPoliciesStorageGroup {
     Write-Debug "CTE Clients added to the CSI Storage Group"
     return $elementId
 }
+
+Export-ModuleMember -Function New-CTECSIStorageGroup
+Export-ModuleMember -Function Find-CTECSIStorageGroups
+Export-ModuleMember -Function Remove-CTECSIStorageGroup
+Export-ModuleMember -Function New-CTEAddClientsStorageGroup
+Export-ModuleMember -Function New-CTEAddGuardPoliciesStorageGroup

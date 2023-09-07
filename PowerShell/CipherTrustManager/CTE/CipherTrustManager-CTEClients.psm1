@@ -83,7 +83,7 @@ function New-CTEClient {
         [bool] $client_locked,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [CTE_ClientTypeEnum] $client_type=1,
+        [CTE_ClientTypesEnum] $client_type=1,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [bool] $communication_enabled,
@@ -649,3 +649,11 @@ function Remove-CTEClientGuardPoint {
     Write-Debug "CTE Client GuardPoints Unguarded"
     return $response
 }
+
+Export-ModuleMember -Function New-CTEClient
+Export-ModuleMember -Function Find-CTEClients
+Export-ModuleMember -Function Update-CTEClient
+Export-ModuleMember -Function New-CTEGuardPointParams
+Export-ModuleMember -Function New-CTEClientGuardPoint
+Export-ModuleMember -Function Find-CTEClientGuardPoints
+Export-ModuleMember -Function Remove-CTEClientGuardPoint

@@ -56,18 +56,12 @@ Add-Type -TypeDefinition @"
 #    hmac-sha512,
 #
 ####
-
-
-
 ####
 # Local Variables
 ####
 $target_uri = "/vault/keys2"
 $target_search_uri = "/vault/query-keys/"
 ####
-
-
-
 <#
     .SYNOPSIS
         Create a key in CipherTrust Manager
@@ -127,10 +121,10 @@ function New-CMKey {
         [int] $size,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [switch] $Unexportable = $false,
+        [bool] $Unexportable,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [switch] $Undeletable = $false,
+        [bool] $Undeletable,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [hashtable] $meta,
@@ -153,8 +147,8 @@ function New-CMKey {
     }
 
     # Optional
-    if ($Unexportable) { $body.add('unexportable', $true) }
-    if ($Undeletable) { $body.add('undeletable', $true) }
+    if ($Unexportable -ne $null) { $body.add('unexportable', $Unexportable) }
+    if ($Undeletable -ne $null) { $body.add('undeletable', $Undeletable) }
     if ($meta) { $body.add('meta', $meta) }
     if ($xts -ne $null) { $body.add('xts', $xts) }
 
@@ -204,7 +198,7 @@ function New-CMKeyMeta {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
     $response = @{}
-    if (-NOT $NoVersionedKey) { $meta.add('versionedKey', $true) }
+    if (-NOT $NoVersionedKey) { $response.add('versionedKey', $true) }
     if ($ownerId) { $response.add('ownerId', $ownerId) }
     if ($permissions) { $response.add('permissions', $permissions) }
     if ($cte) { $response.add('cte', $cte) }
@@ -247,15 +241,15 @@ function New-CMKeyMetaPermission {
 
     $response = @{}
     
-    if ($DecryptWithKey.Length -gt 0) { $body.add('DecryptWithKey', $DecryptWithKey) }
-    if ($EncryptWithKey.Length -gt 0) { $body.add('EncryptWithKey', $EncryptWithKey) }
-    if ($ExportKey.Length -gt 0) { $body.add('ExportKey', $ExportKey) }
-    if ($MACVerifyWithKey.Length -gt 0) { $body.add('MACVerifyWithKey', $MACVerifyWithKey) }
-    if ($MACWithKey.Length -gt 0) { $body.add('MACWithKey', $MACWithKey) }
-    if ($ReadKey.Length -gt 0) { $body.add('ReadKey', $ReadKey) }
-    if ($SignVerifyWithKey.Length -gt 0) { $body.add('SignVerifyWithKey', $SignVerifyWithKey) }
-    if ($SignWithKey.Length -gt 0) { $body.add('SignWithKey', $SignWithKey) }
-    if ($UseKey.Length -gt 0) { $body.add('UseKey', $UseKey) }
+    if ($DecryptWithKey.Length -gt 0) { $response.add('DecryptWithKey', $DecryptWithKey) }
+    if ($EncryptWithKey.Length -gt 0) { $response.add('EncryptWithKey', $EncryptWithKey) }
+    if ($ExportKey.Length -gt 0) { $response.add('ExportKey', $ExportKey) }
+    if ($MACVerifyWithKey.Length -gt 0) { $response.add('MACVerifyWithKey', $MACVerifyWithKey) }
+    if ($MACWithKey.Length -gt 0) { $response.add('MACWithKey', $MACWithKey) }
+    if ($ReadKey.Length -gt 0) { $response.add('ReadKey', $ReadKey) }
+    if ($SignVerifyWithKey.Length -gt 0) { $response.add('SignVerifyWithKey', $SignVerifyWithKey) }
+    if ($SignWithKey.Length -gt 0) { $response.add('SignWithKey', $SignWithKey) }
+    if ($UseKey.Length -gt 0) { $response.add('UseKey', $UseKey) }
 
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
@@ -277,9 +271,9 @@ function New-CMKeyMetaCTEParams {
 
     $response = @{}
     
-    if ($persistent_on_client -ne $null) { $body.add('persistent_on_client', $persistent_on_client) }
-    if ($encryption_mode) { $body.add('encryption_mode', $encryption_mode) }
-    if ($cte_versioned -ne $null) { $body.add('cte_versioned', $cte_versioned) }
+    if ($persistent_on_client -ne $null) { $response.add('persistent_on_client', $persistent_on_client) }
+    if ($encryption_mode) { $response.add('encryption_mode', $encryption_mode) }
+    if ($cte_versioned -ne $null) { $response.add('cte_versioned', $cte_versioned) }
 
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
@@ -678,3 +672,6 @@ function Remove-CMKey {
 Export-ModuleMember -Function Find-CMKeys
 Export-ModuleMember -Function New-CMKey
 Export-ModuleMember -Function Remove-CMKey
+Export-ModuleMember -Function New-CMKeyMeta
+Export-ModuleMember -Function New-CMKeyMetaCTEParams
+Export-ModuleMember -Function New-CMKeyMetaPermission

@@ -90,7 +90,8 @@
         "CTE/CipherTrustManager-CTEPolicyElements",
         "CTE/CipherTrustManager-CTEPolicies",
         "CTE/CipherTrustManager-CTEClients",
-        "CTE/CipherTrustManager-CSIStorageGroups"
+        "CTE/CipherTrustManager-CSIStorageGroups",
+        "Client-Management/CipherTrustManager-Tokens"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -99,10 +100,6 @@
         "Disconnect-CipherTrustManager",
         "Find-CMKeys",
         "New-CMKey",
-        # Added next 3
-        "New-CMKeyMeta",
-        "New-CMKeyMetaPermission",
-        "New-CMKeyMetaCTEParams",
         "Remove-CMKey",
         "Find-CMUsers",
         "New-CMUser",
@@ -171,8 +168,8 @@
         "New-CTEPolicySignatureRulesList",
         "New-CTELDTKey",
         "New-CTEPolicyMetadata",
-        "New-CTEPolicy",
-        "Find-CMDPGPolicies",
+        "New-CTEClient",
+        "Find-CTEClients",
         "Update-CTEClient",
         "New-CTEGuardPointParams",
         "New-CTEClientGuardPoint",
@@ -182,7 +179,12 @@
         "Find-CTECSIStorageGroups",
         "Remove-CTECSIStorageGroup",
         "New-CTEAddClientsStorageGroup",
-        "New-CTEAddGuardPoliciesStorageGroup"
+        "New-CTEAddGuardPoliciesStorageGroup",
+        # Added next 3
+        "New-CMKeyMeta",
+        "New-CMKeyMetaPermission",
+        "New-CMKeyMetaCTEParams",
+        "New-CM_ClientToken"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

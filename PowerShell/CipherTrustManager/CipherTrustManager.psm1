@@ -156,10 +156,6 @@ Export-ModuleMember -Function Write-HashtableArray
 Export-ModuleMember -Function Find-CMKeys
 Export-ModuleMember -Function New-CMKey
 Export-ModuleMember -Function Remove-CMKey
-#Newly Added for keys
-Export-ModuleMember -Function New-CMKeyMeta
-Export-ModuleMember -Function New-CMKeyMetaPermission
-Export-ModuleMember -Function New-CMKeyMetaCTEParams
 #Users
 Export-ModuleMember -Function Find-CMUsers
 Export-ModuleMember -Function New-CMUser
@@ -242,15 +238,21 @@ Export-ModuleMember -Function New-CTEPolicySignatureRulesList
 Export-ModuleMember -Function New-CTELDTKey
 Export-ModuleMember -Function New-CTEPolicyMetadata
 ##Client
-Export-ModuleMember -Function New-CTEPolicy
-Export-ModuleMember -Function Find-CMDPGPolicies
+Export-ModuleMember -Function New-CTEClient
+Export-ModuleMember -Function Find-CTEClients
 Export-ModuleMember -Function Update-CTEClient
 Export-ModuleMember -Function New-CTEGuardPointParams
 Export-ModuleMember -Function New-CTEClientGuardPoint
 Export-ModuleMember -Function Find-CTEClientGuardPoints
 Export-ModuleMember -Function Remove-CTEClientGuardPoint
+##CSI Storage Group
 Export-ModuleMember -Function New-CTECSIStorageGroup
 Export-ModuleMember -Function Find-CTECSIStorageGroups
 Export-ModuleMember -Function Remove-CTECSIStorageGroup
 Export-ModuleMember -Function New-CTEAddClientsStorageGroup
 Export-ModuleMember -Function New-CTEAddGuardPoliciesStorageGroup
+#Newly Added for keys
+Export-ModuleMember -Function New-CMKeyMeta
+Export-ModuleMember -Function New-CMKeyMetaPermission
+Export-ModuleMember -Function New-CMKeyMetaCTEParams
+Export-ModuleMember -Function New-CM_ClientToken
