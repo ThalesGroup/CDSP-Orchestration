@@ -91,7 +91,7 @@
         "CTE/CipherTrustManager-CTEPolicies",
         "CTE/CipherTrustManager-CTEClients",
         "CTE/CipherTrustManager-CSIStorageGroups",
-        "Client-Management/CipherTrustManager-Tokens"
+        "Client-Management/CipherTrustManager-Tokens",
         "Tokens/CipherTrustManager-Tokens",
         "Alarms/CipherTrustManager-Alarms",
         "AkeylessConfiguration/CipherTrustManager-AkeylessConfiguration"
@@ -187,7 +187,7 @@
         "New-CMKeyMeta",
         "New-CMKeyMetaPermission",
         "New-CMKeyMetaCTEParams",
-        "New-CM_ClientToken"
+        "New-CM_ClientToken",
         "Set-CMSyslog",
         "Find-CMTokens",
         "New-CMToken",
