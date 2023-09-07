@@ -92,6 +92,9 @@
         "CTE/CipherTrustManager-CTEClients",
         "CTE/CipherTrustManager-CSIStorageGroups",
         "Client-Management/CipherTrustManager-Tokens"
+        "Tokens/CipherTrustManager-Tokens",
+        "Alarms/CipherTrustManager-Alarms",
+        "AkeylessConfiguration/CipherTrustManager-AkeylessConfiguration"
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -185,6 +188,21 @@
         "New-CMKeyMetaPermission",
         "New-CMKeyMetaCTEParams",
         "New-CM_ClientToken"
+        "Set-CMSyslog",
+        "Find-CMTokens",
+        "New-CMToken",
+        "Get-CMToken",
+        "Remove-CMToken",
+        "Revoke-CMToken",
+        "Get-CMSelfDomains",
+        "Set-CMAuthKeyRotate",
+        "Get-CMAuthKey",
+        "New-CMAkeylessToken",
+        "Find-CMAlarms",
+        "Clear-CMAlarm",
+        "Ack-CMAlarm",
+        "Get-CMAkeylessConfiguration",
+        "Set-CMAkeylessConfiguration"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

@@ -156,26 +156,37 @@ function Find-CMUserSets {
     Write-Debug "Endpoint: $($endpoint)"
 
     #Set query
-    #    $firstset = $false #can skip if there is only one mandatory element
+    $firstset = $false #can skip if there is only one mandatory element
     if ($name) {
-        $endpoint += "?name="
-        #        $firstset = $true
-        $endpoint += $name            
+        if ($firstset) {
+            $endpoint += "&name="
+        }
+        else {
+            $endpoint += "?name="
+            $firstset = $true
+        }
+        $endpoint += $name
     }
 
     if ($skip) {
-        $endpoint += "&skip="
+        if ($firstset) {
+            $endpoint += "&skip="
+        }
+        else {
+            $endpoint += "?skip="
+            $firstset = $true
+        }
         $endpoint += $skip
     }
-
     if ($limit) {
-        $endpoint += "&limit="
+        if ($firstset) {
+            $endpoint += "&limit="
+        }
+        else {
+            $endpoint += "?limit="
+            $firstset = $true
+        }
         $endpoint += $limit
-    }
-
-    if ($sort) {
-        $endpoint += "&sort="
-        $endpoint += $sort
     }
 
     Write-Debug "Endpoint w Query: $($endpoint)"
