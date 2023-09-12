@@ -73,6 +73,9 @@ $target_uri = "/transparent-encryption/clients"
 #>
 function New-CTEClient {
     # classification_tags not supported yet
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', 
+    '', 
+    Justification = 'These are not passwords... these are parameters used in the creation of a password.')]
     param
     (
         [Parameter(Mandatory = $true,
@@ -247,6 +250,9 @@ function Find-CTEClients {
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function Update-CTEClient {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', 
+    '', 
+    Justification = 'These are not passwords... these are parameters used in the creation of a password.')]
     param
     (
         [Parameter(Mandatory = $true,
@@ -370,6 +376,9 @@ function Update-CTEClient {
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function New-CTEGuardPointParams {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', 
+    '', 
+    Justification = 'These are not network passwords... these are the id of a storred password.')]
     param
     (
         [Parameter(Mandatory = $true,
