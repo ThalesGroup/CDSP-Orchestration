@@ -8,6 +8,12 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
+####
+# Local Variables
+####
+$target_uri = "/client-management/regtokens"
+####
+
 <#
     .SYNOPSIS
         Get-CM_AuthTokens
@@ -40,7 +46,6 @@ function Get-CM_AuthTokens {
         [string] $pass = $(Throw "Please specify the password associated with the username") 
     )
 
-
     # {
     #     "grant_type": "password",
     #     "username": "steve",
@@ -51,18 +56,83 @@ function Get-CM_AuthTokens {
     #     ]
     #   }
 
-
-
-
-
-
     Write-Debug "Getting token list from CipherTrust Manager..."
     Test-CMJWT
     $CM_Session.REST_URL = "https://" + ($CM_Session.KMS_IP) + "/api/v1"
     #Authenticate with CM, get JWT and set BEARER token in Headers
-    
-
     return
+}
+
+function New-CM_ClientToken {
+    param(
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $ca_id,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $cert_duration,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $lifetime,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [int] $max_clients,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [string] $name_prefix,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
+        [hashtable] $label        
+    )    
+
+    Write-Debug "Creating a new Client Registration Token on CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Endpoint: $($endpoint)"
+
+    $elementId = $null
+
+    # Mandatory Parameters
+    $body = @{}
+
+    # Optional Parameters
+    if ($ca_id) { $body.add('ca_id', $ca_id) }
+    if ($cert_duration) { $body.add('cert_duration', $cert_duration) }
+    if ($label) { $body.add('label', $label) }
+    if ($lifetime) { $body.add('lifetime', $lifetime) }
+    if ($max_clients) { $body.add('max_clients', $max_clients) }
+    if ($name_prefix) { $body.add('name_prefix', $name_prefix) }
+    
+    $jsonBody = $body | ConvertTo-Json -Depth 5
+    Write-Debug "JSON Body: $($jsonBody)"
+
+    Try {
+        Write-Debug "Testing JWT"
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: $($headers)"    
+        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"  
+        $elementId = $response.token  
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Token already exists"
+            return
+        }
+        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+            return
+        }
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "Token created"
+    return $elementId
 }
     
 Export-ModuleMember -Function Get-CM_AuthTokens
+Export-ModuleMember -Function New-CM_ClientToken
