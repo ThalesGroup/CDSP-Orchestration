@@ -229,12 +229,12 @@ Export-ModuleMember -Function Find-CTEPolicyElementsByType
 #Export-ModuleMember -Function Update-CTEPolicyElementUpdateElementByIndex
 ##Policy
 Export-ModuleMember -Function New-CTEPolicy
-Export-ModuleMember -Function New-CTEPolicyDataTxRulesList
-Export-ModuleMember -Function New-CTEPolicyIDTKeyRulesList
-Export-ModuleMember -Function New-CTEPolicyKeyRulesList
-Export-ModuleMember -Function New-CTEPolicyLDTKeyRulesList
-Export-ModuleMember -Function New-CTEPolicySecurityRulesList
-Export-ModuleMember -Function New-CTEPolicySignatureRulesList
+Export-ModuleMember -Function New-CTEDataTxRulesList
+Export-ModuleMember -Function New-CTEIDTKeyRulesList
+Export-ModuleMember -Function New-CTEKeyRulesList
+Export-ModuleMember -Function New-CTELDTKeyRulesList
+Export-ModuleMember -Function New-CTESecurityRulesList
+Export-ModuleMember -Function New-CTESignatureRulesList
 Export-ModuleMember -Function New-CTELDTKey
 Export-ModuleMember -Function New-CTEPolicyMetadata
 ##Client
@@ -242,9 +242,9 @@ Export-ModuleMember -Function New-CTEClient
 Export-ModuleMember -Function Find-CTEClients
 Export-ModuleMember -Function Update-CTEClient
 Export-ModuleMember -Function New-CTEGuardPointParams
-Export-ModuleMember -Function New-CTEClientGuardPoint
-Export-ModuleMember -Function Find-CTEClientGuardPoints
-Export-ModuleMember -Function Remove-CTEClientGuardPoint
+Export-ModuleMember -Function New-CTEGuardPoint
+Export-ModuleMember -Function Find-CTEGuardPoints
+Export-ModuleMember -Function Remove-CTEGuardPoint
 ##CSI Storage Group
 Export-ModuleMember -Function New-CTECSIStorageGroup
 Export-ModuleMember -Function Find-CTECSIStorageGroups

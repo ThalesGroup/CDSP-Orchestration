@@ -32,7 +32,7 @@ $clients = Find-CTEClients -name 'ps_cteclient'
 
 ## Enable LDT for the above client
 # This is not working as of now...
-#Update-CTEClient -id $clients.resources.id -enabled_capabilities 'LDT'
+# Update-CTEClient -id $clients.resources.id -enabled_capabilities 'LDT'
 
 # Creating CTE Policy Element ResourceSet
 $rsetList = New-CTEElementsList -policyElementType 'resourcesets' -directory '/opt/path1/' -file '*' -hdfs $False -include_subfolders $False

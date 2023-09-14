@@ -33,9 +33,19 @@ $target_uri = "/transparent-encryption/csigroups"
 
 <#
     .SYNOPSIS
-        Create a new CSI Storage Group
+        Create a new CSI Storage Group on CipherTrust Manager
     .DESCRIPTION
         This method allows you to manage Storage Group resources related to Kubernetes Container Storage Interface (CSI) and control a series of its parameters. Those parameters include: kubernetes namespace, storage class, and name of the CSI storage group
+    .PARAMETER k8s_namespace
+        Name of the K8s namespace.
+    .PARAMETER k8s_storage_class
+        Name of the K8s StorageClass.
+    .PARAMETER name
+        Name to uniquely identify the CSI storage group. This name will be visible on the CipherTrust Manager.
+    .PARAMETER client_profile
+        Optional Client Profile for the storage group. If not provided, the default profile will be used.
+    .PARAMETER description
+        Optional description for the storage group.
     .EXAMPLE
         PS> New-CTECSIStorageGroup -k8s_namespace <k8s_namespace> -k8s_storage_class <k8s_storage_class> -name <name> -client_profile <client_profile>
         This shows the minimum parameters necessary to create a CSI Storage Group
@@ -116,6 +126,12 @@ function New-CTECSIStorageGroup {
         Create and returns a list of CTE CSI Storage Groups created on CipherTrust Manager
     .DESCRIPTION
         This method allows you to retrieve a list of CTE CSI Storage Groups created on CipherTrust Manager using filters like name of the storage group
+    .PARAMETER name
+        Unique name for the CTE CSI Storage Group to be searched
+    .PARAMETER skip
+        The index of the first resource to return. Equivalent to `offset` in SQL.
+    .PARAMETER limit
+        The max number of resources to return. Equivalent to `limit` in SQL.
     .EXAMPLE
         PS> Find-CTECSIStorageGroups
         This method will return all the CSI Storage Groups created on the CipherTrust Manager
@@ -190,6 +206,8 @@ function Find-CTECSIStorageGroups {
         Deletes a CSI Storage Group from CipherTrust Manager
     .DESCRIPTION
         This method allows you to delete a CSI Storage Group from CipherTrust Manager identified by the "sg_id"
+    .PARAMETER sg_id
+        Identifier of the Storage Group to be removed on CipherTrust Manager
     .EXAMPLE
         PS> Remove-CTECSIStorageGroup -sg_id <sg_id>
         This method will delete the CSI Storage Groups with ID "sg_id"
@@ -237,6 +255,10 @@ function Remove-CTECSIStorageGroup {
         Add a list of CTE clients to a CSI Storage Group
     .DESCRIPTION
         This method allows you to add a list of CTE Clients to a CSI Storage Group.
+    .PARAMETER sg_id
+        Identifier of the Storage Group to which list of CTE clients need to be added
+    .PARAMETER client_list
+        List of CTE clients by their IDs to be added to the Storage Group
     .EXAMPLE
         PS> New-CTEAddClientsStorageGroup -sg_id <sg_id> -client_list <client_list>
         This method will add the elemets of client_list in the CSI Storage Group with ID "sg_id"
@@ -299,6 +321,10 @@ function New-CTEAddClientsStorageGroup {
         Add a list of CTE Policies to a CSI Storage Group
     .DESCRIPTION
         This method allows you to add a list of CTE Policies to a CSI Storage Group.
+    .PARAMETER sg_id
+        Identifier of the Storage Group to which list of policies need to be added
+    .PARAMETER policy_list
+        List of CSI policy identifiers to be associated with the storage group. This identifier can be the name or UUID.
     .EXAMPLE
         PS> New-CTEAddGuardPoliciesStorageGroup -sg_id <sg_id> -policy_list <policy_list>
         This method will add the elemets of policy_list in the CSI Storage Group with ID "sg_id"

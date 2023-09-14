@@ -59,6 +59,22 @@ $target_uri = "/transparent-encryption"
         Create a new CTE Policy Element
     .DESCRIPTION
         This allows you to create a CTE Policy Element such as ProcessSet, ResourceSet, UserSet, or SignatureSet on CipherTrust Manager and control a series of its parameters. Those parameters include: name, description, type, resource list
+    .PARAMETER policyElementType
+        Type of CTE Policy element To be created. Valid options are:
+        resourcesets
+        usersets
+        processsets
+        signaturesets
+    .PARAMETER name
+        Unique name on the CipherTrust Manager of the Policy Element to be created
+    .PARAMETER description
+        Description of the Policy Element to be created
+    .PARAMETER type
+        Type of the resource set. The valid options are Directory and Classification. The default value is Directory.
+    .PARAMETER elementsList
+        List of the elements like resources, users, signatures, and processes that can be added to the element set
+    .PARAMETER source_list
+        Path of the directory or file to be signed. If a directory is specified, all files in the directory and its subdirectories are signed. Valid in case of SignatureSets only.
     .EXAMPLE
         PS> New-CTEPolicyElement -policyElementType <policyElementType> -name <name> -type <type> -elementsList <elementsList>
         This shows the minimum parameters necessary to create a CTE Policy Element.
@@ -154,7 +170,39 @@ function New-CTEPolicyElement {
     .SYNOPSIS
         Create a new CTE Policy Element
     .DESCRIPTION
-        This allows you to create a CTE Policy Element components list such as processes, resources, or users
+        This allows you to create a CTE Policy Element components list such as processes, resources, signatures, or users
+    .PARAMETER policyElementType
+        Type of the CTE Policy Element List that need to be created. Options are:
+        resourcesets
+        usersets
+        processsets
+        signaturesets
+    .PARAMETER elementsList
+        List type variable holding the CTE Policy Elements. Can be a list of resources, users, processes, or signatures.
+    .PARAMETER directory
+        Directory of the resource to be added to the resource set.
+    .PARAMETER file
+        File name of the resource to be added to the resource set.
+    .PARAMETER hdfs
+        Whether the specified path is a HDFS path.
+    .PARAMETER include_subfolders
+        Whether to include subfolders to the resource.
+    .PARAMETER signature
+        ID or name of the signature set to link to the process set.
+    .PARAMETER gid
+        Group ID of the user to be added to the user set.
+    .PARAMETER gname
+        Group name of the user to be added to the user set.
+    .PARAMETER os_domain
+        OS domain name for Windows platforms.
+    .PARAMETER uid
+        ID of the user to be added to the user set.
+    .PARAMETER uname
+        Name of the user to be added to the user set.
+    .PARAMETER file_name
+        Name of the file.
+    .PARAMETER hash_value
+        Hash value of the file.
     .EXAMPLE
         PS> New-CTEElementsList -policyElementType <policyElementType> -directory <directory> -file <file> -hdfs <hdfs> -include_subfolders <include_subfolders>
         This shows the minimum parameters necessary to create a CTE ResourceSet.
@@ -290,6 +338,14 @@ function New-CTEElementsList {
         Returns a list of CTE Policy Elements configured on the CipherTrust Manager
     .DESCRIPTION
         This will create and return a list of all CTE policy elements by type such as resourcesets, usersets, processsets, or signaturesets
+    .PARAMETER policyElementType
+        CTE policy element type we want to search
+    .PARAMETER name
+        Unique name for the CTE Policy Element
+    .PARAMETER skip
+        The index of the first resource to return. Equivalent to `offset` in SQL.
+    .PARAMETER limit
+        The max number of resources to return. Equivalent to `limit` in SQL.
     .EXAMPLE
         PS> Find-CTEPolicyElementsByType -policyElementType <policyElementType>
         This will return all the Policy Elements of type policyElementType
@@ -367,6 +423,10 @@ function Find-CTEPolicyElementsByType {
         Deletes a CTE Policy Element from CipherTrust Manager
     .DESCRIPTION
         This will delete a CTE policy elements such as resourcesets, usersets, processsets, or signaturesets by the ID of the Policy Element
+    .PARAMETER policyElementType
+        Type of the CTE policy element we want to delete. This is useful in creating the CipherTrust Manager API URL.
+    .PARAMETER id
+        Identifier of the CTE policy element we want to delete
     .EXAMPLE
         PS> Remove-CTEPolicyElement -policyElementType <policyElementType> -id <id>
         This will delete the CTE Policy Element with identifier id and type policyElementType
@@ -421,6 +481,16 @@ function Remove-CTEPolicyElement {
         Updates a CTE Policy Element
     .DESCRIPTION
         This allows you to update a CTE Policy Element through a series of its parameters. Those parameters include: description, resource list
+    .PARAMETER policyElementType
+        Type of the CTE policy element we want to update. This is useful in creating the CipherTrust Manager API URL.
+    .PARAMETER id
+        Identifier of the CTE policy element we want to update
+    .PARAMETER description
+        Description of the CTE policy element
+    .PARAMETER elementsList
+        Updated list of the elements like resources, users, signatures, and processes that can be added to the element set
+    .PARAMETER source_list
+        Path of the directory or file to be signed. If a directory is specified, all files in the directory and its subdirectories are signed. Valid in case of SignatureSets update only.
     .EXAMPLE
         PS> Update-CTEPolicyElement -policyElementType <policyElementType> -id <id> -elementsList <elementsList>
         This shows the minimum parameters necessary to update a CTE Policy Element that is not signatureset.
@@ -509,6 +579,12 @@ function Update-CTEPolicyElement {
         Add processes to processset
         Add users to userset
         Add signatures to signatureset
+    .PARAMETER policyElementType
+        Type of the CTE policy element we want to update. This is useful in creating the CipherTrust Manager API URL.
+    .PARAMETER id
+        Identifier of the CTE policy element we want to update
+    .PARAMETER elementsList
+        Updated list of the elements like resources, users, signatures, and processes that can be added to the element set
     .EXAMPLE
         PS> Update-CTEPolicyElementAddElements -policyElementType <policyElementType> -id <id> -elementsList <elementsList>
         This shows the minimum parameters necessary to add elements to a CTE Policy Element Set.
@@ -594,6 +670,10 @@ function Update-CTEPolicyElementAddElements {
         Delete all components in a CTE Policy Element
     .DESCRIPTION
         This will take the ID and the Policy Element Type and remove all the components from the Policy Element
+    .PARAMETER policyElementType
+        Type of the CTE policy element we want to update. This is useful in creating the CipherTrust Manager API URL.
+    .PARAMETER id
+        Identifier of the CTE policy element we want to update
     .EXAMPLE
         PS> Remove-CTEPolicyElementDeleteElements -policyElementType <policyElementType> -id <id>
         This shows the parameters required to remove elements from a CTE Policy Element Set.
@@ -654,6 +734,32 @@ function Remove-CTEPolicyElementDeleteElements {
         Update the CTE Policy Element component by the Index of the component
     .DESCRIPTION
         This will take the ID and the Policy Element Type along with the index of the component to be updated. Index can be resourceIndex, processIndex, or userIndex depending on the Policy Element Type
+    .PARAMETER policyElementType
+        Type of the CTE policy element we want to update. This is useful in creating the CipherTrust Manager API URL.
+    .PARAMETER id
+        Identifier of the CTE policy element we want to update
+    .PARAMETER elementIndex
+        Index of the policy element to be updated
+    .PARAMETER directory
+        Directory of the resource to be added to the resource set.
+    .PARAMETER file
+        File name of the resource to be added to the resource set.
+    .PARAMETER hdfs
+        Whether the specified path is a HDFS path.
+    .PARAMETER include_subfolders
+        Whether to include subfolders to the resource.
+    .PARAMETER signature
+        ID or name of the signature set to link to the process set.
+    .PARAMETER gid
+        Group ID of the user to be added to the user set.
+    .PARAMETER gname
+        Group name of the user to be added to the user set.
+    .PARAMETER os_domain
+        OS domain name for Windows platforms.
+    .PARAMETER uid
+        ID of the user to be added to the user set.
+    .PARAMETER uname
+        Name of the user to be added to the user set.
     .EXAMPLE
         PS> Update-CTEPolicyElementUpdateElementByIndex -policyElementType <policyElementType> -id <id> -elementIndex <index> -directory <directory> -file <file> -hdfs <hdfs> -include_subfolders <include_subfolders>
         This shows the parameters required to update the componet by Index within a CTE Policy Element Set.

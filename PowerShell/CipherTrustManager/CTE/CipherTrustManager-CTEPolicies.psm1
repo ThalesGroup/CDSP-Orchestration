@@ -34,6 +34,33 @@ $target_uri = "/transparent-encryption/policies"
         Create a new CTE Client Policy
     .DESCRIPTION
         This allows you to create a CTE Client Policy on CipherTrust Manager and control a series of its parameters. Those parameters include: name, policy_type, description, and one of the security/key rules array
+    .PARAMETER name
+        Name of the policy.
+    .PARAMETER policy_type
+        Type of the policy. Valid values are:
+        Standard
+        LDT
+        IDT
+        Cloud_Object_Storage
+        CSI
+    .PARAMETER data_transform_rules
+        Data transformation rules to link with the policy.
+    .PARAMETER description
+        Description of the policy.
+    .PARAMETER idt_key_rules
+        IDT rules to link with the policy.
+    .PARAMETER key_rules
+        Key rules to link with the policy.
+    .PARAMETER ldt_key_rules
+        LDT rules to link with the policy. Supported for LDT policies.
+    .PARAMETER metadata
+        Restrict policy for modification
+    .PARAMETER never_deny
+        Whether to always allow operations in the policy. By default, it is disabled, that is, operations are not allowed. Supported for Standard, LDT, and Cloud_Object_Storage policies. For Learn Mode activations, never_deny is set to true, by default.
+    .PARAMETER security_rules
+        Security rules to link with the policy.
+    .PARAMETER signature_rules
+        Signature rules to link with the policy.
     .EXAMPLE
         PS> New-CTEPolicy -name <name> -policy_type <policy_type> -data_transform_rules <data_transform_rules> -security_rules <security_rules>
         This shows the minimum parameters necessary to create a new CTE Policy. Policy Type can be Standard, LDT, IDT, Cloud_Object_Storage, or CSI
@@ -138,16 +165,24 @@ function New-CTEPolicy {
         Add Data transformation (dataxform) rules to a CTE Client Policy
     .DESCRIPTION
         This allows you to create an array of Data transformation (dataxform) rules consisting of parameters like key and the the resource set
+    .PARAMETER dataTxRulesList
+        List of Data Transformation Rules to which we want to add another rule
+    .PARAMETER key_id
+        Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string "clear_key" only. Do not specify any other identifier.
+    .PARAMETER key_type
+        Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.
+    .PARAMETER resource_set_id
+        ID of the resource set linked with the rule.
     .EXAMPLE
-        PS> $list = New-CTEPolicyDataTxRulesList -key_id <key_id> -resource_set_id <resource_set_id>
+        PS> $list = New-CTEDataTxRulesList -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new Data Transformation rule
     .EXAMPLE
-        PS> $list = New-CTEPolicyDataTxRulesList -dataTxRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
+        PS> $list = New-CTEDataTxRulesList -dataTxRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new Data Transformation rule and add to an array that can be associated with a CTE client policy
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEPolicyDataTxRulesList {
+function New-CTEDataTxRulesList {
     param(
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -198,16 +233,26 @@ function New-CTEPolicyDataTxRulesList {
         Add In-Place data transformation rules to a CTE Client Policy
     .DESCRIPTION
         This allows you to create an array of In-Place data transformation rules consisting of keys information
+    .PARAMETER idtKeyRulesList
+        List of In-Place Data Transformation Rules to which we want to add another rule
+    .PARAMETER current_key
+        Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string "clear_key" only. Do not specify any other identifier.
+    .PARAMETER current_key_type
+        Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.
+    .PARAMETER transformation_key
+        Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id.
+    .PARAMETER transformation_key_type
+        Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.
     .EXAMPLE
-        PS> $list = New-CTEPolicyIDTKeyRulesList -current_key <current_key> -transformation_key <transformation_key>
+        PS> $list = New-CTEIDTKeyRulesList -current_key <current_key> -transformation_key <transformation_key>
         This shows the minimum parameters necessary to create a new In-Place data Transformation rule
     .EXAMPLE
-        PS> $list = New-CTEPolicyDataTxRulesList -idtKeyRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
+        PS> $list = New-CTEIDTKeyRulesList -idtKeyRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new In-Place data Transformation rule and add to an array that can be associated with a CTE client policy
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEPolicyIDTKeyRulesList {
+function New-CTEIDTKeyRulesList {
     param(
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -264,16 +309,24 @@ function New-CTEPolicyIDTKeyRulesList {
         Add key rules to a CTE Client Policy
     .DESCRIPTION
         This allows you to create an array of key rules consisting of key and resourceset information
+    .PARAMETER keyRulesList
+        List of Key Rules to which we want to add another rule
+    .PARAMETER key_id
+        Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string "clear_key" only. Do not specify any other identifier.
+    .PARAMETER key_type
+        Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.
+    .PARAMETER resource_set_id
+        ID of the resource set to link with the rule. Supported for Standard, LDT and IDT policies.
     .EXAMPLE
-        PS> $list = New-CTEPolicyKeyRulesList -key_id <key_id> -resource_set_id <resource_set_id>
+        PS> $list = New-CTEKeyRulesList -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new key rule
     .EXAMPLE
-        PS> New-CTEPolicyKeyRulesList -keyRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
+        PS> New-CTEKeyRulesList -keyRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new key rule and add to an array that can be associated with a CTE client policy
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEPolicyKeyRulesList {
+function New-CTEKeyRulesList {
     param(
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -324,16 +377,26 @@ function New-CTEPolicyKeyRulesList {
         Add Live Data Transformation (LDT) rules to a CTE Client Policy
     .DESCRIPTION
         This allows you to create an array of Live Data Transformation rules for resources to be protected consisting of current and transformation key as well as the resourceset to be protected
+    .PARAMETER ldtKeyRulesList
+        List of Live Data Transformation Rules to which we want to add another rule
+    .PARAMETER current_key
+        Properties of the current key.
+    .PARAMETER transformation_key
+        Properties of the transformation key.
+    .PARAMETER is_exclusion_rule
+        Whether this is an exclusion rule. If enabled, no need to specify the transformation rule.
+    .PARAMETER resource_set_id
+        ID of the resource set to link with the rule.
     .EXAMPLE
-        PS> $list = New-CTEPolicyLDTKeyRulesList -current_key <current_key> -resource_set_id <resource_set_id> -transformation_key <transformation_key>
+        PS> $list = New-CTELDTKeyRulesList -current_key <current_key> -resource_set_id <resource_set_id> -transformation_key <transformation_key>
         This shows the minimum parameters necessary to create a new LDT rule. Current and transformation key is a HashTable of Key ID and ID type.
     .EXAMPLE
-        PS> New-CTEPolicyLDTKeyRulesList -ldtKeyRulesList $list -current_key <current_key> -resource_set_id <resource_set_id> -transformation_key <transformation_key>
+        PS> New-CTELDTKeyRulesList -ldtKeyRulesList $list -current_key <current_key> -resource_set_id <resource_set_id> -transformation_key <transformation_key>
         This shows the minimum parameters necessary to create a new LDT rule. Current and transformation key is a HashTable of Key ID and ID type and add to an array that can be associated with a CTE client policy
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEPolicyLDTKeyRulesList {
+function New-CTELDTKeyRulesList {
     param(
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -377,7 +440,7 @@ function New-CTEPolicyLDTKeyRulesList {
         $temp_hash.add('transformation_key', $transformation_key)
     }    
 
-    #Add this current policy to the list of user set policies
+    #Add this current policy to the list rules
     $ldtKeyRulesList += $temp_hash
     Write-Debug "array updated: $($ldtKeyRulesList)"
 
@@ -390,16 +453,40 @@ function New-CTEPolicyLDTKeyRulesList {
         Add Security rules to a CTE Client Policy
     .DESCRIPTION
         A security rule defines who can access the data (User or Group), what they can do with the data (Action), which applications or executables have access to the data (Process), where the data is located (Resource), how the data can be accessed (Effect), and whether it can be viewed from the CipherTrust Manager (Browsing). This method allows you to create an array of security rules that can then be associated with a CTE client policy.
+    .PARAMETER securityRulesList
+        List of Security Rules to which we want to add another rule
+    .PARAMETER action
+        Actions applicable to the rule. Examples of actions are read, write, all_ops, and key_op.
+    .PARAMETER effect
+        Effects applicable to the rule. Separate multiple effects by commas. The valid values are:
+        permit
+        deny
+        audit
+        applykey
+    .PARAMETER process_set_id
+        ID of the process set to link to the policy.
+    .PARAMETER resource_set_id
+        ID of the resource set to link to the policy. Supported for Standard, LDT and IDT policies.
+    .PARAMETER user_set_id
+        ID of the user set to link to the policy.
+    .PARAMETER exclude_process_set
+        Process set to exclude. Supported for Standard, LDT and IDT policies.
+    .PARAMETER exclude_resource_set
+        Resource set to exclude. Supported for Standard, LDT and IDT policies.
+    .PARAMETER exclude_user_set
+        User set to exclude. Supported for Standard, LDT and IDT policies.
+    .PARAMETER partial_match
+        Whether to allow partial match operations. By default, it is enabled. Supported for Standard, LDT and IDT policies.
     .EXAMPLE
-        PS> $list = New-CTEPolicySecurityRulesList -effect <effect> -action <action> -partial_match <partial_match> -resource_set_id <resource_set_id> -exclude_resource_set <exclude_resource_set>
+        PS> $list = New-CTESecurityRulesList -effect <effect> -action <action> -partial_match <partial_match> -resource_set_id <resource_set_id> -exclude_resource_set <exclude_resource_set>
         This shows the parameters to create a new Security rule that allows or blocks access to a particular resource
     .EXAMPLE
-        PS> New-CTEPolicySecurityRulesList -securityRulesList $list -effect <effect> -action <action> -partial_match <partial_match> -resource_set_id <resource_set_id> -exclude_resource_set <exclude_resource_set>
+        PS> New-CTESecurityRulesList -securityRulesList $list -effect <effect> -action <action> -partial_match <partial_match> -resource_set_id <resource_set_id> -exclude_resource_set <exclude_resource_set>
         This shows the parameters to create a new Security Rule that allows or blocks access to a particular resource and add the same to an array that can be associated with a CTE client policy
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEPolicySecurityRulesList {
+function New-CTESecurityRulesList {
     param(
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -473,7 +560,7 @@ function New-CTEPolicySecurityRulesList {
         $temp_hash.add('user_set_id', $user_set_id)
     }    
 
-    #Add this current policy to the list of user set policies
+    #Add this current policy to the list of rules
     $securityRulesList += $temp_hash
     Write-Debug "array updated: $($securityRulesList)"
 
@@ -486,16 +573,20 @@ function New-CTEPolicySecurityRulesList {
         Add Signtaure rules to a CTE Client Policy
     .DESCRIPTION
         This method allows you to create an array of signature rules that can then be associated with a CTE client policy.
+    .PARAMETER signatureRulesList
+        List of Signature Rules to which we want to add another rule
+    .PARAMETER signature_set_id
+        List of identifiers of signature sets. This identifier can be the Name, ID (a UUIDv4), URI, or slug of the signature set.
     .EXAMPLE
-        PS> $list = New-CTEPolicySignatureRulesList -signature_set_id <signature_set_id>
+        PS> $list = New-CTESignatureRulesList -signature_set_id <signature_set_id>
         This shows the parameters to create a new signature rule with minimum parameters i.e. signature_set_id
     .EXAMPLE
-        PS> New-CTEPolicySignatureRulesList -signatureRulesList $list -signature_set_id <signature_set_id>
+        PS> New-CTESignatureRulesList -signatureRulesList $list -signature_set_id <signature_set_id>
         This shows the parameters to create a new signature rule with minimum parameters i.e. signature_set_id and add the same to an array that can be associated with a CTE client policy
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEPolicySignatureRulesList {
+function New-CTESignatureRulesList {
     param(
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -534,6 +625,10 @@ function New-CTEPolicySignatureRulesList {
         Create new data structure to hold LDT key
     .DESCRIPTION
         This method allows you to create a HashTable that holds key arguments i.e. key_id and key_type.
+    .PARAMETER key_id
+        Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string "clear_key" only. Do not specify any other identifier.
+    .PARAMETER key_type
+        Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.
     .EXAMPLE
         PS> $ldtKey = New-CTELDTKey -key_id <key_id> -key_type 'id'
     .LINK
@@ -568,6 +663,8 @@ function New-CTELDTKey {
         Create new data structure to hold CTE Policy Metadata
     .DESCRIPTION
         This method allows you to create a HashTable that holds the metadata for CTE Policy
+    .PARAMETER restrict_update
+        To restrict the policy for modification. If its value enabled means user not able to modify the guarded policy.
     .EXAMPLE
         PS> $meta = New-CTEPolicyMetadata -restrict_update <restrict_update>
     .LINK
@@ -592,11 +689,11 @@ function New-CTEPolicyMetadata {
 }
 
 Export-ModuleMember -Function New-CTEPolicy
-Export-ModuleMember -Function New-CTEPolicyDataTxRulesList
-Export-ModuleMember -Function New-CTEPolicyIDTKeyRulesList
-Export-ModuleMember -Function New-CTEPolicyKeyRulesList
-Export-ModuleMember -Function New-CTEPolicyLDTKeyRulesList
-Export-ModuleMember -Function New-CTEPolicySecurityRulesList
-Export-ModuleMember -Function New-CTEPolicySignatureRulesList
+Export-ModuleMember -Function New-CTEDataTxRulesList
+Export-ModuleMember -Function New-CTEIDTKeyRulesList
+Export-ModuleMember -Function New-CTEKeyRulesList
+Export-ModuleMember -Function New-CTELDTKeyRulesList
+Export-ModuleMember -Function New-CTESecurityRulesList
+Export-ModuleMember -Function New-CTESignatureRulesList
 Export-ModuleMember -Function New-CTELDTKey
 Export-ModuleMember -Function New-CTEPolicyMetadata

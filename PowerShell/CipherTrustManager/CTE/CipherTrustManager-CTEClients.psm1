@@ -64,6 +64,26 @@ $target_uri = "/transparent-encryption/clients"
         Create a new CTE Client on CipehrTrust Manager
     .DESCRIPTION
         A client is a computer system where the data needs to be protected. A compatible CTE Agent software is installed on the client. The CTE Agent can protect data on the client or devices connected to it. A client can be associated with multiple GuardPoints for encryption of various paths. This method allows you to create a CTE client and control a series of its parameters.
+    .PARAMETER name
+        Name to uniquely identify the client. This name will be visible on the CipherTrust Manager.
+    .PARAMETER client_locked
+        Whether the CTE client is locked. The default value is false. Enable this option to lock the configuration of the CTE Agent on the client. Set to true to lock the configuration, set to false to unlock. Locking the Agent configuration prevents updates to any policies on the client.
+    .PARAMETER client_type
+        Type of CTE Client. The default value is FS. Valid values are CTE-U and FS.
+    .PARAMETER communication_enabled
+        Whether communication with the client is enabled. The default value is false. Can be set to true only if registration_allowed is true.
+    .PARAMETER description
+        Description to identify the client.
+    .PARAMETER password
+        Password for the client. Required when password_creation_method is MANUAL.
+    .PARAMETER password_creation_method
+        Password creation method for the client. Valid values are MANUAL and GENERATE. The default value is GENERATE.
+    .PARAMETER profile_identifier
+        Identifier of the Client Profile to be associated with the client. If not provided, the default profile will be linked.
+    .PARAMETER registration_allowed
+        Whether client's registration with the CipherTrust Manager is allowed. The default value is false. Set to true to allow registration.
+    .PARAMETER system_locked
+        Whether the system is locked. The default value is false. Enable this option to lock the important operating system files of the client. When enabled, patches to the operating system of the client will fail due to the protection of these files.
     .EXAMPLE
         PS> New-CTEClient -name <name>
         This shows the minimum parameters necessary to create a CTE client with default client_type FS (FileSystem), client_locked status as False, communication_enabled as False, password_creation_method as GENERATE, registration_allowed as False and system_locked as False.
@@ -169,6 +189,12 @@ function New-CTEClient {
         Create and returns a list of CTE clients created on CipherTrust Manager
     .DESCRIPTION
         This method will allow you to retrieve a list of CTE clients that have been configured on the CipherTrust Manager manually or automatically 
+    .PARAMETER name
+        Unique name for the CTE Client.
+    .PARAMETER skip
+        The index of the first resource to return. Equivalent to `offset` in SQL.
+    .PARAMETER limit
+        The max number of resources to return. Equivalent to `limit` in SQL.
     .EXAMPLE
         PS> Find-CTEClients
         This example will return all the CTE clients configured on CipherTrust Manager
@@ -196,8 +222,6 @@ function Find-CTEClients {
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    #Set query
-    #$firstset = $false
     if ($name) {
         $endpoint += "?name="
         $endpoint += $name            
@@ -243,6 +267,47 @@ function Find-CTEClients {
         Updates a CTE client
     .DESCRIPTION
         This method will allow you to update the behaviour of a CTE client
+    .PARAMETER id
+        Unique ID of a CTE client that needs to be updated
+    .PARAMETER client_locked
+        Whether the CTE client is locked. The default value is false. Enable this option to lock the configuration of the CTE Agent on the client. Set to true to lock the configuration, set to false to unlock. Locking the Agent configuration prevents updates to any policies on the client.
+    .PARAMETER client_mfa_enabled
+        Whether MFA is enabled on the client.
+    .PARAMETER communication_enabled
+        Whether communication with the client is enabled. The default value is false. Can be set to true only if registration_allowed is true.
+    .PARAMETER del_client
+        Whether to mark the client for deletion from the CipherTrust Manager. The default value is false.
+    .PARAMETER description
+        Description to identify the client.
+    .PARAMETER disable_capability
+        Client capability to be disabled. Only EKP - Encryption Key Protection can be disabled.
+    .PARAMETER dynamic_parameters
+        Array of parameters to be updated after the client is registered. Specify the parameters in the name-value pair JSON format strings. Make sure to specify all the parameters even if you want to update one or more parameters.
+        For example, if there are two parameters in the CTE client list and you want to update the value of "param1", then specify the correct value (one from the "allowed_values") in the "current_value" field, and keep the remaining parameters intact.
+        
+        Example of dynamic parameters:
+        "dynamic_parameters": "[{"name":"param1","type":"SingleSelectString", "description":"Enable or disable param1 capability for CTE binaries.", "allowed_values":"enabled^disabled", "default_value":"disabled", "current_value":"enabled"},{"name":"param2", "type":"MultiSelectString","description":"param2 that takes multiple strings as value", "allowed_values":"Option1^Option2^Option3^Option4", "default_value":"Option1^Option2^Option3", "current_value":"Option1^Option2^Option3"}]"
+    .PARAMETER enable_domain_sharing
+        Whether domain sharing is enabled for the client.
+    .PARAMETER enabled_capabilities
+        Client capabilities to be enabled. Separate values with comma. Valid values are:
+        LDT - Live Data Transformation
+        EKP - Encryption Key Protection
+        ES - Efficient Storage
+    .PARAMETER max_num_cache_log
+        Maximum number of logs to cache.
+    .PARAMETER max_space_cache_log
+        Maximum space for the cached logs.
+    .PARAMETER password
+        Password for the client. Required when password_creation_method is MANUAL.
+    .PARAMETER password_creation_method
+        Password creation method for the client. Valid values are MANUAL and GENERATE. The default value is GENERATE.
+    .PARAMETER profile_id
+        Identifier of the Client Profile to be associated with the client. If not provided, the default profile will be linked.
+    .PARAMETER registration_allowed
+        Whether client's registration with the CipherTrust Manager is allowed. Applicable to the clients manually created on the CipherTrust Manager. The default value is false. Set to true to allow registration.
+    .PARAMETER system_locked
+        Whether the system is locked. The default value is false. Enable this option to lock the important operating system files of the client. When enabled, patches to the operating system of the client will fail due to the protection of these files.
     .EXAMPLE
         PS> Update-CTEClient -id <id> -enabled_capabilities 'LDT'
         This example will update the CTE client with id "id" and enable capabilities to allow Live Data Transformation
@@ -299,7 +364,7 @@ function Update-CTEClient {
         [CTE_PasswordCreationMethodsEnum] $password_creation_method=1,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [string] $profile_identifier,
+        [string] $profile_id,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
         [bool] $registration_allowed,
@@ -333,7 +398,7 @@ function Update-CTEClient {
     if ($max_space_cache_log) { $body.add('max_space_cache_log', $max_space_cache_log) }
     if ($password) { $body.add('password', $password) }
     if ($password_creation_method) { $body.add('password_creation_method', ([CTE_PasswordCreationMethodsEnum]$password_creation_method).ToString()) }
-    if ($profile_identifier) { $body.add('profile_identifier', $profile_identifier) }    
+    if ($profile_id) { $body.add('profile_id', $profile_id) }    
     if ($registration_allowed -ne $null) { $body.add('registration_allowed', $registration_allowed) }
     if ($system_locked -ne $null) { $body.add('system_locked', $system_locked) }
 
@@ -369,6 +434,42 @@ function Update-CTEClient {
     .DESCRIPTION
         This method will allow you to creat a HashTable type variable that will store various CTE GuardPoint parameters.
         This HashTable can then be provided to another method i.e. New-CTEClientGuardPoint that allows you to create a new GuardPoint within a CTE client
+    .PARAMETER guard_point_type
+        Type of the GuardPoint. The options are:
+            directory_auto
+            directory_manual
+            rawdevice_manual
+            rawdevice_auto
+            cloudstorage_auto
+            cloudstorage_manual
+    .PARAMETER policy_id
+        ID of the policy applied with this GuardPoint.
+    .PARAMETER automount_enabled
+        Whether automount is enabled with the GuardPoint. Supported for Standard and LDT policies.
+    .PARAMETER cifs_enabled
+        Whether to enable CIFS. Available on LDT enabled windows clients only. The default value is false. If you enable the setting, it cannot be disabled. Supported for only LDT policies.
+    .PARAMETER data_classification_enabled
+        Whether data classification (tagging) is enabled. Enabled by default if the aligned policy contains ClassificationTags. Supported for Standard and LDT policies.
+    .PARAMETER data_lineage_enabled
+        Whether data lineage (tracking) is enabled. Enabled only if data classification is enabled. Supported for Standard and LDT policies.
+    .PARAMETER disk_name
+        Name of the disk if the selected raw partition is a member of an Oracle ASM disk group.
+    .PARAMETER diskgroup_name
+        Name of the disk group if the selected raw partition is a member of an Oracle ASM disk group.
+    .PARAMETER early_access
+        Whether secure start (early access) is turned on. Secure start is applicable to Windows clients only. Supported for Standard and LDT policies. The default value is false.
+    .PARAMETER intelligent_protection
+        Flag to enable intelligent protection for this GuardPoint. This flag is valid for GuardPoints with classification based policy only. Can only be set during GuardPoint creation.
+    .PARAMETER is_esg_capable_device
+        Whether the device where GuardPoint is applied is ESG capable or not. Supported for IDT and Standard policies.
+    .PARAMETER is_idt_capable_device
+        Whether the device where GuardPoint is applied is IDT capable or not. Supported for IDT policies.
+    .PARAMETER mfa_enabled
+        Whether MFA is enabled.
+    .PARAMETER network_share_credentials_id
+        ID/Name of the credentials if the GuardPoint is applied to a network share. Supported for only LDT policies.
+    .PARAMETER preserve_sparse_regions
+        Whether to preserve sparse file regions. Available on LDT enabled clients only. The default value is true. If you disable the setting, it cannot be enabled again. Supported for only LDT policies.
     .EXAMPLE
         PS> New-CTEGuardPointParams -guard_point_type <guard_point_type> -policy_id <policy_id>
         This example shows minimum parameters required to create a new GuardPoint Params data structure
@@ -378,7 +479,7 @@ function Update-CTEClient {
 function New-CTEGuardPointParams {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', 
     '', 
-    Justification = 'These are not network passwords... these are the id of a storred password.')]
+    Justification = 'These are not network passwords... these are the id of a stored password.')]
     param
     (
         [Parameter(Mandatory = $true,
@@ -458,13 +559,19 @@ function New-CTEGuardPointParams {
     .DESCRIPTION
         A GuardPoint specifies the list of folders that contains paths to be protected. Access to files and encryption of files under the GuardPoint is controlled by security policies. GuardPoints created on a client group are applied to all members of the group.
         This method will allow you to create a new Guard Point for a CTE client and control a series of its parameters.
+    .PARAMETER client_id
+        CTE Client on which GuardPoint needs to be created
+    .PARAMETER guard_paths
+        List of GuardPaths to be created.
+    .PARAMETER guard_point_params
+        Parameters for creating a GuardPoint.
     .EXAMPLE
         PS> New-CTEClientGuardPoint -guard_paths <guard_paths> -guard_point_params <guard_point_params>
         This example shows minimum parameters required to create a new GuardPoint that includes an array of Guard Paths plus a HashTable type of variable that holds the GuardPoint params
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CTEClientGuardPoint {
+function New-CTEGuardPoint {
     # classification_tags not supported yet
     param
     (
@@ -526,6 +633,14 @@ function New-CTEClientGuardPoint {
         List all guard points for a CTE client
     .DESCRIPTION
         This method will create and return a list of all GuardPoints created within a CTE client
+    .PARAMETER client_id
+        CTE Client ID as search criteria for searching GuardPoints
+    .PARAMETER client_id
+        Guard Path as search criteria for searching GuardPoints
+    .PARAMETER skip
+        The index of the first resource to return. Equivalent to `offset` in SQL.
+    .PARAMETER limit
+        The max number of resources to return. Equivalent to `limit` in SQL.
     .EXAMPLE
         PS> Find-CTEClientGuardPoints -client_id <client_id>
         This example will return a list of all the GuardPoints within a client i.e. "client_id"
@@ -535,7 +650,7 @@ function New-CTEClientGuardPoint {
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Find-CTEClientGuardPoints {
+function Find-CTEGuardPoints {
     param
     (
         [Parameter(Mandatory = $true,
@@ -552,7 +667,7 @@ function Find-CTEClientGuardPoints {
         [int] $limit
     )
 
-    Write-Debug "Getting a List of CTE Client GuardPoints configured in CM"
+    Write-Debug "Getting a List of CTE GuardPoints configured in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri + "/" + $client_id + "/guardpoints"
     Write-Debug "Endpoint: $($endpoint)"
 
@@ -600,19 +715,20 @@ function Find-CTEClientGuardPoints {
 
 <#
     .SYNOPSIS
-        List all guard points for a CTE client
+        Unguard GuardPoint(s) in a CTE client
     .DESCRIPTION
-        This method will create and return a list of all GuardPoints created within a CTE client
+        This method will unguard GuardPoint(s) in a CTE client
+    .PARAMETER client_id
+        ID of the CTE client where GuardPoint(s) need to be unguarded
+    .PARAMETER guard_point_id_list
+        List of the GuardPoint IDs that need to be unguarded
     .EXAMPLE
-        PS> Find-CTEClientGuardPoints -client_id <client_id>
-        This example will return a list of all the GuardPoints within a client i.e. "client_id"
-    .EXAMPLE
-        PS> Find-CTEClientGuardPoints -client_id <client_id> -guard_path <guard_path>
-        This example will return a list of all the GuardPoints where guard_path matches "guard_path" and within the client "client_id"
+        PS> Remove-CTEGuardPoint -client_id <client_id> -guard_point_id_list <guard_point_id_list>
+        This example will unguard all the GuardPoints in the list guard_point_id_list from the client with ID client_id
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Remove-CTEClientGuardPoint {
+function Remove-CTEGuardPoint {
     param
     (
         [Parameter(Mandatory = $true,
@@ -663,6 +779,6 @@ Export-ModuleMember -Function New-CTEClient
 Export-ModuleMember -Function Find-CTEClients
 Export-ModuleMember -Function Update-CTEClient
 Export-ModuleMember -Function New-CTEGuardPointParams
-Export-ModuleMember -Function New-CTEClientGuardPoint
-Export-ModuleMember -Function Find-CTEClientGuardPoints
-Export-ModuleMember -Function Remove-CTEClientGuardPoint
+Export-ModuleMember -Function New-CTEGuardPoint
+Export-ModuleMember -Function Find-CTEGuardPoints
+Export-ModuleMember -Function Remove-CTEGuardPoint
