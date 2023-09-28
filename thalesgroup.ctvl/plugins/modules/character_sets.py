@@ -16,10 +16,10 @@ from ansible_collections.thalesgroup.ctvl.plugins.module_utils.exceptions import
 
 DOCUMENTATION = '''
 ---
-module: keys
-short_description: Create or manage CT-VL keys
+module: character_sets
+short_description: Create or update properties of a Character Set on CT-VL
 description:
-    - This is a Thales CipherTrust vault less Tokenization module for working with the CT-VL Keys APIs, create and update the keys on the CT-VL platforms
+    - This is a Thales CipherTrust Vaultless Tokenization module for working with the CT-VL CharacterSets APIs, create and update the CharacterSet on the CT-VL platform
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -48,38 +48,47 @@ options:
             required: true
             default: false     
     op_type:
-        description: Operation to be performed on the CT-VL key
-        choices: [create, update]
+        description: Operation to be performed on the CT-VL CharacterMask
+        choices: [create, update, delete]
         required: true
         type: str
     id:
-        description: CT-VL key ID to be updated
-        type: int
+        description: CT-VL CharacterSet ID to be updated
+        type: str
     name:
-        description: Name of the key
+        description: Tokenization character set name
         required: true
         type: str
-    seedkey:
-        description: Weather to seed the key or not
+    alphabet:
+        description: A sequence of characters or a range (in HEX digits) defining the character set
+        required: true
+        type: str
+    predefined:
+        description: True if it’s a predefined character set. False if it’s a custom character set
         required: false
-        default: false
+        type: bool
+    range:
+        description: Character set type. True if it’s a range, False if it’s a sequence of alphanumeric characters
+        required: false
         type: bool
 '''
 
 EXAMPLES = '''
-- name: "Create key"
-  thalesgroup.ctvl.keys:
+- name: "Create CharacterSet"
+  thalesgroup.ctvl.character_sets:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
         password: "API User Password"
         verify: false
     op_type: create
-    name: ctvl-key
-    seedkey: false
+    name: charset-name
+    alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+    predefined: false
+    range: false
 
-- name: "Update key"
-  thalesgroup.ctvl.keys:
+- name: "Update CharacterSet"
+  thalesgroup.ctvl.character_sets:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
@@ -87,11 +96,11 @@ EXAMPLES = '''
         verify: false
     op_type: update
     id: 2
-    name: "ctvl-key-upd"
-    seedkey: false
+    name: charset-name-updated
+    alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 
-- name: "Delete key"
-  thalesgroup.ctvl.keys:
+- name: "Delete CharacterSet"
+  thalesgroup.ctvl.character_sets:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
@@ -102,16 +111,43 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-
+idtokencharset:
+    description: CharacterSet ID
+    returned: always
+    type: int
+    sample: 2
+name:
+    description: Tokenization character set name
+    returned: always
+    type: str
+    sample: 'charset-name'
+alphabet:
+    description: A sequence of characters or a range (in HEX digits) defining the character set
+    returned: always
+    type: str
+    sample: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+predefined:
+    description: True if it’s a predefined character set. False if it’s a custom character set
+    returned: changed
+    type: bool
+    sample: false
+range:
+    description: Character set type. True if it’s a range, False if it’s a sequence of alphanumeric characters
+    returned: changed
+    type: bool
+    sample: false
 '''
+
 argument_spec = dict(
     op_type=dict(type='str', options=['create', 'update', 'delete'], required=True),
     id=dict(type='int'),
     name=dict(type='str', required=True),
-    seedkey=dict(type='bool', required=False, default=False),
+    alphabet=dict(type='str', required=True),
+    predefined=dict(type='int', required=False),
+    range=dict(type='str', required=False),
 )
 
-def validate_parameters(keys_module):
+def validate_parameters(charsets_module):
     return True
 
 def setup_module_object():
@@ -132,7 +168,7 @@ def main():
     
     module = setup_module_object()
     validate_parameters(
-        keys_module=module,
+        charsets_module=module,
     )
 
     result = dict(
@@ -143,9 +179,11 @@ def main():
       try:
         response = createCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='charset',
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          alphabet=module.params.get('alphabet'),
+          predefined=module.params.get('predefined'),
+          range=module.params.get('range'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -158,10 +196,12 @@ def main():
       try:
         response = patchCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='charset',
           id=module.params.get('id'),
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          alphabet=module.params.get('alphabet'),
+          predefined=module.params.get('predefined'),
+          range=module.params.get('range'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -174,7 +214,7 @@ def main():
       try:
         response = deleteCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='charset',
           id=module.params.get('id'),
         )
         result['response'] = response

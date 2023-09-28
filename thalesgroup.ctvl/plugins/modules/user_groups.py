@@ -16,10 +16,10 @@ from ansible_collections.thalesgroup.ctvl.plugins.module_utils.exceptions import
 
 DOCUMENTATION = '''
 ---
-module: keys
-short_description: Create or manage CT-VL keys
+module: user_groups
+short_description: Create or update properties of a User Groups on CT-VL
 description:
-    - This is a Thales CipherTrust vault less Tokenization module for working with the CT-VL Keys APIs, create and update the keys on the CT-VL platforms
+    - This is a Thales CipherTrust Vaultless Tokenization module for working with the CT-VL CharacterSets APIs, create and update the User Groups on the CT-VL platform
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -48,38 +48,44 @@ options:
             required: true
             default: false     
     op_type:
-        description: Operation to be performed on the CT-VL key
+        description: Operation to be performed on the CT-VL User Group
         choices: [create, update]
         required: true
         type: str
     id:
-        description: CT-VL key ID to be updated
-        type: int
+        description: CT-VL Group ID to be updated
+        type: str
     name:
-        description: Name of the key
+        description: User group name
         required: true
         type: str
-    seedkey:
-        description: Weather to seed the key or not
+    users:
+        description: List of users to be added to the group
         required: false
-        default: false
-        type: bool
+        type: list
+        elements: str
+    mask:
+        description: Name of the CT-VL Mask
+        required: str
+        type: str
 '''
 
 EXAMPLES = '''
-- name: "Create key"
-  thalesgroup.ctvl.keys:
+- name: "Create User Group"
+  thalesgroup.ctvl.user_groups:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
         password: "API User Password"
         verify: false
     op_type: create
-    name: ctvl-key
-    seedkey: false
+    name: group-name
+    users:
+      - root
+    mask: mask-name
 
-- name: "Update key"
-  thalesgroup.ctvl.keys:
+- name: "Update User Group"
+  thalesgroup.ctvl.user_groups:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
@@ -87,31 +93,44 @@ EXAMPLES = '''
         verify: false
     op_type: update
     id: 2
-    name: "ctvl-key-upd"
-    seedkey: false
-
-- name: "Delete key"
-  thalesgroup.ctvl.keys:
-    server:
-        url: "IP/FQDN of CT-VL instance"
-        username: "API Username"
-        password: "API User Password"
-        verify: false
-    op_type: delete
-    id: 2
+    name: group-name
+    users:
+      - root
+      - api_admin
 '''
 
 RETURN = '''
-
+id:
+    description: Group ID
+    returned: always
+    type: int
+    sample: 2
+name:
+    description: Group name
+    returned: always
+    type: str
+    sample: 'group-name'
+users:
+    description: List of users in the group
+    returned: changed
+    type: list
+    sample: ["root", "api_admin"]
+mask:
+    description: Name of the CT-VL Mask
+    returned: changed
+    type: str
+    sample: 'mask-name'
 '''
+
 argument_spec = dict(
     op_type=dict(type='str', options=['create', 'update', 'delete'], required=True),
     id=dict(type='int'),
     name=dict(type='str', required=True),
-    seedkey=dict(type='bool', required=False, default=False),
+    users=dict(type='list', element='str', required=False),
+    mask=dict(type='str', required=False),
 )
 
-def validate_parameters(keys_module):
+def validate_parameters(groups_module):
     return True
 
 def setup_module_object():
@@ -132,7 +151,7 @@ def main():
     
     module = setup_module_object()
     validate_parameters(
-        keys_module=module,
+        groups_module=module,
     )
 
     result = dict(
@@ -143,9 +162,10 @@ def main():
       try:
         response = createCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='group',
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          users=module.params.get('users'),
+          mask=module.params.get('mask'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -158,10 +178,11 @@ def main():
       try:
         response = patchCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='group',
           id=module.params.get('id'),
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          users=module.params.get('users'),
+          mask=module.params.get('mask'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -174,7 +195,7 @@ def main():
       try:
         response = deleteCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='group',
           id=module.params.get('id'),
         )
         result['response'] = response

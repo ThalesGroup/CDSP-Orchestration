@@ -16,10 +16,10 @@ from ansible_collections.thalesgroup.ctvl.plugins.module_utils.exceptions import
 
 DOCUMENTATION = '''
 ---
-module: keys
-short_description: Create or manage CT-VL keys
+module: masks
+short_description: Create or update properties of a mask on CT-VL
 description:
-    - This is a Thales CipherTrust vault less Tokenization module for working with the CT-VL Keys APIs, create and update the keys on the CT-VL platforms
+    - This is a Thales CipherTrust Vaultless Tokenization module for working with the CT-VL Masks APIs, create and update the masks on the CT-VL platform
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -48,38 +48,47 @@ options:
             required: true
             default: false     
     op_type:
-        description: Operation to be performed on the CT-VL key
-        choices: [create, update]
+        description: Operation to be performed on the CT-VL mask
+        choices: [create, update, delete]
         required: true
         type: str
     id:
-        description: CT-VL key ID to be updated
-        type: int
+        description: CT-VL mask ID to be updated
+        type: str
     name:
-        description: Name of the key
+        description: Mask name
         required: true
         type: str
-    seedkey:
-        description: Weather to seed the key or not
-        required: false
-        default: false
-        type: bool
+    showleft:
+        description: Number of unencrypted characters starting from the left
+        required: true
+        type: int
+    showright:
+        description: Number of unencrypted characters starting from the right
+        required: true
+        type: int
+    maskchar:
+        description: Masking character
+        required: true
+        type: str
 '''
 
 EXAMPLES = '''
-- name: "Create key"
-  thalesgroup.ctvl.keys:
+- name: "Create Mask"
+  thalesgroup.ctvl.masks:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
         password: "API User Password"
         verify: false
     op_type: create
-    name: ctvl-key
-    seedkey: false
+    name: mask-name
+    showleft: 4
+    showright: 2
+    maskchar: x
 
-- name: "Update key"
-  thalesgroup.ctvl.keys:
+- name: "Update Mask"
+  thalesgroup.ctvl.masks:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
@@ -87,11 +96,13 @@ EXAMPLES = '''
         verify: false
     op_type: update
     id: 2
-    name: "ctvl-key-upd"
-    seedkey: false
+    name: mask-name-updated
+    showleft: 4
+    showright: 2
+    maskchar: 0
 
-- name: "Delete key"
-  thalesgroup.ctvl.keys:
+- name: "Delete Mask"
+  thalesgroup.ctvl.masks:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
@@ -102,16 +113,43 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
+idmask:
+    description: Mask ID
+    returned: always
+    type: int
+    sample: 2
+name:
+    description: Mask name
+    returned: always
+    type: str
+    sample: 'mask-name'
+showleft:
+    description: Number of unencrypted characters starting from the left
+    returned: always
+    type: int
+    sample: 4
+showright:
+    description: Number of unencrypted characters starting from the right
+    returned: always
+    type: int
+    sample: 2
+maskchar:
+    description: Masking character
+    returned: always
+    type: str
+    sample: 'x'
 
 '''
 argument_spec = dict(
     op_type=dict(type='str', options=['create', 'update', 'delete'], required=True),
     id=dict(type='int'),
     name=dict(type='str', required=True),
-    seedkey=dict(type='bool', required=False, default=False),
+    showleft=dict(type='int', required=True),
+    showright=dict(type='int', required=True),
+    maskchar=dict(type='str', required=True),
 )
 
-def validate_parameters(keys_module):
+def validate_parameters(masks_module):
     return True
 
 def setup_module_object():
@@ -132,7 +170,7 @@ def main():
     
     module = setup_module_object()
     validate_parameters(
-        keys_module=module,
+        masks_module=module,
     )
 
     result = dict(
@@ -143,9 +181,11 @@ def main():
       try:
         response = createCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='mask',
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          showleft=module.params.get('showleft'),
+          showright=module.params.get('showleft'),
+          maskchar=module.params.get('showleft'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -158,10 +198,12 @@ def main():
       try:
         response = patchCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='mask',
           id=module.params.get('id'),
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          showleft=module.params.get('showleft'),
+          showright=module.params.get('showleft'),
+          maskchar=module.params.get('showleft'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -174,7 +216,7 @@ def main():
       try:
         response = deleteCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='mask',
           id=module.params.get('id'),
         )
         result['response'] = response

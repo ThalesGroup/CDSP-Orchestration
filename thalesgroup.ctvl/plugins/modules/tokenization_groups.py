@@ -16,10 +16,10 @@ from ansible_collections.thalesgroup.ctvl.plugins.module_utils.exceptions import
 
 DOCUMENTATION = '''
 ---
-module: keys
-short_description: Create or manage CT-VL keys
+module: tokenization_groups
+short_description: Create or update properties of CT-VL Tokenization Group
 description:
-    - This is a Thales CipherTrust vault less Tokenization module for working with the CT-VL Keys APIs, create and update the keys on the CT-VL platforms
+    - This is a Thales CipherTrust Vaultless Tokenization module for working with the CT-VL CharacterSets APIs, create and update the Tokenization Groups on the CT-VL platform
 version_added: "1.0.0"
 author: Anurag Jain, Developer Advocate Thales Group
 options:
@@ -48,38 +48,37 @@ options:
             required: true
             default: false     
     op_type:
-        description: Operation to be performed on the CT-VL key
-        choices: [create, update]
+        description: Operation to be performed on the CT-VL Tokenization Group
+        choices: [create, update, delete]
         required: true
         type: str
     id:
-        description: CT-VL key ID to be updated
+        description: CT-VL Tokenization Group ID to be updated or deleted
         type: int
     name:
-        description: Name of the key
+        description: Tokenization group name
         required: true
         type: str
-    seedkey:
-        description: Weather to seed the key or not
+    key:
+        description: Key used with the tokenization group
         required: false
-        default: false
-        type: bool
+        type: str
 '''
 
 EXAMPLES = '''
-- name: "Create key"
-  thalesgroup.ctvl.keys:
+- name: "Create Tokenization Group"
+  thalesgroup.ctvl.tokenization_groups:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
         password: "API User Password"
         verify: false
     op_type: create
-    name: ctvl-key
-    seedkey: false
+    name: token-group-name
+    key: key-name
 
-- name: "Update key"
-  thalesgroup.ctvl.keys:
+- name: "Update Tokenization Group"
+  thalesgroup.ctvl.tokenization_groups:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
@@ -87,11 +86,11 @@ EXAMPLES = '''
         verify: false
     op_type: update
     id: 2
-    name: "ctvl-key-upd"
-    seedkey: false
+    name: token-group-name-upd
+    key: key-name
 
-- name: "Delete key"
-  thalesgroup.ctvl.keys:
+- name: "Delete Tokenization Group"
+  thalesgroup.ctvl.tokenization_groups:
     server:
         url: "IP/FQDN of CT-VL instance"
         username: "API Username"
@@ -102,23 +101,39 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-
+idtenant:
+    description: Tokenization Group ID
+    returned: always
+    type: int
+    sample: 2
+name:
+    description: Tokenization Group name
+    returned: always
+    type: str
+    sample: 'token-group-name'
+key:
+    description: Key to be associated with the tokenization group
+    returned: always
+    type: str
+    sample: 'key-name'
 '''
+
 argument_spec = dict(
     op_type=dict(type='str', options=['create', 'update', 'delete'], required=True),
     id=dict(type='int'),
-    name=dict(type='str', required=True),
-    seedkey=dict(type='bool', required=False, default=False),
+    name=dict(type='str'),
+    key=dict(type='str'),
 )
 
-def validate_parameters(keys_module):
+def validate_parameters(token_group_module):
     return True
 
 def setup_module_object():
     module = ThalesCTVLModule(
         argument_spec=argument_spec,
         required_if=(
-            ['op_type', 'update', ['id']],
+            ['op_type', 'create', ['name', 'key']],
+            ['op_type', 'update', ['id', 'name', 'key']],
             ['op_type', 'delete', ['id']],
         ),
         mutually_exclusive=[],
@@ -132,7 +147,7 @@ def main():
     
     module = setup_module_object()
     validate_parameters(
-        keys_module=module,
+        token_group_module=module,
     )
 
     result = dict(
@@ -143,9 +158,9 @@ def main():
       try:
         response = createCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='token_group',
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          key=module.params.get('key'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -158,10 +173,10 @@ def main():
       try:
         response = patchCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='token_group',
           id=module.params.get('id'),
           name=module.params.get('name'),
-          seedkey=module.params.get('seedkey'),
+          key=module.params.get('key'),
         )
         result['response'] = response
       except CTVLApiException as api_e:
@@ -174,7 +189,7 @@ def main():
       try:
         response = deleteCTVLAsset(
           server=module.params.get('server'),
-          type='key',
+          type='token_group',
           id=module.params.get('id'),
         )
         result['response'] = response

@@ -106,7 +106,7 @@ def PATCHData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify
     )
     # execute the patch API call to update the resource on CM 
     try:
-      response = requests.patch(
+      response = requests.put(
         session["url"], 
         headers=session["headers"], 
         json = json.loads(payload), 
@@ -130,6 +130,49 @@ def PATCHData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify
           raise CTVLApiException(message="Error updating resource " + str(response), api_error_code=response.status_code)
         else:
           raise CTVLApiException(message="Error updating resource " + str(response), api_error_code=response.status_code)           
+
+      return __ret
+    except requests.exceptions.HTTPError as errh:
+      raise AnsibleCTVLException(message="HTTPError: cm_api >> " + errh)
+    except requests.exceptions.ConnectionError as errc:
+      raise AnsibleCTVLException(message="ConnectionError: cm_api >> " + errc)
+    except requests.exceptions.Timeout as errt:
+      raise AnsibleCTVLException(message="TimeoutError: cm_api >> " + errt)
+    except requests.exceptions.RequestException as err:
+      raise AnsibleCTVLException(message="ErrorPath: cm_api >> " + err)
+    
+def DeleteByID(key=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify=False):
+    # Create the session object
+    node = ast.literal_eval(ctvl_server)
+    pattern_2xx = re.compile(r'20[0-9]')
+    pattern_4xx = re.compile(r'40[0-9]')
+    cmSessionObject = CTVLAPIObject(
+      username=node["username"],
+      password=node["password"],
+      url=node["url"],
+      api_endpoint=ctvl_api_endpoint,
+      verify=ssl_verify,
+    )
+    # execute the delete API call to delete the resource on CM
+    try:
+      response = requests.delete(cmSessionObject["url"] + "/" + key, headers=cmSessionObject["headers"], verify=False)
+      if is_json(str(response)): 
+        if "codeDesc" in response.json:
+          raise CTVLApiException(message="Error deleting resource < " + response["codeDesc"] + " >", api_error_code=response.status_code)
+        else:
+          __ret = {
+            "message": "Resource deletion successful",
+          }
+      else:
+        if pattern_2xx.search(str(response)):
+          __ret = {
+            "message": "Resource deletion successful",
+            "status_code": str(response)
+          }
+        elif pattern_4xx.search(str(response)):
+          raise CTVLApiException(message="Error deleting resource " + str(response), api_error_code=response.status_code)
+        else:
+          raise CTVLApiException(message="Error deleting resource " + str(response), api_error_code=response.status_code)
 
       return __ret
     except requests.exceptions.HTTPError as errh:
