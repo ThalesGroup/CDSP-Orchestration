@@ -15,6 +15,7 @@ import urllib3
 import json
 import ast
 import re
+import sys
 
 from ansible_collections.thalesgroup.ctvl.plugins.module_utils.exceptions import CTVLApiException, AnsibleCTVLException
 
@@ -25,18 +26,29 @@ def is_json(json):
     return False
   return True
 
-def getJwt(host, username, password):
+def getJwt(url, username, password):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    auth_url='https://'+host+'/api/api-token-auth'
+    auth_url='https://' + url + '/api/api-token-auth'
     auth_payload = json.dumps({
-        "username":username,
-        "password":password,
+        "username": username,
+        "password": password,
     })
     headers = {
         'Content-Type': 'application/json'
     }
     response = requests.request("POST", auth_url, headers=headers, data=auth_payload, verify=False)
+    print(response, file=sys.stderr)
     return response.json()["token"]
+
+def CTVLAPIObject(username=None, password=None, url=None, api_endpoint=None, verify=None):
+    """Create a CTVL API client"""
+    session=dict()
+    session["url"] = 'https://' + url + '/api/' + api_endpoint
+    session["headers"] = {
+       "Content-Type": "application/json; charset=utf-8",
+       "Authorization": "Bearer " + getJwt(url, username, password),
+    }
+    return session
 
 # Returns the whole response object
 def POSTData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, id=None):
@@ -186,13 +198,3 @@ def DeleteByID(key=None, ctvl_server=None, ctvl_api_endpoint=None):
       raise AnsibleCTVLException(message="TimeoutError: cm_api >> " + errt)
     except requests.exceptions.RequestException as err:
       raise AnsibleCTVLException(message="ErrorPath: cm_api >> " + err)
-
-def CTVLAPIObject(username=None, password=None, url=None, api_endpoint=None, verify=None):
-    """Create a CTVL API client"""
-    session=dict()
-    session["url"] = 'https://' + url + '/api/' + api_endpoint
-    session["headers"] = {
-       "Content-Type": "application/json; charset=utf-8",
-       "Authorization": "Bearer " + getJwt(url, username, password),
-    }
-    return session
