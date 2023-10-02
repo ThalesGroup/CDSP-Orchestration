@@ -49,6 +49,12 @@ def createCTVLAsset(**kwargs):
   elif type == "user":
     endpoint = "users"
     identifier = 'id'
+  elif type == "token":
+    endpoint = 'tokenize'
+    identifier = 'token'
+  elif type == "data":
+    endpoint = "detokenize"
+    identifier = 'data'
   else:
     raise AnsibleCTVLException(message="invalid CTVL asset type")
 
