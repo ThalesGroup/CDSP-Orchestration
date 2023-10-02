@@ -36,7 +36,7 @@ def getJwt(url, username, password):
     headers = {
         'Content-Type': 'application/json'
     }
-    response = requests.request("POST", auth_url, headers=headers, data=auth_payload, verify=False)
+    response = requests.request("POST", url=auth_url, headers=headers, data=auth_payload, verify=False)
     print(response, file=sys.stderr)
     return response.json()["token"]
 
@@ -65,14 +65,16 @@ def POSTData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, id=None):
     )
     # execute the post API call to create the resource on CM 
     try:
-      _data = requests.post(
-        session["url"], 
+      _data = requests.request(
+        "POST",
+        url=session["url"], 
         headers=session["headers"], 
-        json = json.loads(payload), 
+        data = json.dumps(payload), 
         verify=session["verify"]
       )
 
-      response = _data.json()
+      print(_data, file=sys.stderr)
+      response = _data.json()      
 
       if id is not None and id in response:
         __ret = {
