@@ -63,7 +63,6 @@ def createCTVLAsset(**kwargs):
       payload=payload,
       ctvl_server=kwargs["server"],
       ctvl_api_endpoint=endpoint,
-      ssl_verify=kwargs['ssl_verify'],
       id=identifier,
     )          
     return ast.literal_eval(str(response))
@@ -105,7 +104,6 @@ def patchCTVLAsset(**kwargs):
       payload=payload,
       ctvl_server=kwargs["server"],
       ctvl_api_endpoint=endpoint,
-      ssl_verify=kwargs['ssl_verify'],
     )          
     return ast.literal_eval(str(response))
   except CTVLApiException as api_e:
@@ -148,7 +146,6 @@ def deleteCTVLAsset(**kwargs):
       key=kwargs['id'],
       ctvl_server=kwargs["server"],
       ctvl_api_endpoint=endpoint,
-      ssl_verify=kwargs['ssl_verify'],
     )          
     return ast.literal_eval(str(response))
   except CTVLApiException as api_e:

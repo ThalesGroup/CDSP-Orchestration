@@ -36,7 +36,7 @@ def getJwt(host, username, password):
     return response.json()["token"]
 
 # Returns the whole response object
-def POSTData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify=False, id=None):
+def POSTData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, id=None):
     # Create the session object
     node = ast.literal_eval(ctvl_server)
     pattern_2xx = re.compile(r'20[0-9]')
@@ -46,7 +46,7 @@ def POSTData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify=
         password=node["password"],
         url=node["url"],
         api_endpoint=ctvl_api_endpoint,
-        verify=ssl_verify,
+        verify=node["ssl_verify"],
     )
     # execute the post API call to create the resource on CM 
     try:
@@ -92,7 +92,7 @@ def POSTData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify=
     except requests.exceptions.RequestException as err:
       raise AnsibleCTVLException(message="ErrorPath: cm_api >> " + err)
 
-def PATCHData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify=False):
+def PATCHData(payload=None, ctvl_server=None, ctvl_api_endpoint=None):
     # Create the session object
     node = ast.literal_eval(ctvl_server)
     pattern_2xx = re.compile(r'20[0-9]')
@@ -102,7 +102,7 @@ def PATCHData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify
         password=node["password"],
         url=node["url"],
         api_endpoint=ctvl_api_endpoint,
-        verify=ssl_verify,
+        verify=node["ssl_verify"],
     )
     # execute the patch API call to update the resource on CM 
     try:
@@ -141,7 +141,7 @@ def PATCHData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify
     except requests.exceptions.RequestException as err:
       raise AnsibleCTVLException(message="ErrorPath: cm_api >> " + err)
     
-def DeleteByID(key=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify=False):
+def DeleteByID(key=None, ctvl_server=None, ctvl_api_endpoint=None):
     # Create the session object
     node = ast.literal_eval(ctvl_server)
     pattern_2xx = re.compile(r'20[0-9]')
@@ -151,7 +151,7 @@ def DeleteByID(key=None, ctvl_server=None, ctvl_api_endpoint=None, ssl_verify=Fa
       password=node["password"],
       url=node["url"],
       api_endpoint=ctvl_api_endpoint,
-      verify=ssl_verify,
+      verify=node["ssl_verify"],
     )
     # execute the delete API call to delete the resource on CM
     try:
