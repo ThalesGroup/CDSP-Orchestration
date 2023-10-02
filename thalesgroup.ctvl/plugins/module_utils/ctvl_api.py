@@ -28,11 +28,14 @@ def is_json(json):
 def getJwt(host, username, password):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     auth_url='https://'+host+'/api/api-token-auth'
-    auth_payload = {
+    auth_payload = json.dumps({
         "username":username,
         "password":password,
+    })
+    headers = {
+        'Content-Type': 'application/json'
     }
-    response = requests.post(auth_url, json=auth_payload, verify=False)
+    response = requests.request("POST", auth_url, headers=headers, data=auth_payload, verify=False)
     return response.json()["token"]
 
 # Returns the whole response object
