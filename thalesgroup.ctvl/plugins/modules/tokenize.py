@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.thalesgroup.ctvl.plugins.module_utils.modules import ThalesCTVLModule
-from ansible_collections.thalesgroup.ctvl.plugins.module_utils.commons import createCTVLAsset
+from ansible_collections.thalesgroup.ctvl.plugins.module_utils.tokenization import tokenize, detokenize
 from ansible_collections.thalesgroup.ctvl.plugins.module_utils.exceptions import CTVLApiException, AnsibleCTVLException
 
 DOCUMENTATION = '''
@@ -146,9 +146,8 @@ def main():
 
     if module.params.get('op_type') == 'tokenize':
       try:
-        response = createCTVLAsset(
+        response = tokenize(
           server=module.params.get('server'),
-          type='token',
           tokengroup=module.params.get('tokengroup'),
           tokentemplate=module.params.get('tokentemplate'),
           data=module.params.get('data'),
@@ -162,9 +161,8 @@ def main():
 
     elif module.params.get('op_type') == 'detokenize':
       try:
-        response = patchCTVLAsset(
+        response = detokenize(
           server=module.params.get('server'),
-          type='data',
           tokengroup=module.params.get('tokengroup'),
           tokentemplate=module.params.get('tokentemplate'),
           token=module.params.get('token'),

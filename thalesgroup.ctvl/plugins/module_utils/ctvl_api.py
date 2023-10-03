@@ -17,6 +17,7 @@ import ast
 import re
 import sys
 
+from base64 import b64encode
 from ansible_collections.thalesgroup.ctvl.plugins.module_utils.exceptions import CTVLApiException, AnsibleCTVLException
 
 def is_json(json):
@@ -40,6 +41,21 @@ def getJwt(url, username, password):
     print(response, file=sys.stderr)
     return response.json()["token"]
 
+def getBasicAuthToken(username, password):
+    token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
+    return f'Basic {token}'
+
+def CTVLTokenizationAPIObject(username=None, password=None, url=None, api_endpoint=None, verify=None):
+    """Create a CTVL Tokenization API client"""
+    session=dict()
+    session["url"] = 'https://' + url + '/api/' + api_endpoint
+    session["verify"] = verify
+    session["headers"] = {
+       "Content-Type": "application/json; charset=utf-8",
+       "Authorization": getBasicAuthToken(username, password),
+    }
+    return session
+
 def CTVLAPIObject(username=None, password=None, url=None, api_endpoint=None, verify=None):
     """Create a CTVL API client"""
     session=dict()
@@ -50,6 +66,65 @@ def CTVLAPIObject(username=None, password=None, url=None, api_endpoint=None, ver
        "Authorization": "Bearer " + getJwt(url, username, password),
     }
     return session
+
+# Returns the whole response object
+def POSTDataWithBasicAuth(payload=None, ctvl_server=None, ctvl_api_endpoint=None, id=None):
+    # Create the session object
+    node = ast.literal_eval(ctvl_server)
+    pattern_2xx = re.compile(r'20[0-9]')
+    pattern_4xx = re.compile(r'40[0-9]')
+    session = CTVLTokenizationAPIObject(
+        username=node["username"],
+        password=node["password"],
+        url=node["url"],
+        api_endpoint=ctvl_api_endpoint,
+        verify=node["ssl_verify"],
+    )
+    # execute the post API call to create the resource on CM 
+    try:
+      _data = requests.request(
+        "POST",
+        url=session["url"], 
+        headers=session["headers"], 
+        data = json.dumps(payload), 
+        verify=session["verify"]
+      )
+
+      print(_data, file=sys.stderr)
+      response = _data.json()      
+
+      if id is not None and id in response:
+        __ret = {
+          "id": response[id],
+          "data": response,
+          "message": "Resource created successfully"
+        }
+      else:
+        if "codeDesc" in json.dumps(response):
+            raise CTVLApiException(message="Error creating resource < " + response["codeDesc"] + " >", api_error_code=_data.status_code)
+        else:
+            if id is None:
+                if pattern_2xx.search(str(response)) or pattern_2xx.search(str(_data.status_code)):
+                  __ret = {
+                    "message": "Resource created successfully",
+                    "description": str(response)
+                  }
+                elif pattern_4xx.search(str(response)) or pattern_4xx.search(str(_data.status_code)):
+                    raise CTVLApiException(message="Error creating resource " + str(response), api_error_code=_data.status_code)
+                else:
+                    raise CTVLApiException(message="Error creating resource " + str(response), api_error_code=_data.status_code)
+            else:
+                raise CTVLApiException(message="Error creating resource " + str(response), api_error_code=_data.status_code)
+
+      return __ret
+    except requests.exceptions.HTTPError as errh:
+      raise AnsibleCTVLException(message="HTTPError: cm_api >> " + errh)
+    except requests.exceptions.ConnectionError as errc:
+      raise AnsibleCTVLException(message="ConnectionError: cm_api >> " + errc)
+    except requests.exceptions.Timeout as errt:
+      raise AnsibleCTVLException(message="TimeoutError: cm_api >> " + errt)
+    except requests.exceptions.RequestException as err:
+      raise AnsibleCTVLException(message="ErrorPath: cm_api >> " + err)
 
 # Returns the whole response object
 def POSTData(payload=None, ctvl_server=None, ctvl_api_endpoint=None, id=None):
