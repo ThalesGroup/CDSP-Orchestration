@@ -243,7 +243,7 @@ argument_spec = dict(
     keepright=dict(type='int', required=False, default=0),
     irreversible=dict(type='bool', required=False, default=False),
     copyruntdata=dict(type='bool', required=False, default=False),
-    allowsmallinput=dict(type='bool', required=False, default=F),
+    allowsmallinput=dict(type='bool', required=False, default=False),
     charset=dict(type='str'),
     prefix=dict(type='str', required=False),
     startyear=dict(type='int', required=False, default=0),
