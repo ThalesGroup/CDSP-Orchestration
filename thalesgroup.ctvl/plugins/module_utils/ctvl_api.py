@@ -127,7 +127,7 @@ def PATCHData(payload=None, ctvl_server=None, ctvl_api_endpoint=None):
       response = requests.put(
         session["url"], 
         headers=session["headers"], 
-        json = json.loads(payload), 
+        json = json.dumps(payload), 
         verify=session["verify"]
       )
 

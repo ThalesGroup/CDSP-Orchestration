@@ -32,28 +32,28 @@ def createCTVLAsset(**kwargs):
     endpoint = 'keys/'
     identifier = 'idkey'
   elif type == "token_group":
-    endpoint = 'tokengroups'
+    endpoint = 'tokengroups/'
     identifier = 'idtenant'
   elif type == "token_template":
-    endpoint = 'tokentemplates'
+    endpoint = 'tokentemplates/'
     identifier = 'idtokentemplate'
   elif type == "mask":
-    endpoint = 'masks'
+    endpoint = 'masks/'
     identifier = 'idmask'
   elif type == "charset":
-    endpoint = 'charsets'
+    endpoint = 'charsets/'
     identifier = 'idtokencharset'
   elif type == "group":
-    endpoint = 'groups'
+    endpoint = 'groups/'
     identifier = 'id'
   elif type == "user":
-    endpoint = "users"
+    endpoint = "users/"
     identifier = 'id'
   elif type == "token":
-    endpoint = 'tokenize'
+    endpoint = 'tokenize/'
     identifier = 'token'
   elif type == "data":
-    endpoint = "detokenize"
+    endpoint = "detokenize/"
     identifier = 'data'
   else:
     raise AnsibleCTVLException(message="invalid CTVL asset type")
@@ -77,7 +77,7 @@ def patchCTVLAsset(**kwargs):
     if key not in ['server', 'id', 'type'] and value != None:
       request[key] = value
 
-  payload = json.dumps(request)
+  payload = request
   
   endpoint = ''  
   type=kwargs['type']
