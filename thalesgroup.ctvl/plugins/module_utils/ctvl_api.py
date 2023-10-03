@@ -48,7 +48,7 @@ def getBasicAuthToken(username, password):
 def CTVLTokenizationAPIObject(username=None, password=None, url=None, api_endpoint=None, verify=None):
     """Create a CTVL Tokenization API client"""
     session=dict()
-    session["url"] = 'https://' + url + '/api/' + api_endpoint
+    session["url"] = 'https://' + url + '/vts/rest/v2.0/' + api_endpoint
     session["verify"] = verify
     session["headers"] = {
        "Content-Type": "application/json; charset=utf-8",
