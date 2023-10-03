@@ -28,7 +28,7 @@ def is_json(json):
 
 def getJwt(url, username, password):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    auth_url='https://' + url + '/api/api-token-auth'
+    auth_url='https://' + url + '/api/api-token-auth/'
     auth_payload = json.dumps({
         "username": username,
         "password": password,
