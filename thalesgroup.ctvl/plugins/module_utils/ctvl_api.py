@@ -44,7 +44,7 @@ def CTVLAPIObject(username=None, password=None, url=None, api_endpoint=None, ver
     """Create a CTVL API client"""
     session=dict()
     session["url"] = 'https://' + url + '/api/' + api_endpoint
-    session["ssl_verify"] = verify
+    session["verify"] = verify
     session["headers"] = {
        "Content-Type": "application/json; charset=utf-8",
        "Authorization": "Bearer " + getJwt(url, username, password),

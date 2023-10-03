@@ -22,14 +22,14 @@ def createCTVLAsset(**kwargs):
     if key not in ['server', 'type'] and value != None:
       request[key] = value
 
-  payload = json.dumps(request)
+  payload = request
   
   endpoint = ''  
   identifier = ''
   type=kwargs['type']
   
   if type == "key": 
-    endpoint = 'keys'
+    endpoint = 'keys/'
     identifier = 'idkey'
   elif type == "token_group":
     endpoint = 'tokengroups'
