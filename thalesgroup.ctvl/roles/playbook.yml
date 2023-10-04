@@ -1,0 +1,58 @@
+- name: CT-VL Sample Playbook
+  hosts: localhost
+  connection: local
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+   - name: "Create key"
+     thalesgroup.ctvl.keys:
+        server:
+          url: "{{ ctvl_server_url }}"
+          username: "{{ ctvl_username }}"
+          password: "{{ ctvl_password }}"
+          ssl_verify: false
+        op_type: create
+        name: "{{ key_name }}"
+        seedkey: false
+   - name: "Create Token Group"
+     thalesgroup.ctvl.tokenization_groups:
+        server:
+          url: "{{ ctvl_server_url }}"
+          username: "{{ ctvl_username }}"
+          password: "{{ ctvl_password }}"
+          ssl_verify: false
+        op_type: create
+        name: "{{ token_group_name }}"
+        key: "{{ key_name }}"
+   - name: "Create Tokenization Template"
+     thalesgroup.ctvl.tokenization_templates:
+        server:
+          url: "{{ ctvl_server_url }}"
+          username: "{{ ctvl_username }}"
+          password: "{{ ctvl_password }}"
+          ssl_verify: false
+        op_type: create
+        name: "{{ token_template_name }}"
+        tenant: "{{ token_group_name }}"
+        format: FPE
+        charset: "All printable ASCII"
+        keepleft: 4
+        keepright: 2
+        startyear: 0
+        endyear: 0
+        irreversible: false
+        copyruntdata: true
+        allowsmallinput: true
+   - name: vars for SpringBoot API service properties
+     set_fact:
+        CTVL_USERNAME: "{{ ctvl_username }}"
+        CTVL_PASSWORD: "{{ ctvl_password }}"
+        CTVL_URL: "{{ ctvl_server_url }}"
+        TOKEN_GROUP: "{{ token_group_name }}"
+        TOKEN_TEMPLATE: "{{ token_template_name }}"
+   - name: "Create properties file from Jinja template"
+     template:
+        src: "ctvl.properties.j2"
+        dest: "/tmp/ctvl.properties"

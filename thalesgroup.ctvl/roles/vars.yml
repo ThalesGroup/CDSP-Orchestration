@@ -1,0 +1,6 @@
+key_name: ctvlkey
+token_group_name: ctvl-tg
+token_template_name: ctvl-tt
+ctvl_server_url: 192.168.2.198
+ctvl_username: root
+ctvl_password: ChangeIt01!
