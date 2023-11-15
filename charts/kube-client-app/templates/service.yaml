@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kube-client-app.fullname" . }}
+  labels:
+    {{- include "kube-client-app.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  ports:
+    - nodePort: {{ .Values.service.exposePort }}
+      port: {{ .Values.service.internalPort }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: ui
+  selector:
+    {{- include "kube-client-app.selectorLabels" . | nindent 4 }}
