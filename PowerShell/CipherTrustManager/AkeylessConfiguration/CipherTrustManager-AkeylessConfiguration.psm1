@@ -14,6 +14,35 @@
 $target_uri = "/configs/akeyless"
 ####
 
+#Allow for backwards compatibility with PowerShell 5.1
+#Set default Param for Invoke-RestMethod in PS 6+ to "-SkipCertificateCheck" to true.
+#For PS 5.x to use SSL handler bypass code.
+
+if($PSVersionTable.PSVersion.Major -ge 6){
+    $PSDefaultParameterValues = @{"Invoke-RestMethod:SkipCertificateCheck"=$True}
+    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+}else{
+    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    # Allow the use of self signed certificates and set TLS
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # C# class to create callback
+    $code = @"
+    public class SSLHandler
+    {
+        public static System.Net.Security.RemoteCertificateValidationCallback GetSSLHandler()
+        {
+            return new System.Net.Security.RemoteCertificateValidationCallback((sender, certificate, chain, policyErrors) => { return true; });
+        }
+    }
+"@
+    # Compile the class
+    Add-Type -TypeDefinition $code
+
+    #disable checks using new class
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
+}
+
+
 ####
 # ENUMS
 ####
@@ -52,7 +81,7 @@ function Get-CMAkeylessConfiguration {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response was: $($response)"    
     }
     Catch {
@@ -127,7 +156,7 @@ function Set-CMAkeylessConfiguration {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
