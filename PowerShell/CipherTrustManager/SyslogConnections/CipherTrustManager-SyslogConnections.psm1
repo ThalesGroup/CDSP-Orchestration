@@ -41,9 +41,13 @@ $target_uri = "/configs/syslogs"
 #For PS 5.x to use SSL handler bypass code.
 
 if($PSVersionTable.PSVersion.Major -ge 6){
-    $PSDefaultParameterValues = @{"Invoke-RestMethod:SkipCertificateCheck"=$True} 
-    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    Write-Debug "Setting PS6+ Defaults - Syslog Connections Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
 }else{
+    Write-Debug "Setting PS5.1 Defaults - Syslog Connections Module"
     $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
     # Allow the use of self signed certificates and set TLS
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -63,7 +67,6 @@ if($PSVersionTable.PSVersion.Major -ge 6){
     #disable checks using new class
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
 }
-
 
 #This project mirrors the "Syslog Connections" section of the API Playground of CM (/playground_v2/api/configs/syslogs)
 

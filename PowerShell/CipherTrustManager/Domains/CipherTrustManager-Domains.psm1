@@ -4,7 +4,7 @@
 # Author:           Marc Seguin, Developer Advocate                                                                   #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Publisher:        Thales Group                                                                                      #
-# Copyright:        (c) 2022 Thales Group. All rights reserved.                                                       #
+# Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
 # Notes:            This module is loaded by the master module, CipherTrustManager                                    #
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
@@ -22,9 +22,13 @@ $target_syslogredir_uri = "/domain-syslog-redirection"
 #For PS 5.x to use SSL handler bypass code.
 
 if($PSVersionTable.PSVersion.Major -ge 6){
-    $PSDefaultParameterValues = @{"Invoke-RestMethod:SkipCertificateCheck"=$True}
-    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5} 
+    Write-Debug "Setting PS6+ Defaults - Domains Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
 }else{
+    Write-Debug "Setting PS5.1 Defaults - Domains Module"
     $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
     # Allow the use of self signed certificates and set TLS
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -44,6 +48,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
     #disable checks using new class
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
 }
+
 
 #This project mirrors the "Domains" section of the API Playground of CM (/playground_v2/api/Domains)
 
@@ -93,7 +98,7 @@ function Get-CMDomainCurrent {
         }
         else {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
-        }
+        } 
     }
     Write-Debug "Current domain."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"

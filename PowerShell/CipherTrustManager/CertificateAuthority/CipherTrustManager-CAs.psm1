@@ -13,15 +13,18 @@
 ####
 #
 ####
-
 #Allow for backwards compatibility with PowerShell 5.1
 #Set default Param for Invoke-RestMethod in PS 6+ to "-SkipCertificateCheck" to true.
 #For PS 5.x to use SSL handler bypass code.
 
 if($PSVersionTable.PSVersion.Major -ge 6){
-    $PSDefaultParameterValues = @{"Invoke-RestMethod:SkipCertificateCheck"=$True} 
-    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    Write-Debug "Setting PS6+ Defaults - CAs Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
 }else{
+    Write-Debug "Setting PS5.1 Defaults - CAs Module"
     $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
     # Allow the use of self signed certificates and set TLS
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -41,7 +44,6 @@ if($PSVersionTable.PSVersion.Major -ge 6){
     #disable checks using new class
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
 }
-
 
 <#
     .SYNOPSIS
