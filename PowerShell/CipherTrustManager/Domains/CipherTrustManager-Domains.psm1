@@ -1,8 +1,6 @@
 #######################################################################################################################
-# File:             CipherTrustManager-Users.psm1                                                                     #
-# Author:           Rick Leon, Professional Servcies                                                                  #
-# Author:           Marc Seguin, Developer Advocate                                                                   #
-# Author:           Anurag Jain, Developer Advocate                                                                   #
+# File:             CipherTrustManager-Domains.psm1                                                                   #
+# Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
 # Notes:            This module is loaded by the master module, CipherTrustManager                                    #
@@ -12,7 +10,7 @@
 ####
 # Local Variables
 ####
-$target_curdom_uri = "/domain"
+$target_current_domain_uri = "/domain"
 $target_uri = "/domains"
 $target_syslogredir_uri = "/domain-syslog-redirection"
 ####
@@ -72,7 +70,7 @@ function Get-CMDomainCurrent {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
     Write-Debug "Getting a Current Domain in CM"
-    $endpoint = $CM_Session.REST_URL + $target_curdom_uri
+    $endpoint = $CM_Session.REST_URL + $target_current_domain_uri
     Write-Debug "Endpoint: $($endpoint)"
     
     Try {
@@ -87,11 +85,6 @@ function Get-CMDomainCurrent {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
         elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
@@ -232,9 +225,12 @@ function Find-CMDomains {
         (Optional) If an HSM-anchored domain is desired, the CipherTrust Connection ID is required.
     .PARAMETER hsm_kek_label
         (Optional) Optional name field for the domain KEK for an HSM-anchored domain. If not provided, a random UUID is assigned for KEK label.
+    .PARAMETER metadata
+    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+    e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356"
-        Creates a domain with the name MyDomain with a single administrator.
+    PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356"
+    Creates a domain with the name MyDomain with a single administrator.
     .EXAMPLE    
         PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356","contoso.com|myAdmin"
         Creates a domain with the name MyDomain with a two administrators in a comma-separated list. One administrator being local and the second from an LDAP Connection.
@@ -262,7 +258,10 @@ function New-CMDomain {
         [string] $hsm_conn_id,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [string] $hsm_kek_label
+        [string] $hsm_kek_label,
+        [Parameter(Mandatory = $false,
+        ValueFromPipelineByPropertyName = $true)]
+        [string[]] $metadata
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
@@ -281,6 +280,13 @@ function New-CMDomain {
     if ($hsm_conn_id) { $body.add('hsm_connection_id', $hsm_conn_id) }
     if ($hsm_kek_label) { $body.add('hsm_kek_label', $hsm_kek_label) }
     if ($allow_user_management -eq $True) { $body.add('allow_user_management', [bool]$true) }
+    if($metadata){
+        $body.add('meta',@{})
+        $meta_input = $metadata.split(",")
+        foreach($pair in $meta_input){
+            $body.meta.add($pair.split(":")[0],$pair.split(":")[1])
+        }
+    }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -321,7 +327,7 @@ function New-CMDomain {
     .SYNOPSIS
         Delete a Domain
     .DESCRIPTION
-        Permanently deleted a domain and all contents. USE EXTREME CAUTION.
+        Permanently delete a domain and all contents. USE EXTREME CAUTION.
     .PARAMETER name
         The name of the domain to be deleted. This parameter is CASE-SENSITIVE. 
     .EXAMPLE

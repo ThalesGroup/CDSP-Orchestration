@@ -2,6 +2,7 @@
 # File:             CipherTrustManager.psd1                                                                           #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Author:           Marc Seguin, Developer Advocate                                                                   #
+# Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2022 Thales Group. All rights reserved.                                                       #
 # Usage:            To load this module in your PowerShell:                                                           #
@@ -75,6 +76,10 @@
         "JWTDetails",
         "Utils/CipherTrustManager-Utils",
         "CertificateAuthority/CipherTrustManager-CAs",
+        "Connections/CipherTrustManager-ConnectionMgr-Main",
+        "Connections/CipherTrustManager-ConnectionMgr-AWS",
+        "Connections/CipherTrustManager-ConnectionMgr-Akeyless",
+        "Connections/CipherTrustManager-ConnectionMgr-Azure",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -139,12 +144,6 @@
         "Get-CMJWT",
         "Test-CMJWT",
         "Write-HashtableArray",
-#        "New-CKSAWSParam",
-#        "New-CKSLocalHostedParam",
-#        "New-CKS",
-#        "Remove-CKS",
-#        "Edit-CKS",
-#        "Update-CKSPerformOperation",
         "Find-CMSyslogs",
         "New-CMSyslog",
         "Get-CMSyslog",
@@ -170,11 +169,33 @@
         "Get-CMDomainCurrent",
         "Get-CMDomainSyslogRedirection",
         "Update-CMDomainSyslogRedirection",
-#        "Update-CMDomainHSM",
         "Find-CMDomainKEKS",
         "Get-CMDomainKEK",
         "Update-CMDomainRotateKEK",
-        "Find-CMConnections"
+        "Find-CMConnections",
+        "Remove-CMConnection",
+        "Find-CMAWSConnections",
+        "New-CMAWSConnection",
+        "Get-CMAWSConnection",
+        "Update-CMAWSConnection",
+        "Remove-CMAWSConnection",
+        "Test-CMAWSConnection",
+        "Test-CMAWSConnParameters",
+        "Find-CMAKeylessConnections",
+        "New-CMAKeylessConnection",
+        "Get-CMAKeylessConnection",
+        "Update-CMAKeylessConnection",
+        "Remove-CMAKeylessConnection",
+        "Test-CMAKeylessConnection",
+        "Test-CMAKeylessConnParameters",
+        "Find-CMAzureConnections",
+        "New-CMAzureConnection",
+        "Get-CMAzureConnection",
+        "Update-CMAzureConnection",
+        "Remove-CMAzureConnection",
+        "Test-CMAzureConnection",
+        "Test-CMAzureConnParameters"
+
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

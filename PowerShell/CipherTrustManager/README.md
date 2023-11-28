@@ -15,7 +15,14 @@ Download this module (available as [CipherTrustManager.zip](CipherTrustManager.z
 Connect-CipherTrustManager `
     -server <ip_address_of_CipherTrust_Manager> `
     -user <account_with_access> `
-    -pass <password_for_that_account>
+    -pass <password_for_that_account> `
+    -domain <sub-domain_to_authenticate_into> #(optional)
+```
+```powershell
+Connect-CipherTrustManager `
+    -server <ip_address_of_CipherTrust_Manager> `
+    -refresh_token <CM_generated_refresh_token> `
+    -domain <sub-domain_to_authenticate_into> #(optional)
 ```
 
 3. At this point, you are connected and authenticated so you can make any calls that the REST API and PowerShell Module supports
@@ -28,6 +35,11 @@ Connect-CipherTrustManager `
     ├── CipherTrustManager.psm1                             # Primary Module (Loads all submodules)
     ├── CertificateAuthority                                # A Certificate Authority (CA) issues and installs digital certificates and certificate signing requests (CSR).
     │   ├── CipherTrustManager-CAs.psm1                     # Module to configure the Certificat Authority (CA).    
+    ├── Connections                                         # CipherTrust Manager Connection Manager
+    │   ├── CipherTrustManager-ConnectionMgr-Main           # Main Module - Used for find all connections within CIpherTrust Manager.
+    │   ├── CipherTrustManager-ConnectionMgr-AWS            # Manage the creation, deletion, and testing of connection to AWS for CCKM.
+    │   ├── CipherTrustManager-ConnectionMgr-Akeyless       # Manage the creation, deletion, and testing of connection to Akeyless for CCKM.
+    │   ├── CipherTrustManager-ConnectionMgr-Azure          # Manage the creation, deletion, and testing of connection to Azure for CCKM.
     ├── CCKM                                                # CipherTrust Cloud Key Manager can manage the lifecycle of CSP keys as well as create them
     │   ├── CipherTrustManager-CCKM-AWSCKS.psm1             # Manage keys within AWS
     ├── DataProtection                                      # Data protection is a centralized place for all Application and Database encryption configuration.
@@ -38,6 +50,8 @@ Connect-CipherTrustManager `
     │   ├── CipherTrustManager-MaskingFormats.psm1          # Create a set of Masking Formats that determine HOW data will be revealed (e.g. Show last four chars, Hide first six chars)
     │   ├── CipherTrustManager-ProtectionPolicies.psm1      # Manage how specific data is protected by defining critical parameters like the cipher and key to use through the `Protect` API
     │   ├── CipherTrustManager-UserSets.psm1                # Manage lists of users that can be assigned to HOW data is presented by the `Reveal` API
+    ├── Domains
+    │   ├── CipherTrustManager-Domains.psm1                 # Manage the creation and deletion of domains. 
     ├── Info                                                # These endpoints allow the user to query for some basic information from CipherTrust Manager - the name, version and model number, vendor of the platform. It is also possible to update the platform name to something that is illustrative to the user.
     │   ├── CipherTrustManager-Info.psm1                    # Manage System Information inclding ability to change name of CipherTrust Manager server
     ├── Interfaces                                          # Interfaces are the services the CipherTrust Manager is hosting. Most interfaces are listening on a particular port, but may also represent other input channels, like local shell access or serial port access.

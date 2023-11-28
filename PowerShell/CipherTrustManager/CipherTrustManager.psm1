@@ -2,6 +2,7 @@
 # File:             CipherTrustManager.psm1                                                                           #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Author:           Marc Seguin, Developer Advocate                                                                   #
+# Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2022 Thales Group. All rights reserved.                                                       #
 # Usage:            To load this module in your PowerShell:                                                           #
@@ -321,7 +322,33 @@ Export-ModuleMember -Function Remove-CMDomain
 Export-ModuleMember -Function Get-CMDomainCurrent
 Export-ModuleMember -Function Get-CMDomainSyslogRedirection 
 Export-ModuleMember -Function Update-CMDomainSyslogRedirection
-#Export-ModuleMember -Function Update-CMDomainHSM
 Export-ModuleMember -Function Find-CMDomainKEKS
 Export-ModuleMember -Function Get-CMDomainKEK
 Export-ModuleMember -Function Update-CMDomainRotateKEK
+#Connections
+Export-ModuleMember -Function Find-CMConnections
+Export-ModuleMember -Function Remove-CMConnection
+#Connections-AWS
+Export-ModuleMember -Function Find-CMAWSConnections
+Export-ModuleMember -Function New-CMAWSConnection
+Export-ModuleMember -Function Get-CMAWSConnection
+Export-ModuleMember -Function Update-CMAWSConnection
+Export-ModuleMember -Function Remove-CMAWSConnection
+Export-ModuleMember -Function Test-CMAWSConnection
+Export-ModuleMember -Function Test-CMAWSConnParameters
+#Connections-AKeyless
+Export-ModuleMember -Function Find-CMAKeylessConnections
+Export-ModuleMember -Function New-CMAKeylessConnection
+Export-ModuleMember -Function Get-CMAKeylessConnection
+Export-ModuleMember -Function Update-CMAKeylessConnection
+Export-ModuleMember -Function Remove-CMAKeylessConnection
+Export-ModuleMember -Function Test-CMAKeylessConnection
+Export-ModuleMember -Function Test-CMAKeylessConnParameters
+#Connection Manager - Azure
+Export-ModuleMember -Function Find-CMAzureConnections
+Export-ModuleMember -Function New-CMAzureConnection
+Export-ModuleMember -Function Get-CMAzureConnection
+Export-ModuleMember -Function Update-CMAzureConnection
+Export-ModuleMember -Function Remove-CMAzureConnection
+Export-ModuleMember -Function Test-CMAzureConnection
+Export-ModuleMember -Function Test-CMAzureConnParameters
