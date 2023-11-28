@@ -12,10 +12,43 @@
 # Local Variables
 ####
 $target_uri = "/usermgmt/users"
-$target_self_uri = "/v1/auth/self/user"
-$target_changepw_uri = "/v1/auth/changepw"
-$target_pwdpolicy_uri = "/v1/usermgmt/pwdpolicies/global"
+$target_self_uri = "/auth/self/user"
+$target_changepw_uri = "/auth/changepw"
+$target_pwdpolicy_uri = "/usermgmt/pwdpolicies/global"
 ####
+
+#Allow for backwards compatibility with PowerShell 5.1
+#Set default Param for Invoke-RestMethod in PS 6+ to "-SkipCertificateCheck" to true.
+#For PS 5.x to use SSL handler bypass code.
+
+if($PSVersionTable.PSVersion.Major -ge 6){
+    Write-Debug "Setting PS6+ Defaults - User Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
+}else{
+    Write-Debug "Setting PS5.1 Defaults - User Module"
+    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    # Allow the use of self signed certificates and set TLS
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # C# class to create callback
+    $code = @"
+    public class SSLHandler
+    {
+        public static System.Net.Security.RemoteCertificateValidationCallback GetSSLHandler()
+        {
+            return new System.Net.Security.RemoteCertificateValidationCallback((sender, certificate, chain, policyErrors) => { return true; });
+        }
+    }
+"@
+    # Compile the class
+    Add-Type -TypeDefinition $code
+
+    #disable checks using new class
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
+}
+
 
 #This project mirrors the "Users" section of the API Playground of CM (/playground_v2/api/Users)
 
@@ -160,7 +193,7 @@ function Find-CMUsers {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -371,7 +404,7 @@ function New-CMUser {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -438,7 +471,7 @@ function Get-CMUser {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -503,7 +536,7 @@ function Remove-CMUser {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'DELETE' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'DELETE' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -693,7 +726,7 @@ function Set-CMUser {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -745,7 +778,7 @@ function Get-CMSelf {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -811,7 +844,7 @@ function Set-CMSelf {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -970,7 +1003,7 @@ function Set-CMSelfPwd {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -1095,7 +1128,7 @@ function Set-CMGlobalPwdPolicies {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -1172,7 +1205,7 @@ function Get-CMGlobalPwdPolicies {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)      
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {

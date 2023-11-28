@@ -11,6 +11,38 @@
 #Need JWTDetails module to see how much time is left on a JWT
 Install-Module -name JWTDetails -Force
 
+#Allow for backwards compatibility with PowerShell 5.1
+#Set default Param for Invoke-RestMethod in PS 6+ to "-SkipCertificateCheck" to true.
+#For PS 5.x to use SSL handler bypass code.
+
+if($PSVersionTable.PSVersion.Major -ge 6){
+    Write-Debug "Setting PS6+ Defaults - Utils Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
+}else{
+    Write-Debug "Setting PS5.1 Defaults - Utils Module"
+    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    # Allow the use of self signed certificates and set TLS
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # C# class to create callback
+    $code = @"
+    public class SSLHandler
+    {
+        public static System.Net.Security.RemoteCertificateValidationCallback GetSSLHandler()
+        {
+            return new System.Net.Security.RemoteCertificateValidationCallback((sender, certificate, chain, policyErrors) => { return true; });
+        }
+    }
+"@
+    # Compile the class
+    Add-Type -TypeDefinition $code
+
+    #disable checks using new class
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
+}
+
 <#
     .SYNOPSIS
         Authenitcate with CipherTrust Manager, get a JWT and store it in the header as a BEARER token for use in future calls
@@ -28,14 +60,25 @@ function Get-CMJWT {
     $CM_Session.AuthToken = $null
     $REST_URL = $CM_Session.REST_URL + "/auth/tokens"
 
-    $Body = @{
-        #        grant_type = "password"
-        username = $CM_Session.User
-        password = $CM_Session.Pass
+    if($CM_Session.Pass){
+        $Body = @{
+            grant_type = "password"
+            username = $CM_Session.User
+            password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($CM_Session.Pass))
+            domain   = $CM_Session.Domain
+        }
+    }elseif($CM_Session.refresh_token){
+        $Body = @{
+            grant_type = "refresh_token"
+            refresh_token = $CM_Session.refresh_token
+        }
     }
-    
+
+    $jsonBody = $body | ConvertTo-Json -Depth 5
+    Write-Debug "Current JSON Body: `n$($jsonBody)"
+
     Try {
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $REST_URL -Body $Body
+        $response = Invoke-RestMethod -Method 'POST' -Uri $REST_URL -Body $jsonBody -ContentType 'application/json'
         Write-Debug "Response: $($response)"
     }
     Catch {

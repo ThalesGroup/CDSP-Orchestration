@@ -18,13 +18,47 @@ $CM_Session = [ordered]@{
     KMS_IP    = $null
     User      = $null
     Pass      = $null
+    Domain    = $null
     REST_URL  = $null
     AuthToken = $null
+    refresh_token = $null
 }
 #New-Variable -Name CM_Session -Value $CM_Session -Scope Script -Force
 New-Variable -Name CM_Session -Value $CM_Session -Scope Global -Force
 #
 ###
+
+#Allow for backwards compatibility with PowerShell 5.1
+#Set default Param for Invoke-RestMethod in PS 6+ to "-SkipCertificateCheck" to true.
+#For PS 5.x to use SSL handler bypass code.
+
+if($PSVersionTable.PSVersion.Major -ge 6){
+    Write-Debug "Setting PS6+ Defaults - Main Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
+}else{
+    Write-Debug "Setting PS5.1 Defaults - Main Module"
+    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    # Allow the use of self signed certificates and set TLS
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # C# class to create callback
+    $code = @"
+    public class SSLHandler
+    {
+        public static System.Net.Security.RemoteCertificateValidationCallback GetSSLHandler()
+        {
+            return new System.Net.Security.RemoteCertificateValidationCallback((sender, certificate, chain, policyErrors) => { return true; });
+        }
+    }
+"@
+    # Compile the class
+    Add-Type -TypeDefinition $code
+
+    #disable checks using new class
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
+}
 
 ####
 # Constants
@@ -46,7 +80,13 @@ $KMS_NAME = "CipherTrust Manager"
     Specifies the username for the account authorized to connect with CipherTrust manager.
 
     .PARAMETER pass
-    Specifies the password (in plaintext for now) for the user.
+    Specifies the password (in plaintext for now) for the user. If no password is proivded a prompt will appear.
+
+    .PARAMETER refresh_token
+    Specifies the API refresh_token.
+
+    .PARAMETER domain
+    (Optional) Specify the desired CipherTrust Manager Domain to work in.
 
     .INPUTS
     None. You cannot pipe objects to Connect-CipherTrustManager.
@@ -57,6 +97,11 @@ $KMS_NAME = "CipherTrust Manager"
     .EXAMPLE
     PS> Connect-CipherTrustManager -server 10.23.104.40 -user "user1" -pass "P@ssw0rd!"
 
+    .EXAMPLE
+    PS> Connect-CipherTrustManager -server 10.23.104.40 -user "user1"
+
+    Enter Password : **********
+
     .LINK
     Online version: https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
@@ -64,24 +109,54 @@ $KMS_NAME = "CipherTrust Manager"
 function Connect-CipherTrustManager {
     param
     (
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $server, 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $user,
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)] 
-        [string] $pass
+        [string] $pass,
+        [Parameter(Mandatory = $false,
+        ValueFromPipelineByPropertyName = $true)] 
+        [string] $refresh_token,
+        [Parameter(Mandatory = $false,
+        ValueFromPipelineByPropertyName = $true)] 
+        [string] $domain        
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    $CM_Session.KMS_IP = $server
-    $CM_Session.User = $user
-    $CM_Session.Pass = $pass
+    if(!$server){
+        $CM_Session.KMS_IP = Read-Host "Enter CipherTrust Manager IP or FQDN "
+    }else{
+        $CM_Session.KMS_IP = $server
+    }
 
-    Write-Debug "Session Parameters: $($CM_Session)"
+    if(!$pass){
+        if($refresh_token){
+            $CM_Session.refresh_token = $refresh_token
+        }else{
+            if($user){
+                $CM_Session.User = $user
+            }else{
+                $CM_Session.User = Read-Host "Enter user "
+            }
+            $CM_Session.Pass = Read-Host "Enter password " -AsSecureString
+        }
+    }else{
+        if($user){
+            $CM_Session.User = $user
+        }else{
+            $CM_Session.User = Read-Host "Enter user "
+        }
+        $CM_Session.Pass = ConvertTo-SecureString -String $pass -AsPlainText -Force
+    }
+
+    $CM_Session.Domain = $domain
+
+    Write-Debug "Session Parameters: $($CM_Session | Format-Table | Out-String)"
 
     #Invoke API for token generation
     Write-Debug "Getting authentication token from $($KMS_NAME)..."
@@ -111,6 +186,9 @@ function Connect-CipherTrustManager {
     .PARAMETER pass
     Specifies the password (in plaintext for now) for the user.
 
+    .PARAMETER domain
+    (Optional) Specify the desired CipherTrust Manager Domain to work in.
+    
     .INPUTS
     None. You cannot pipe objects to Connect-CipherTrustManager.
 
@@ -132,9 +210,11 @@ function Disconnect-CipherTrustManager {
     $CM_Session.KMS_IP    = $null
     $CM_Session.User      = $null
     $CM_Session.Pass      = $null
+    $CM_Session.Domain    = $null
     $CM_Session.REST_URL  = $null
     $CM_Session.AuthToken = $null
-
+    $CM_Session.refresh_token = $null
+    
     Write-Debug "Session Variables have been cleared"
 
 
@@ -234,4 +314,14 @@ Export-ModuleMember -Function Ack-CMAlarm
 #AkeylessConfiguration
 Export-ModuleMember -Function Get-CMAkeylessConfiguration
 Export-ModuleMember -Function Set-CMAkeylessConfiguration
-
+#Domains
+Export-ModuleMember -Function Find-CMDomains
+Export-ModuleMember -Function New-CMDomain
+Export-ModuleMember -Function Remove-CMDomain
+Export-ModuleMember -Function Get-CMDomainCurrent
+Export-ModuleMember -Function Get-CMDomainSyslogRedirection 
+Export-ModuleMember -Function Update-CMDomainSyslogRedirection
+#Export-ModuleMember -Function Update-CMDomainHSM
+Export-ModuleMember -Function Find-CMDomainKEKS
+Export-ModuleMember -Function Get-CMDomainKEK
+Export-ModuleMember -Function Update-CMDomainRotateKEK
