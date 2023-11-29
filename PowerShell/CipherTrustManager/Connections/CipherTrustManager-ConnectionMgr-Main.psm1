@@ -304,12 +304,7 @@ function Find-CMConnections {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -319,7 +314,7 @@ function Find-CMConnections {
     }
     Write-Debug "List of all CM Connections with supplied parameters."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
-    return $response
+    return $response | ConvertFrom-JSON -AsHashTable
 }    
 
 

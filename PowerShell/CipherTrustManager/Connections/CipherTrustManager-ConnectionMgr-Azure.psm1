@@ -857,6 +857,8 @@ function Update-CMAzureConnection{
     .PARAMETER id
     The CipherTrust manager "id" value for the connection.
     Use the Find-CMAzureConnections cmdlet to find the appropriate id value.
+    .PARAMETER force
+    Bypass all deletion copnfirmations. USE EXTREME CAUTION.
     .EXAMPLE
     PS> Remove-CMAzureConnection -name "My Azure Connection"
     Use the complete name of the connection. 
@@ -873,7 +875,9 @@ function Remove-CMAzureConnection{
         [string] $name, 
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
-        [string] $id
+        [string] $id,
+        [Parameter(Mandatory = $false)]
+        [switch] $force
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -893,12 +897,14 @@ function Remove-CMAzureConnection{
 
     Write-Debug "Endpoint w Target: $($endpoint)"
 
-    $confirmop=""
-    while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
-        $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
-        if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
-            Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
-            return "Operation Cancelled"
+    IF(!$force){
+        $confirmop=""
+        while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
+            $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
+            if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
+                Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
+                return "Operation Cancelled"
+            }
         }
     }
     

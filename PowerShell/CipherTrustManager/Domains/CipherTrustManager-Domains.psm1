@@ -329,7 +329,11 @@ function New-CMDomain {
     .DESCRIPTION
         Permanently delete a domain and all contents. USE EXTREME CAUTION.
     .PARAMETER name
-        The name of the domain to be deleted. This parameter is CASE-SENSITIVE. 
+        The name of the domain to be deleted. This parameter is CASE-SENSITIVE.
+    .PARAMETER id
+        The CipherTrust Manager id of the domain to be deleted.
+    .PARAMETER force
+        Bypass all deletion copnfirmations. USE EXTREME CAUTION.
     .EXAMPLE
         PS> Remove-CMDomain -name MyDomain 
     .LINK
@@ -341,39 +345,49 @@ function Remove-CMDomain {
     (
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $name
+        [string] $name,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $id,
+        [Parameter(Mandatory = $false)]
+        [switch] $force
     )
     
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating a Domain in CM"
+    Write-Debug "Deleting a Domain in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    if((Find-CMDomains -name $name).resources[0].total -eq 0){
-        return "`nDomain not found. Please try again."
-    }else{
+    if($id){
+        $endpoint += "/" + $domainid
+    }elseif($name){
+        if((Find-CMDomains -name $name).resources[0].total -eq 0){ return "Domain not found."}
         $domainid = (Find-CMDomains -name $name).resources[0].id
         $endpoint += "/" + $domainid
+    }else{
+        return "Missing Connection Identifier."
     }
 
     Write-Debug "Endpoint: $($endpoint)"
 
-    $confirmop=""
-    $confirmname=""
-    while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
-        $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
-        if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
-            Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
-            return "Operation Cancelled"
+    if(!$force){
+        $confirmop=""
+        $confirmname=""
+        while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
+            $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
+            if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
+                Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
+                return "Operation Cancelled"
+            }
+        }
+        
+        $confirmname = $(Write-Host -ForegroundColor red  "`nConfirm the name of the domain to be deleted: " -NoNewline; Read-Host)
+        if($confirmname -cne $name){
+            return "Domain name does not match. Cancelling Operation."
         }
     }
-    
-    $confirmname = $(Write-Host -ForegroundColor red  "`nConfirm the name of the domain to be deleted: " -NoNewline; Read-Host)
-    if($confirmname -cne $name){
-        return "Domain name does not match. Cancelling Operation."
-    }
-    
+
     Try {
         Test-CMJWT #Make sure we have an up-to-date jwt
         $headers = @{
