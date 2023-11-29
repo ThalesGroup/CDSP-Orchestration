@@ -314,7 +314,11 @@ function Find-CMConnections {
     }
     Write-Debug "List of all CM Connections with supplied parameters."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
-    return $response | ConvertFrom-JSON -AsHashTable
+    if($response.GetType() -eq [String]){
+        return $response | ConvertFrom-JSON -AsHashTable
+    }else{
+        return $response
+    }
 }    
 
 
