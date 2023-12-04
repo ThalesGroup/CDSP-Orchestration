@@ -7,55 +7,6 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
-####
-# ENUMS
-####
-###
-# AWS Regions
-Add-Type -TypeDefinition @"
-   public enum AWSRegion {
-    us-east-2,
-    us-east-1,
-    us-west-1,
-    us-west-2,
-    af-south-1,
-    ap-east-1,
-    ap-south-2,
-    ap-southeast-3,
-    ap-southeast-4,
-    ap-south-1,
-    ap-northeast-3,
-    ap-northeast-2,
-    ap-southeast-1,
-    ap-southeast-2,
-    ap-northeast-1,
-    ca-central-1,
-    eu-central-1,
-    eu-west-1,
-    eu-west-2,
-    eu-south-1,
-    eu-west-3,
-    eu-south-2,
-    eu-north-1,
-    eu-central-2,
-    il-central-1,
-    me-south-1,
-    me-central-1,
-    sa-east-1,
-    us-gov-east-1
-    us-gov-west-1
-}
-"@
-###
-# AWS Cloud Name
-Add-Type -TypeDefinition @"
-public enum AWSCloudName {
-    aws,
-    aws-us-goc,
-    aws-cn
-}
-"@
-
 
 ####
 # Local Variables
@@ -168,7 +119,7 @@ function Find-CMAWSConnections {
         [string] $meta_contains, 
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [AWSCloudName] $cloud_name,
+        [string] $cloud_name,
         [Parameter()] [string] $createdBefore, 
         [Parameter()] [string] $createdAfter, 
         [Parameter()] [string] $last_connection_ok, 
@@ -261,7 +212,7 @@ function Find-CMAWSConnections {
             $endpoint += "?cloud_name="
             $firstset = $true
         }
-        $endpoint += $cloud_name.ToString()
+        $endpoint += $cloud_name
     }
     if ($createdBefore) {
         if ($firstset) {
@@ -428,9 +379,9 @@ function New-CMAWSConnection{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [switch] $is_role_anywhere, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
@@ -460,9 +411,9 @@ function New-CMAWSConnection{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
+    if($aws_region){ $body.add('aws_region', $aws_region)}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if($description){ $body.add('description', $description)}
     if($is_role_anywhere){
         if(!$anywhere_role_arn -or !$anywhere_profile_arn -or !$anywhere_trust_anchor_arn){
@@ -694,9 +645,9 @@ function Update-CMAWSConnection{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
         [Parameter()] [string] $anywhere_role_certfile, 
@@ -729,9 +680,9 @@ function Update-CMAWSConnection{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
+    if($aws_region){ $body.add('aws_region', $aws_region)}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if($description){ $body.add('description', $description)}
     if((Find-CMAWSConnections -name $name).resources[0].is_role_anywhere -eq $false){
         if($anywhere_role_arn -or $anywhere_profile_arn -or $anywhere_trust_anchor_arn){
@@ -951,9 +902,9 @@ function Test-CMAWSConnection{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [switch] $is_role_anywhere, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
@@ -988,9 +939,9 @@ function Test-CMAWSConnection{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
+    if($aws_region){ $body.add('aws_region', $aws_region)}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if((Find-CMAWSConnections -name $name).resources[0].is_role_anywhere -eq $false){
         if($anywhere_role_arn -or $anywhere_profile_arn -or $anywhere_trust_anchor_arn){
             return "Connection not using IAM Role Anywhere. A new connection is required. Please try again."
@@ -1102,9 +1053,9 @@ function Test-CMAWSConnParameters{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [switch] $is_role_anywhere, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
@@ -1127,9 +1078,9 @@ function Test-CMAWSConnParameters{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
+    if($aws_region){ $body.add('aws_region', $aws_region)}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if($is_role_anywhere){
         if(!$anywhere_role_arn -or !$anywhere_profile_arn -or !$anywhere_trust_anchor_arn){
             return "Missing IAM Anywhere Parameters. Please try again."

@@ -7,22 +7,6 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
-###
-# ENUM
-###
-# CM Conection Products
-Add-Type -TypeDefinition @"
-public enum CMConnectionProduct {
-    cckm,
-    ddc,
-    cte,
-    logger,
-    hsm_anchored_domain,
-    'data discovery',
-    'backup/restore'
-}
-"@
-
 ####
 # Local Variables
 ####
@@ -127,7 +111,7 @@ function Find-CMConnections {
         [Parameter()] [int] $limit,
         [Parameter()] [string] $sort,
         [Parameter()] [string] $fields, 
-        [Parameter()] [CMConnectionProduct] $products, 
+        [Parameter()] [string] $products, 
         [Parameter()] [string] $meta_contains, 
         [Parameter()] [string] $service, 
         [Parameter()] [string] $category, 
@@ -198,7 +182,7 @@ function Find-CMConnections {
             $endpoint += "?products="
             $firstset = $true
         }
-        $endpoint += $products.ToString()
+        $endpoint += $products
     }
     if ($meta_contains) {
         if ($firstset) {

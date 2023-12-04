@@ -7,27 +7,6 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
-####
-# ENUMS
-####
-# Azure Cloud Name
-Add-Type -TypeDefinition @"
-public enum AzureCloudName {
-    AzureCloud,
-    AzureChinaCloud,
-    AzureUSGovernment,
-    AzureStock
-"@
-
-####
-# Azure Stack Connection Name
-Add-Type -TypeDefinition @"
-public enum AzureStackType {
-    AAD,
-    AFS
-"@
-
-
 
 ####
 # Local Variables
@@ -139,7 +118,7 @@ function Find-CMAzureConnections {
         [Parameter()] [int] $limit,
         [Parameter()] [string] $sort,
         [Parameter()] [string] $meta_contains, 
-        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [string] $createdBefore, 
         [Parameter()] [string] $createdAfter, 
         [Parameter()] [string] $last_connection_ok, 
@@ -218,7 +197,7 @@ function Find-CMAzureConnections {
             $endpoint += "?cloud_name="
             $firstset = $true
         }
-        $endpoint += $cloud_name.ToString()
+        $endpoint += $cloud_name
     }
     if ($createdBefore) {
         if ($firstset) {
@@ -394,14 +373,14 @@ function New-CMAzureConnection{
         [Parameter()] [string] $tenant_id, 
         [Parameter()] [string] $description, 
         [Parameter()] [string] $active_directory_endpoint, 
-        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_connection_type, 
         [Parameter()] [string] $azure_stack_server_cert, 
         [Parameter()] [string] $azure_stack_server_certfile, 
         [Parameter()] [int] $cert_duration, 
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [switch] $external_certificate_used, 
         [Parameter()] [switch] $is_certificate_used, 
         [Parameter()] [string] $key_vault_dns_suffix, 
@@ -433,14 +412,14 @@ function New-CMAzureConnection{
 
     # Optional Parameters
     if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
-    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type)}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($cert_duration){ $body.add('cert_duration', $cert_duration)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_secret){ $body.add('client_secret', $client_secret)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if($description){ $body.add('description', $description)}
     if($external_certificate_used){ $body.add('external_certificate_used', [bool]$true)}
     if($is_certificate_used){ $body.add('is_certificate_used', [bool]$true)}
@@ -665,14 +644,14 @@ function Update-CMAzureConnection{
         [Parameter()] [string] $tenant_id, 
         [Parameter()] [string] $description, 
         [Parameter()] [string] $active_directory_endpoint, 
-        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_connection_type, 
         [Parameter()] [string] $azure_stack_server_cert, 
         [Parameter()] [string] $azure_stack_server_certfile, 
         [Parameter()] [int] $cert_duration, 
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [switch] $external_certificate_used, 
         [Parameter()] [switch] $is_certificate_used, 
         [Parameter()] [string] $key_vault_dns_suffix, 
@@ -702,14 +681,14 @@ function Update-CMAzureConnection{
 
     # Optional Parameters
     if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
-    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type)}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($cert_duration){ $body.add('cert_duration', $cert_duration)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_id){ $body.add('client_id', $client_id)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if($client_secret){ $body.add('client_secret', $client_secret)}
     if($description){ $body.add('description', $description)}
     if($external_certificate_used){ $body.add('external_certificate_used', [bool]$true)}
@@ -912,13 +891,13 @@ function Test-CMAzureConnection{
         [Parameter()] [string] $client_id, 
         [Parameter()] [string] $tenant_id, 
         [Parameter()] [string] $active_directory_endpoint, 
-        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_connection_type, 
         [Parameter()] [string] $azure_stack_server_cert, 
         [Parameter()] [string] $azure_stack_server_certfile, 
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [string] $management_url
     )
 
@@ -943,13 +922,13 @@ function Test-CMAzureConnection{
     $body=@{}
 
     if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
-    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type)}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_id){ $body.add('client_id', $client_id)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if($client_secret){ $body.add('client_secret', $client_secret)}
     if($management_url){ $body.add('management_url', $management_url)}
     if($tenant_id){ $body.add('tenant_id', $tenant_id)}
@@ -1038,13 +1017,13 @@ function Test-CMAzureConnParameters{
         [Parameter()] [string] $client_id, 
         [Parameter()] [string] $tenant_id, 
         [Parameter()] [string] $active_directory_endpoint, 
-        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_connection_type, 
         [Parameter()] [string] $azure_stack_server_cert, 
         [Parameter()] [string] $azure_stack_server_certfile, 
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $cloud_name, 
         [Parameter()] [string] $management_url
 
     )
@@ -1065,12 +1044,12 @@ function Test-CMAzureConnParameters{
     }
 
     if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
-    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type)}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
     if($management_url){ $body.add('management_url', $management_url)}
                 
     $jsonBody = $body | ConvertTo-JSON 
