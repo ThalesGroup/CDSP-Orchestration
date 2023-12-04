@@ -102,33 +102,15 @@ function Find-CMAkeylessConnections {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $skip,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $limit,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [string] $sort,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $meta_contains, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdBefore, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdAfter, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_ok, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_before, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_after
+        [Parameter] [int] $skip,
+        [Parameter] [int] $limit,
+        [Parameter] [string] $sort,
+        [Parameter] [string] $meta_contains, 
+        [Parameter] [string] $createdBefore, 
+        [Parameter] [string] $createdAfter, 
+        [Parameter] [string] $last_connection_ok, 
+        [Parameter] [string] $last_connection_before, 
+        [Parameter] [string] $last_connection_after
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
@@ -277,12 +259,7 @@ function Find-CMAkeylessConnections {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -324,20 +301,11 @@ function Find-CMAkeylessConnections {
     #>
 function New-CMAkeylessConnection{
     param(
-        [Parameter(Mandatory = $true,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $description, 
-        [Parameter(Mandatory = $true,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
+        [Parameter] [string] $name, 
+        [Parameter] [string] $description, 
+        [Parameter] [string] $access_key, 
+        [Parameter] [string] $access_key_id, 
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [string[]] $metadata
     )
 
@@ -463,10 +431,7 @@ function Get-CMAkeylessConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -531,15 +496,9 @@ function Update-CMAkeylessConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $description, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key_id, 
+        [Parameter] [string] $description, 
+        [Parameter] [string] $access_key, 
+        [Parameter] [string] $access_key_id, 
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string[]] $metadata
@@ -591,10 +550,7 @@ function Update-CMAkeylessConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -684,10 +640,7 @@ function Remove-CMAkeylessConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -755,10 +708,7 @@ function Test-CMAkeylessConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -789,12 +739,8 @@ function Test-CMAkeylessConnection{
     #>
 function Test-CMAkeylessConnParameters{
     param(
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key_id
+        [Parameter] [string] $access_key, 
+        [Parameter] [string] $access_key_id
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -826,10 +772,7 @@ function Test-CMAkeylessConnParameters{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
