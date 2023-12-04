@@ -7,6 +7,22 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
+###
+# ENUM
+###
+# CM Conection Products
+Add-Type -TypeDefinition @"
+public enum CMConnectionProduct {
+    cckm,
+    ddc,
+    cte,
+    logger,
+    hsm_anchored_domain,
+    'data discovery',
+    'backup/restore'
+}
+"@
+
 ####
 # Local Variables
 ####
@@ -107,45 +123,19 @@ function Find-CMConnections {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $skip,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $limit,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [string] $sort,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $fields, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $products, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $meta_contains, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $service, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $category, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdBefore, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdAfter, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_ok, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_before, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_after
+        [Parameter()] [int] $skip,
+        [Parameter()] [int] $limit,
+        [Parameter()] [string] $sort,
+        [Parameter()] [string] $fields, 
+        [Parameter()] [CMConnectionProduct] $products, 
+        [Parameter()] [string] $meta_contains, 
+        [Parameter()] [string] $service, 
+        [Parameter()] [string] $category, 
+        [Parameter()] [string] $createdBefore, 
+        [Parameter()] [string] $createdAfter, 
+        [Parameter()] [string] $last_connection_ok, 
+        [Parameter()] [string] $last_connection_before, 
+        [Parameter()] [string] $last_connection_after
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
@@ -208,7 +198,7 @@ function Find-CMConnections {
             $endpoint += "?products="
             $firstset = $true
         }
-        $endpoint += $products
+        $endpoint += $products.ToString()
     }
     if ($meta_contains) {
         if ($firstset) {
@@ -360,9 +350,7 @@ function Remove-CMConnection {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [switch] $force
+        [Parameter()] [switch] $force
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -398,12 +386,7 @@ function Remove-CMConnection {
         }
         Catch {
             $StatusCode = $_.Exception.Response.StatusCode
-            if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-                Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-                throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-                return
-            }
-            elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
                 Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
                 return
             }
@@ -443,12 +426,7 @@ function Remove-CMConnection {
         }
         Catch {
             $StatusCode = $_.Exception.Response.StatusCode
-            if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-                Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-                throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-                return
-            }
-            elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
                 Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
                 return
             }

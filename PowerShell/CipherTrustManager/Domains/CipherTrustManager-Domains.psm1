@@ -127,8 +127,8 @@ function Find-CMDomains {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter] [int] $skip,
-        [Parameter] [int] $limit
+        [Parameter()] [int] $skip,
+        [Parameter()] [int] $limit
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
@@ -242,7 +242,7 @@ function New-CMDomain {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
         [string] $parent_ca,
-        [Parameter]
+        [Parameter()]
         [switch] $allow_user_management,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
@@ -334,14 +334,13 @@ function New-CMDomain {
 function Remove-CMDomain {
     param
     (
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $name,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id,
-        [Parameter] 
-        [switch] $force
+        [Parameter()] [switch] $force
     )
     
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -569,8 +568,7 @@ function Update-CMDomainHSM {
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $hsm_kek_label,
-        [Parameter]
-        [switch] $force        
+        [Parameter()] [switch] $force        
     )
     
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -745,7 +743,7 @@ function Get-CMDomainKEK {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)] 
         [string] $kekid
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -838,8 +836,7 @@ function Update-CMDomainRotateKEK {
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $hsm_kek_label,
-        [Parameter]
-        [switch] $retry
+        [Parameter()] [switch] $retry
 
 
     )

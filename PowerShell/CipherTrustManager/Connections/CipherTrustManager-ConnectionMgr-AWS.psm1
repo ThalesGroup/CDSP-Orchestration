@@ -8,6 +8,56 @@
 #######################################################################################################################
 
 ####
+# ENUMS
+####
+###
+# AWS Regions
+Add-Type -TypeDefinition @"
+   public enum AWSRegion {
+    us-east-2,
+    us-east-1,
+    us-west-1,
+    us-west-2,
+    af-south-1,
+    ap-east-1,
+    ap-south-2,
+    ap-southeast-3,
+    ap-southeast-4,
+    ap-south-1,
+    ap-northeast-3,
+    ap-northeast-2,
+    ap-southeast-1,
+    ap-southeast-2,
+    ap-northeast-1,
+    ca-central-1,
+    eu-central-1,
+    eu-west-1,
+    eu-west-2,
+    eu-south-1,
+    eu-west-3,
+    eu-south-2,
+    eu-north-1,
+    eu-central-2,
+    il-central-1,
+    me-south-1,
+    me-central-1,
+    sa-east-1,
+    us-gov-east-1
+    us-gov-west-1
+}
+"@
+###
+# AWS Cloud Name
+Add-Type -TypeDefinition @"
+public enum AWSCloudName {
+    aws,
+    aws-us-goc,
+    aws-cn
+}
+"@
+
+
+####
 # Local Variables
 ####
 $target_uri = "/connectionmgmt/services/aws/connections"
@@ -110,43 +160,25 @@ function Find-CMAWSConnections {
             ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
         [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $skip,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $limit,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [string] $sort,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $products, 
-        [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $meta_contains, 
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdBefore, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdAfter, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_ok, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_before, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_after,
+        [string] $cloud_name,
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
-        [switch] $is_role_anywhere
-
+        [switch] $is_role_anywhere,
+        [Parameter] [int] $skip,
+        [Parameter] [int] $limit,
+        [Parameter] [string] $sort,
+        [Parameter] [string] $products, 
+        [Parameter] [string] $createdBefore, 
+        [Parameter] [string] $createdAfter, 
+        [Parameter] [string] $last_connection_ok, 
+        [Parameter] [string] $last_connection_before, 
+        [Parameter] [string] $last_connection_after
     )
+
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
     Write-Debug "Getting a List of all AWS Connections in CM"
@@ -304,12 +336,7 @@ function Find-CMAWSConnections {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -395,57 +422,23 @@ function New-CMAWSConnection{
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $description, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $secret_access_key, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_external_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_region, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_sts_regional_endpoints, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [switch] $is_role_anywhere, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_privkey, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_keyfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_profile_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_trust_anchor_arn,
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string[]] $metadata
+        [Parameter] [string] $description, 
+        [Parameter] [string] $access_key_id, 
+        [Parameter] [string] $secret_access_key, 
+        [Parameter] [string] $assume_role_arn, 
+        [Parameter] [string] $assume_role_external_id, 
+        [Parameter] [AWSRegion] $aws_region, 
+        [Parameter] [string] $aws_sts_regional_endpoints, 
+        [Parameter] [AWSCloudName] $cloud_name, 
+        [Parameter] [switch] $is_role_anywhere, 
+        [Parameter] [string] $anywhere_role_arn, 
+        [Parameter] [string] $anywhere_role_cert, 
+        [Parameter] [string] $anywhere_role_certfile, 
+        [Parameter] [string] $anywhere_role_privkey, 
+        [Parameter] [string] $anywhere_role_keyfile, 
+        [Parameter] [string] $anywhere_profile_arn, 
+        [Parameter] [string] $anywhere_trust_anchor_arn,
+        [Parameter] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -466,9 +459,9 @@ function New-CMAWSConnection{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region)}
+    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($description){ $body.add('description', $description)}
     if($is_role_anywhere){
         if(!$anywhere_role_arn -or !$anywhere_profile_arn -or !$anywhere_trust_anchor_arn){
@@ -595,10 +588,7 @@ function Get-CMAWSConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -698,54 +688,22 @@ function Update-CMAWSConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $description, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $secret_access_key, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_external_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_region, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_sts_regional_endpoints, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_privkey, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_keyfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_profile_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_trust_anchor_arn,
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string[]] $metadata
+        [Parameter] [string] $description, 
+        [Parameter] [string] $access_key_id, 
+        [Parameter] [string] $secret_access_key, 
+        [Parameter] [string] $assume_role_arn, 
+        [Parameter] [string] $assume_role_external_id, 
+        [Parameter] [AWSRegion] $aws_region, 
+        [Parameter] [string] $aws_sts_regional_endpoints, 
+        [Parameter] [AWSCloudName] $cloud_name, 
+        [Parameter] [string] $anywhere_role_arn, 
+        [Parameter] [string] $anywhere_role_cert, 
+        [Parameter] [string] $anywhere_role_certfile, 
+        [Parameter] [string] $anywhere_role_privkey, 
+        [Parameter] [string] $anywhere_role_keyfile, 
+        [Parameter] [string] $anywhere_profile_arn, 
+        [Parameter] [string] $anywhere_trust_anchor_arn,
+        [Parameter] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -770,9 +728,9 @@ function Update-CMAWSConnection{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region)}
+    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($description){ $body.add('description', $description)}
     if((Find-CMAWSConnections -name $name).resources[0].is_role_anywhere -eq $false){
         if($anywhere_role_arn -or $anywhere_profile_arn -or $anywhere_trust_anchor_arn){
@@ -820,10 +778,7 @@ function Update-CMAWSConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -870,8 +825,7 @@ function Remove-CMAWSConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $id,
-        [Parameter(Mandatory = $false)]
-        [switch] $force
+        [Parameter] [switch] $force
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -914,10 +868,7 @@ function Remove-CMAWSConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -995,51 +946,21 @@ function Test-CMAWSConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $secret_access_key, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_external_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_region, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_sts_regional_endpoints, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [switch] $is_role_anywhere, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_privkey, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_keyfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_profile_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_trust_anchor_arn
+        [Parameter] [string] $access_key_id, 
+        [Parameter] [string] $secret_access_key, 
+        [Parameter] [string] $assume_role_arn, 
+        [Parameter] [string] $assume_role_external_id, 
+        [Parameter] [AWSRegion] $aws_region, 
+        [Parameter] [string] $aws_sts_regional_endpoints, 
+        [Parameter] [AWSCloudName] $cloud_name, 
+        [Parameter] [switch] $is_role_anywhere, 
+        [Parameter] [string] $anywhere_role_arn, 
+        [Parameter] [string] $anywhere_role_cert, 
+        [Parameter] [string] $anywhere_role_certfile, 
+        [Parameter] [string] $anywhere_role_privkey, 
+        [Parameter] [string] $anywhere_role_keyfile, 
+        [Parameter] [string] $anywhere_profile_arn, 
+        [Parameter] [string] $anywhere_trust_anchor_arn
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -1066,9 +987,9 @@ function Test-CMAWSConnection{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region)}
+    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if((Find-CMAWSConnections -name $name).resources[0].is_role_anywhere -eq $false){
         if($anywhere_role_arn -or $anywhere_profile_arn -or $anywhere_trust_anchor_arn){
             return "Connection not using IAM Role Anywhere. A new connection is required. Please try again."
@@ -1108,10 +1029,7 @@ function Test-CMAWSConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -1179,52 +1097,21 @@ function Test-CMAWSConnection{
     #>
 function Test-CMAWSConnParameters{
     param(
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $access_key_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $secret_access_key, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $assume_role_external_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_region, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $aws_sts_regional_endpoints, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [switch] $is_role_anywhere, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_privkey, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_role_keyfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_profile_arn, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $anywhere_trust_anchor_arn
-    )
+        [Parameter] [string] $access_key_id, 
+        [Parameter] [string] $secret_access_key, 
+        [Parameter] [string] $assume_role_arn, 
+        [Parameter] [string] $assume_role_external_id, 
+        [Parameter] [AWSRegion] $aws_region, 
+        [Parameter] [string] $aws_sts_regional_endpoints, 
+        [Parameter] [AWSCloudName] $cloud_name, 
+        [Parameter] [switch] $is_role_anywhere, 
+        [Parameter] [string] $anywhere_role_arn, 
+        [Parameter] [string] $anywhere_role_cert, 
+        [Parameter] [string] $anywhere_role_certfile, 
+        [Parameter] [string] $anywhere_role_privkey, 
+        [Parameter] [string] $anywhere_role_keyfile, 
+        [Parameter] [string] $anywhere_profile_arn, 
+        [Parameter] [string] $anywhere_trust_anchor_arn    )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
@@ -1239,9 +1126,9 @@ function Test-CMAWSConnParameters{
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
     if($assume_role_arn){ $body.add('assume_role_arn', $assume_role_arn)}
     if($assume_role_external_id){ $body.add('assume_role_external_id', $assume_role_external_id)}
-    if($aws_region){ $body.add('aws_region', $aws_region)}
+    if($aws_region){ $body.add('aws_region', $aws_region.ToString())}
     if($aws_sts_regional_endpoints){ $body.add('aws_sts_regional_endpoints', $aws_sts_regional_endpoints)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($is_role_anywhere){
         if(!$anywhere_role_arn -or !$anywhere_profile_arn -or !$anywhere_trust_anchor_arn){
             return "Missing IAM Anywhere Parameters. Please try again."
@@ -1278,10 +1165,7 @@ function Test-CMAWSConnParameters{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
