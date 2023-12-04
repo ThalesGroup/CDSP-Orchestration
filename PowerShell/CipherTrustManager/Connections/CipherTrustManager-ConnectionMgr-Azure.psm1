@@ -8,6 +8,28 @@
 #######################################################################################################################
 
 ####
+# ENUMS
+####
+# Azure Cloud Name
+Add-Type -TypeDefinition @"
+public enum AzureCloudName {
+    AzureCloud,
+    AzureChinaCloud,
+    AzureUSGovernment,
+    AzureStock
+"@
+
+####
+# Azure Stack Connection Name
+Add-Type -TypeDefinition @"
+public enum AzureStackType {
+    AAD,
+    AFS
+"@
+
+
+
+####
 # Local Variables
 ####
 $target_uri = "/connectionmgmt/services/azure/connections"
@@ -113,39 +135,17 @@ function Find-CMAzureConnections {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $skip,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $limit,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [string] $sort,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $meta_contains, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdBefore, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $createdAfter, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_ok, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_before, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $last_connection_after, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $external_connection_used
+        [Parameter()] [int] $skip,
+        [Parameter()] [int] $limit,
+        [Parameter()] [string] $sort,
+        [Parameter()] [string] $meta_contains, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $createdBefore, 
+        [Parameter()] [string] $createdAfter, 
+        [Parameter()] [string] $last_connection_ok, 
+        [Parameter()] [string] $last_connection_before, 
+        [Parameter()] [string] $last_connection_after, 
+        [Parameter()] [string] $external_connection_used
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
@@ -218,7 +218,7 @@ function Find-CMAzureConnections {
             $endpoint += "?cloud_name="
             $firstset = $true
         }
-        $endpoint += $cloud_name
+        $endpoint += $cloud_name.ToString()
     }
     if ($createdBefore) {
         if ($firstset) {
@@ -294,12 +294,7 @@ function Find-CMAzureConnections {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -396,60 +391,24 @@ function New-CMAzureConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $client_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $tenant_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $description, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $active_directory_endpoint, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_connection_type, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [int] $cert_duration, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $certificate, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $extcertfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $client_secret, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [switch] $external_certificate_used, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [switch] $is_certificate_used, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $key_vault_dns_suffix, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $management_url, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $resource_manager_url, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $vault_resource_url,
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string[]] $metadata
+        [Parameter()] [string] $tenant_id, 
+        [Parameter()] [string] $description, 
+        [Parameter()] [string] $active_directory_endpoint, 
+        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_server_cert, 
+        [Parameter()] [string] $azure_stack_server_certfile, 
+        [Parameter()] [int] $cert_duration, 
+        [Parameter()] [string] $certificate, 
+        [Parameter()] [string] $extcertfile, 
+        [Parameter()] [string] $client_secret, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [switch] $external_certificate_used, 
+        [Parameter()] [switch] $is_certificate_used, 
+        [Parameter()] [string] $key_vault_dns_suffix, 
+        [Parameter()] [string] $management_url, 
+        [Parameter()] [string] $resource_manager_url, 
+        [Parameter()] [string] $vault_resource_url,
+        [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -473,15 +432,15 @@ function New-CMAzureConnection{
     }
 
     # Optional Parameters
-    if($active_directory_endpoint){ $body.add('access_key_id', $access_key_id)}
-    if($azure_stack_connection_type){ $body.add('secret_access_key', $secret_access_key)}
+    if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($cert_duration){ $body.add('cert_duration', $cert_duration)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_secret){ $body.add('client_secret', $client_secret)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($description){ $body.add('description', $description)}
     if($external_certificate_used){ $body.add('external_certificate_used', [bool]$true)}
     if($is_certificate_used){ $body.add('is_certificate_used', [bool]$true)}
@@ -595,10 +554,7 @@ function Get-CMAzureConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -705,63 +661,25 @@ function Update-CMAzureConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $client_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $tenant_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $description, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $active_directory_endpoint, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_connection_type, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [int] $cert_duration, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $certificate, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $extcertfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $client_secret, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [switch] $external_certificate_used, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [switch] $is_certificate_used, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $key_vault_dns_suffix, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $management_url, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $resource_manager_url, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $vault_resource_url,
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string[]] $metadata
+        [Parameter()] [string] $client_id, 
+        [Parameter()] [string] $tenant_id, 
+        [Parameter()] [string] $description, 
+        [Parameter()] [string] $active_directory_endpoint, 
+        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_server_cert, 
+        [Parameter()] [string] $azure_stack_server_certfile, 
+        [Parameter()] [int] $cert_duration, 
+        [Parameter()] [string] $certificate, 
+        [Parameter()] [string] $extcertfile, 
+        [Parameter()] [string] $client_secret, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [switch] $external_certificate_used, 
+        [Parameter()] [switch] $is_certificate_used, 
+        [Parameter()] [string] $key_vault_dns_suffix, 
+        [Parameter()] [string] $management_url, 
+        [Parameter()] [string] $resource_manager_url, 
+        [Parameter()] [string] $vault_resource_url,
+        [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -783,15 +701,15 @@ function Update-CMAzureConnection{
     $body=@{}
 
     # Optional Parameters
-    if($active_directory_endpoint){ $body.add('access_key_id', $access_key_id)}
-    if($azure_stack_connection_type){ $body.add('secret_access_key', $secret_access_key)}
+    if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($cert_duration){ $body.add('cert_duration', $cert_duration)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_id){ $body.add('client_id', $client_id)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($client_secret){ $body.add('client_secret', $client_secret)}
     if($description){ $body.add('description', $description)}
     if($external_certificate_used){ $body.add('external_certificate_used', [bool]$true)}
@@ -826,10 +744,7 @@ function Update-CMAzureConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -920,10 +835,7 @@ function Remove-CMAzureConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -997,39 +909,17 @@ function Test-CMAzureConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $client_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $tenant_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $active_directory_endpoint, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_connection_type, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $certificate, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $extcertfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $client_secret, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $management_url
+        [Parameter()] [string] $client_id, 
+        [Parameter()] [string] $tenant_id, 
+        [Parameter()] [string] $active_directory_endpoint, 
+        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_server_cert, 
+        [Parameter()] [string] $azure_stack_server_certfile, 
+        [Parameter()] [string] $certificate, 
+        [Parameter()] [string] $extcertfile, 
+        [Parameter()] [string] $client_secret, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $management_url
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -1052,14 +942,14 @@ function Test-CMAzureConnection{
     # Parameters
     $body=@{}
 
-    if($active_directory_endpoint){ $body.add('access_key_id', $access_key_id)}
-    if($azure_stack_connection_type){ $body.add('secret_access_key', $secret_access_key)}
+    if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_id){ $body.add('client_id', $client_id)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($client_secret){ $body.add('client_secret', $client_secret)}
     if($management_url){ $body.add('management_url', $management_url)}
     if($tenant_id){ $body.add('tenant_id', $tenant_id)}
@@ -1081,10 +971,7 @@ function Test-CMAzureConnection{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -1148,45 +1035,18 @@ function Test-CMAzureConnection{
     #>
 function Test-CMAzureConnParameters{
     param(
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $client_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $tenant_id, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $active_directory_endpoint, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_connection_type, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_cert, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $azure_stack_server_certfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $certificate, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $extcertfile, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $client_secret, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name, 
-        [Parameter(Mandatory = $false,
-        ValueFromPipelineByPropertyName = $true)]
-        [string] $management_url
+        [Parameter()] [string] $client_id, 
+        [Parameter()] [string] $tenant_id, 
+        [Parameter()] [string] $active_directory_endpoint, 
+        [Parameter()] [AzureStackType] $azure_stack_connection_type, 
+        [Parameter()] [string] $azure_stack_server_cert, 
+        [Parameter()] [string] $azure_stack_server_certfile, 
+        [Parameter()] [string] $certificate, 
+        [Parameter()] [string] $extcertfile, 
+        [Parameter()] [string] $client_secret, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
+        [Parameter()] [string] $management_url
+
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -1204,13 +1064,13 @@ function Test-CMAzureConnParameters{
         "client_secret" = $client_secret
     }
 
-    if($active_directory_endpoint){ $body.add('access_key_id', $access_key_id)}
-    if($azure_stack_connection_type){ $body.add('secret_access_key', $secret_access_key)}
+    if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
+    if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type.ToString())}
     if($azure_stack_server_certfile){ $azure_stack_server_cert = (Get-Content $azure_stack_server_certfile -raw)}
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($management_url){ $body.add('management_url', $management_url)}
                 
     $jsonBody = $body | ConvertTo-JSON 
@@ -1230,10 +1090,7 @@ function Test-CMAzureConnParameters{
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Connection already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {

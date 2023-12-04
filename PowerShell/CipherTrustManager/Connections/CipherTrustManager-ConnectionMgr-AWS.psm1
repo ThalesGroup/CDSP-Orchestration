@@ -159,24 +159,25 @@ function Find-CMAWSConnections {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
+        [Parameter()] [int] $skip,
+        [Parameter()] [int] $limit,
+        [Parameter()] [string] $sort,
+        [Parameter()] [string] $products, 
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $meta_contains, 
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $cloud_name,
+        [AWSCloudName] $cloud_name,
+        [Parameter()] [string] $createdBefore, 
+        [Parameter()] [string] $createdAfter, 
+        [Parameter()] [string] $last_connection_ok, 
+        [Parameter()] [string] $last_connection_before, 
+        [Parameter()] [string] $last_connection_after,
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
-        [switch] $is_role_anywhere,
-        [Parameter] [int] $skip,
-        [Parameter] [int] $limit,
-        [Parameter] [string] $sort,
-        [Parameter] [string] $products, 
-        [Parameter] [string] $createdBefore, 
-        [Parameter] [string] $createdAfter, 
-        [Parameter] [string] $last_connection_ok, 
-        [Parameter] [string] $last_connection_before, 
-        [Parameter] [string] $last_connection_after
+        [switch] $is_role_anywhere
+
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -260,7 +261,7 @@ function Find-CMAWSConnections {
             $endpoint += "?cloud_name="
             $firstset = $true
         }
-        $endpoint += $service
+        $endpoint += $cloud_name.ToString()
     }
     if ($createdBefore) {
         if ($firstset) {
@@ -422,23 +423,23 @@ function New-CMAWSConnection{
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter] [string] $description, 
-        [Parameter] [string] $access_key_id, 
-        [Parameter] [string] $secret_access_key, 
-        [Parameter] [string] $assume_role_arn, 
-        [Parameter] [string] $assume_role_external_id, 
-        [Parameter] [AWSRegion] $aws_region, 
-        [Parameter] [string] $aws_sts_regional_endpoints, 
-        [Parameter] [AWSCloudName] $cloud_name, 
-        [Parameter] [switch] $is_role_anywhere, 
-        [Parameter] [string] $anywhere_role_arn, 
-        [Parameter] [string] $anywhere_role_cert, 
-        [Parameter] [string] $anywhere_role_certfile, 
-        [Parameter] [string] $anywhere_role_privkey, 
-        [Parameter] [string] $anywhere_role_keyfile, 
-        [Parameter] [string] $anywhere_profile_arn, 
-        [Parameter] [string] $anywhere_trust_anchor_arn,
-        [Parameter] [string[]] $metadata
+        [Parameter()] [string] $description, 
+        [Parameter()] [string] $access_key_id, 
+        [Parameter()] [string] $secret_access_key, 
+        [Parameter()] [string] $assume_role_arn, 
+        [Parameter()] [string] $assume_role_external_id, 
+        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_sts_regional_endpoints, 
+        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [switch] $is_role_anywhere, 
+        [Parameter()] [string] $anywhere_role_arn, 
+        [Parameter()] [string] $anywhere_role_cert, 
+        [Parameter()] [string] $anywhere_role_certfile, 
+        [Parameter()] [string] $anywhere_role_privkey, 
+        [Parameter()] [string] $anywhere_role_keyfile, 
+        [Parameter()] [string] $anywhere_profile_arn, 
+        [Parameter()] [string] $anywhere_trust_anchor_arn,
+        [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -688,22 +689,22 @@ function Update-CMAWSConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter] [string] $description, 
-        [Parameter] [string] $access_key_id, 
-        [Parameter] [string] $secret_access_key, 
-        [Parameter] [string] $assume_role_arn, 
-        [Parameter] [string] $assume_role_external_id, 
-        [Parameter] [AWSRegion] $aws_region, 
-        [Parameter] [string] $aws_sts_regional_endpoints, 
-        [Parameter] [AWSCloudName] $cloud_name, 
-        [Parameter] [string] $anywhere_role_arn, 
-        [Parameter] [string] $anywhere_role_cert, 
-        [Parameter] [string] $anywhere_role_certfile, 
-        [Parameter] [string] $anywhere_role_privkey, 
-        [Parameter] [string] $anywhere_role_keyfile, 
-        [Parameter] [string] $anywhere_profile_arn, 
-        [Parameter] [string] $anywhere_trust_anchor_arn,
-        [Parameter] [string[]] $metadata
+        [Parameter()] [string] $description, 
+        [Parameter()] [string] $access_key_id, 
+        [Parameter()] [string] $secret_access_key, 
+        [Parameter()] [string] $assume_role_arn, 
+        [Parameter()] [string] $assume_role_external_id, 
+        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_sts_regional_endpoints, 
+        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [string] $anywhere_role_arn, 
+        [Parameter()] [string] $anywhere_role_cert, 
+        [Parameter()] [string] $anywhere_role_certfile, 
+        [Parameter()] [string] $anywhere_role_privkey, 
+        [Parameter()] [string] $anywhere_role_keyfile, 
+        [Parameter()] [string] $anywhere_profile_arn, 
+        [Parameter()] [string] $anywhere_trust_anchor_arn,
+        [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -825,7 +826,7 @@ function Remove-CMAWSConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $id,
-        [Parameter] [switch] $force
+        [Parameter()] [switch] $force
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -946,21 +947,21 @@ function Test-CMAWSConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
-        [Parameter] [string] $access_key_id, 
-        [Parameter] [string] $secret_access_key, 
-        [Parameter] [string] $assume_role_arn, 
-        [Parameter] [string] $assume_role_external_id, 
-        [Parameter] [AWSRegion] $aws_region, 
-        [Parameter] [string] $aws_sts_regional_endpoints, 
-        [Parameter] [AWSCloudName] $cloud_name, 
-        [Parameter] [switch] $is_role_anywhere, 
-        [Parameter] [string] $anywhere_role_arn, 
-        [Parameter] [string] $anywhere_role_cert, 
-        [Parameter] [string] $anywhere_role_certfile, 
-        [Parameter] [string] $anywhere_role_privkey, 
-        [Parameter] [string] $anywhere_role_keyfile, 
-        [Parameter] [string] $anywhere_profile_arn, 
-        [Parameter] [string] $anywhere_trust_anchor_arn
+        [Parameter()] [string] $access_key_id, 
+        [Parameter()] [string] $secret_access_key, 
+        [Parameter()] [string] $assume_role_arn, 
+        [Parameter()] [string] $assume_role_external_id, 
+        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_sts_regional_endpoints, 
+        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [switch] $is_role_anywhere, 
+        [Parameter()] [string] $anywhere_role_arn, 
+        [Parameter()] [string] $anywhere_role_cert, 
+        [Parameter()] [string] $anywhere_role_certfile, 
+        [Parameter()] [string] $anywhere_role_privkey, 
+        [Parameter()] [string] $anywhere_role_keyfile, 
+        [Parameter()] [string] $anywhere_profile_arn, 
+        [Parameter()] [string] $anywhere_trust_anchor_arn
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -1097,21 +1098,21 @@ function Test-CMAWSConnection{
     #>
 function Test-CMAWSConnParameters{
     param(
-        [Parameter] [string] $access_key_id, 
-        [Parameter] [string] $secret_access_key, 
-        [Parameter] [string] $assume_role_arn, 
-        [Parameter] [string] $assume_role_external_id, 
-        [Parameter] [AWSRegion] $aws_region, 
-        [Parameter] [string] $aws_sts_regional_endpoints, 
-        [Parameter] [AWSCloudName] $cloud_name, 
-        [Parameter] [switch] $is_role_anywhere, 
-        [Parameter] [string] $anywhere_role_arn, 
-        [Parameter] [string] $anywhere_role_cert, 
-        [Parameter] [string] $anywhere_role_certfile, 
-        [Parameter] [string] $anywhere_role_privkey, 
-        [Parameter] [string] $anywhere_role_keyfile, 
-        [Parameter] [string] $anywhere_profile_arn, 
-        [Parameter] [string] $anywhere_trust_anchor_arn    )
+        [Parameter()] [string] $access_key_id, 
+        [Parameter()] [string] $secret_access_key, 
+        [Parameter()] [string] $assume_role_arn, 
+        [Parameter()] [string] $assume_role_external_id, 
+        [Parameter()] [AWSRegion] $aws_region, 
+        [Parameter()] [string] $aws_sts_regional_endpoints, 
+        [Parameter()] [AWSCloudName] $cloud_name, 
+        [Parameter()] [switch] $is_role_anywhere, 
+        [Parameter()] [string] $anywhere_role_arn, 
+        [Parameter()] [string] $anywhere_role_cert, 
+        [Parameter()] [string] $anywhere_role_certfile, 
+        [Parameter()] [string] $anywhere_role_privkey, 
+        [Parameter()] [string] $anywhere_role_keyfile, 
+        [Parameter()] [string] $anywhere_profile_arn, 
+        [Parameter()] [string] $anywhere_trust_anchor_arn    )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 

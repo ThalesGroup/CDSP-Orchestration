@@ -102,15 +102,15 @@ function Find-CMAkeylessConnections {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
-        [Parameter] [int] $skip,
-        [Parameter] [int] $limit,
-        [Parameter] [string] $sort,
-        [Parameter] [string] $meta_contains, 
-        [Parameter] [string] $createdBefore, 
-        [Parameter] [string] $createdAfter, 
-        [Parameter] [string] $last_connection_ok, 
-        [Parameter] [string] $last_connection_before, 
-        [Parameter] [string] $last_connection_after
+        [Parameter()] [int] $skip,
+        [Parameter()] [int] $limit,
+        [Parameter()] [string] $sort,
+        [Parameter()] [string] $meta_contains, 
+        [Parameter()] [string] $createdBefore, 
+        [Parameter()] [string] $createdAfter, 
+        [Parameter()] [string] $last_connection_ok, 
+        [Parameter()] [string] $last_connection_before, 
+        [Parameter()] [string] $last_connection_after
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
@@ -301,10 +301,10 @@ function Find-CMAkeylessConnections {
     #>
 function New-CMAkeylessConnection{
     param(
-        [Parameter] [string] $name, 
-        [Parameter] [string] $description, 
-        [Parameter] [string] $access_key, 
-        [Parameter] [string] $access_key_id, 
+        [Parameter()] [string] $name, 
+        [Parameter()] [string] $description, 
+        [Parameter()] [string] $access_key, 
+        [Parameter()] [string] $access_key_id, 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
         [string[]] $metadata
     )
@@ -496,9 +496,9 @@ function Update-CMAkeylessConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter] [string] $description, 
-        [Parameter] [string] $access_key, 
-        [Parameter] [string] $access_key_id, 
+        [Parameter()] [string] $description, 
+        [Parameter()] [string] $access_key, 
+        [Parameter()] [string] $access_key_id, 
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string[]] $metadata
@@ -739,8 +739,8 @@ function Test-CMAkeylessConnection{
     #>
 function Test-CMAkeylessConnParameters{
     param(
-        [Parameter] [string] $access_key, 
-        [Parameter] [string] $access_key_id
+        [Parameter()] [string] $access_key, 
+        [Parameter()] [string] $access_key_id
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
