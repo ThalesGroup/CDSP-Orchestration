@@ -7,6 +7,19 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
+###
+# ENUM
+###
+# Supported Algorithms
+Add-Type -TypeDefinition @"
+   public enum AzureCloudName {
+    AzureCloud,
+    AzureChinaCloud,
+    AzureUSGovernment,
+    AzureStock,
+}
+"@
+
 
 ####
 # Local Variables
@@ -118,7 +131,7 @@ function Find-CMAzureConnections {
         [Parameter()] [int] $limit,
         [Parameter()] [string] $sort,
         [Parameter()] [string] $meta_contains, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
         [Parameter()] [string] $createdBefore, 
         [Parameter()] [string] $createdAfter, 
         [Parameter()] [string] $last_connection_ok, 
@@ -197,7 +210,7 @@ function Find-CMAzureConnections {
             $endpoint += "?cloud_name="
             $firstset = $true
         }
-        $endpoint += $cloud_name
+        $endpoint += $cloud_name.ToString()
     }
     if ($createdBefore) {
         if ($firstset) {
@@ -380,7 +393,7 @@ function New-CMAzureConnection{
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
         [Parameter()] [switch] $external_certificate_used, 
         [Parameter()] [switch] $is_certificate_used, 
         [Parameter()] [string] $key_vault_dns_suffix, 
@@ -403,7 +416,7 @@ function New-CMAzureConnection{
     }
 
     # Mandatory Parameters
-    $body=@{
+    $body = [ordered] @{
         "name" = $name
         "client_id" = $client_id
         "tenant_id" = $tenant_id
@@ -419,7 +432,7 @@ function New-CMAzureConnection{
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_secret){ $body.add('client_secret', $client_secret)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($description){ $body.add('description', $description)}
     if($external_certificate_used){ $body.add('external_certificate_used', [bool]$true)}
     if($is_certificate_used){ $body.add('is_certificate_used', [bool]$true)}
@@ -651,7 +664,7 @@ function Update-CMAzureConnection{
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
         [Parameter()] [switch] $external_certificate_used, 
         [Parameter()] [switch] $is_certificate_used, 
         [Parameter()] [string] $key_vault_dns_suffix, 
@@ -677,7 +690,7 @@ function Update-CMAzureConnection{
     }
     
     # Parameters
-    $body=@{}
+    $body = [ordered] @{}
 
     # Optional Parameters
     if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
@@ -688,7 +701,7 @@ function Update-CMAzureConnection{
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_id){ $body.add('client_id', $client_id)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($client_secret){ $body.add('client_secret', $client_secret)}
     if($description){ $body.add('description', $description)}
     if($external_certificate_used){ $body.add('external_certificate_used', [bool]$true)}
@@ -897,7 +910,7 @@ function Test-CMAzureConnection{
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
         [Parameter()] [string] $management_url
     )
 
@@ -919,7 +932,7 @@ function Test-CMAzureConnection{
     Write-Debug "Endpoint w Target: $($endpoint)"
 
     # Parameters
-    $body=@{}
+    $body = [ordered] @{}
 
     if($active_directory_endpoint){ $body.add('active_directory_endpoint', $active_directory_endpoint)}
     if($azure_stack_connection_type){ $body.add('azure_stack_connection_type', $azure_stack_connection_type)}
@@ -928,7 +941,7 @@ function Test-CMAzureConnection{
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
     if($client_id){ $body.add('client_id', $client_id)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($client_secret){ $body.add('client_secret', $client_secret)}
     if($management_url){ $body.add('management_url', $management_url)}
     if($tenant_id){ $body.add('tenant_id', $tenant_id)}
@@ -1023,7 +1036,7 @@ function Test-CMAzureConnParameters{
         [Parameter()] [string] $certificate, 
         [Parameter()] [string] $extcertfile, 
         [Parameter()] [string] $client_secret, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [AzureCloudName] $cloud_name, 
         [Parameter()] [string] $management_url
 
     )
@@ -1037,7 +1050,7 @@ function Test-CMAzureConnParameters{
     if (!$client_id -or !$tenant_id -or !$client_secret) { return "Missing Client ID / Tenant ID / Client Secret. Please try again."}
 
     # Parameters
-    $body=@{
+    $body = [ordered] @{
         "client_id" = $client_id
         "tenant_id" = $tenant_id
         "client_secret" = $client_secret
@@ -1049,7 +1062,7 @@ function Test-CMAzureConnParameters{
         if($azure_stack_server_cert){ $body.add('azure_stack_server_cert', $azure_stack_server_cert)}
     if($extcertfile){ $certificate = (Get-Content $extcertfile -raw)}
         if($certificate){ $body.add('certificate', $certificate)}
-    if($cloud_name){ $body.add('cloud_name', $cloud_name)}
+    if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($management_url){ $body.add('management_url', $management_url)}
                 
     $jsonBody = $body | ConvertTo-JSON 

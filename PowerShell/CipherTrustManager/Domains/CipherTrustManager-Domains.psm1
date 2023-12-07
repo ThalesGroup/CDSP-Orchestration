@@ -261,7 +261,7 @@ function New-CMDomain {
     Write-Debug "Endpoint: $($endpoint)"
 
     # Mandatory Parameters
-    $body = @{
+    $body = [ordered] @{
         'name' = $name
         'admins' = @($admins.split(","))
     }
@@ -603,7 +603,7 @@ function Update-CMDomainHSM {
         }
     }
 
-    $Body = @{
+    $body = [ordered] @{
      
         "hsm_connection_id" = $hsm_connection_id
         "hsm_kek_label"     = $hsm_kek_label
@@ -868,7 +868,7 @@ function Update-CMDomainRotateKEK {
             return "`nDomain not found. Please try again."
         }
         
-        $body = @{}
+        $body = [ordered] @{}
 
         # Optional Parameters
         if ($hsm_connection_id) { $body.add('hsm_connection_id', $hsm_connection_id) }

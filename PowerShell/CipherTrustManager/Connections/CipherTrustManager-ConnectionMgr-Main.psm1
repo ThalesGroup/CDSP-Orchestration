@@ -7,6 +7,18 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
+###
+# ENUM
+###
+# Supported Algorithms
+Add-Type -TypeDefinition @"
+   public enum certAlgorithms {
+    rsa,
+    ecdsa
+}
+"@
+
+
 ####
 # Local Variables
 ####
@@ -425,6 +437,150 @@ function Remove-CMConnection {
     return $response
 }    
 
+#Connection Manager
+#"/v1/cnnectionmgmt/connections"
+#"/v1/cnnectionmgmt/connections/csr - post"
+
+<#
+    .SYNOPSIS
+        This API creates a Certificate Signing Request (CSR) that can be used in a connection (eg: Azure, Salesforce) in CipherTrust Manager. Connection CSR will ONLY use RSA.
+    .DESCRIPTION
+        The corresponding private key is stored securely on the CipherTrust Manager. The user can get the CSR signed using the external PKI.
+        If the private key remains unused by a connection after 24 hours of creation, it gets deleted automatically.
+    .PARAMETER name
+        A unique name of CSR.
+    .PARAMETER cn
+        Common Name for the certificate. If not specified, the common name will be the same as the name.
+    .PARAMETER size
+        Certificate algorithm size. Defaults to 2048 if not specified.
+        Option:
+            -1024
+            -2048
+            -4096
+    .PARAMETER dnsNames
+        Subject Alternative Names: DNS Names (Commma Separated)
+    .PARAMETER ipAdresses
+        Subject Alternative Names: IP Addresses (Commma Separated)
+    .PARAMETER emaiAddresses
+        Subject Alternative Names: Email Addresses (Commma Separated)
+    .PARAMETER o
+        Certificate Subject: Organization
+        Parameter Aliases: -org or -organization
+    .PARAMETER ou
+        Certificate Subject: Organizational Unit
+    .PARAMETER l
+        Certificate Subject: Location
+        Parameter Aliases: -locality or -location
+    .PARAMETER st
+        Certificate Subject: State
+        Parameter Aliases: -state
+    .PARAMETER c
+        Certificate Subject: Country
+        Parameter Aliases: -country
+    .EXAMPLE
+        PS> New-CMConnectionCSR -name "MyConnectionCert" -cn "mydevice.ciphertrustmanager.local" 
+    .EXAMPLE
+        PS> New-CMConnectionCSR -name "MyConnectionCert" -cn "mydevice.ciphertrustmanager.local" -size 2048 -dnsNames "mydevice.contoso.com,mydevice.contoso.local" -ipAddresses "10.0.0.1" -emailAddresses "support@contoso.com" -ou "Security" -o "Thales DIS" -l "Plantation" -st "Florida" -c "USA"
+    .EXAMPLE
+        PS> 
+        
+    .LINK
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
+function New-CMConnectionCSR {
+param (
+    [Parameter(Mandatory=$true)] [string] $name,
+    [Parameter()] [string] $cn=$name,
+    [Parameter()] [certAlgorithms] $algorithm="RSA",
+    [Parameter()] [ValidateSet(1024,2048,4096)] [int] $size=2048,
+    [Parameter()] [string[]] $dnsNames,
+    [Parameter()] [string[]] $ipAddresses,
+    [Parameter()] [string[]] $emailAddresses,
+    [Parameter()] [Alias('organization','org')] [string] $o="",
+    [Parameter()] [Alias('oganizationalunit')] [string] $ou="",
+    [Parameter()] [Alias('location','locality')] [string] $l="",
+    [Parameter()] [Alias('state')] [string] $st="",
+    [Parameter()] [Alias('country')] [string] $c=""
+    )
+
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    Write-Debug "Getting a List of all Connections in CM"
+    $endpoint = $CM_Session.REST_URL + $target_uri + "/csr"
+
+    Write-Debug "Endpoint: $($endpoint)"
+
+
+    # Mandatory Parameters
+    $body= [ordered] @{
+        
+        "name"          = $name
+        "cn"            = $cn
+        "algorithm"     = $algorithm
+        "size"          = $size
+    }
+
+    #Optional Parameters
+    if($dnsNames){
+        $dnsNames = $dnsNames.Split(",")
+        $body.Add('dnsNames',$dnsNames)
+    }
+    if($ipAddresses){
+        $ipAddresses = $ipAddresses.Split(",")
+        $body.Add('ipAddresses',$ipAddresses)
+    }
+    if($emailAddresses){
+        $emailAddresses = $emailAddresses.Split(",")
+        $body.Add('emailAddresses',$emailAddresses)
+    }
+    if($ou -or $o -or $l -or $st -or $c){
+        $body.add("names", @())
+        $subject = [ordered] @{}
+        if($ou){ $subject.ou = $ou }
+        if($o){ $subject.o = $o }
+        if($l){ $subject.l = $l }
+        if($st){ $subject.st = $st }   
+        if($c){ $subject.c = $c }
+               
+        $body.names = @( $subject )
+    }
+
+    $jsonBody = $body | ConvertTo-Json
+    
+    
+    
+    Write-Debug "JSON Body:`n$($jsonBody)"
+
+    #Optional Parameters Complete
+
+    Try {
+        Test-CMJWT #Make sure we have an up-to-date jwt
+        $headers = @{
+            Authorization = "Bearer $($CM_Session.AuthToken)"
+        }
+        Write-Debug "Headers: "
+        Write-HashtableArray $($headers)    
+        #Write-Debug "Insert REST API call Here."
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        Write-Debug "Response: $($response)"  
+    }
+    Catch {
+        $StatusCode = $_.Exception.Response.StatusCode
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
+        }
+        else {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+        }
+    }
+    Write-Debug "Connection created"
+    Write-Debug "End: $($MyInvocation.MyCommand.Name)"
+
+    $csr = $response.csr.ToString()
+
+    return "CSR:`n$($csr)"
+}    
+
 ####
 # Export Module Members
 ####
@@ -434,3 +590,6 @@ function Remove-CMConnection {
 Export-ModuleMember -Function Find-CMConnections    #/v1/connectionmgmt/connections - get
 Export-ModuleMember -Function Remove-CMConnection   #/v1/connectionmgmt/connections/{id} - delete
                                                     #/v1/connectionmgmt/connections/{id}/delete - post to force delete with body
+#Connection Manager
+#/v1/connectionmgmt/connections/csr
+Export-ModuleMember -Function New-CMConnectionCSR   #/v1/connectionmgmt/connections/csr - post

@@ -328,6 +328,7 @@ Export-ModuleMember -Function Update-CMDomainRotateKEK
 #Connections
 Export-ModuleMember -Function Find-CMConnections
 Export-ModuleMember -Function Remove-CMConnection
+Export-ModuleMember -Function New-CMConnectionCSR
 #Connections-AWS
 Export-ModuleMember -Function Find-CMAWSConnections
 Export-ModuleMember -Function New-CMAWSConnection
@@ -352,3 +353,11 @@ Export-ModuleMember -Function Update-CMAzureConnection
 Export-ModuleMember -Function Remove-CMAzureConnection
 Export-ModuleMember -Function Test-CMAzureConnection
 Export-ModuleMember -Function Test-CMAzureConnParameters
+#Connection Manager - Elasticsearch
+Export-ModuleMember -Function Find-CMElasticsearchConnections
+Export-ModuleMember -Function New-CMElasticsearchConnection
+Export-ModuleMember -Function Get-CMElasticsearchConnection
+Export-ModuleMember -Function Update-CMElasticsearchConnection
+Export-ModuleMember -Function Remove-CMElasticsearchConnection
+Export-ModuleMember -Function Test-CMElasticsearchConnection
+Export-ModuleMember -Function Test-CMElasticsearchConnParameters

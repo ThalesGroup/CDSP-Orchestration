@@ -80,6 +80,7 @@
         "Connections/CipherTrustManager-ConnectionMgr-AWS",
         "Connections/CipherTrustManager-ConnectionMgr-Akeyless",
         "Connections/CipherTrustManager-ConnectionMgr-Azure",
+        "Connections/CipherTrustManager-ConnectionMgr-Elasticsearch",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -174,6 +175,7 @@
         "Update-CMDomainRotateKEK",
         "Find-CMConnections",
         "Remove-CMConnection",
+        "New-CMConnectionCSR",
         "Find-CMAWSConnections",
         "New-CMAWSConnection",
         "Get-CMAWSConnection",
@@ -194,7 +196,14 @@
         "Update-CMAzureConnection",
         "Remove-CMAzureConnection",
         "Test-CMAzureConnection",
-        "Test-CMAzureConnParameters"
+        "Test-CMAzureConnParameters",
+        "Find-CMElasticsearchConnections",
+        "New-CMElasticsearchConnection",
+        "Get-CMElasticsearchConnection",
+        "Update-CMElasticsearchConnection",
+        "Remove-CMElasticsearchConnection",
+        "Test-CMElasticsearchConnection",
+        "Test-CMElasticsearchConnParameters"
 
     )
 

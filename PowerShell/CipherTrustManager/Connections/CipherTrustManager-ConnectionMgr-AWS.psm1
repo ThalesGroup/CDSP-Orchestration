@@ -119,6 +119,7 @@ function Find-CMAWSConnections {
         [string] $meta_contains, 
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
+            [ValidateSet('aws','aws-us-goc','aws-cn')]
         [string] $cloud_name,
         [Parameter()] [string] $createdBefore, 
         [Parameter()] [string] $createdAfter, 
@@ -379,9 +380,19 @@ function New-CMAWSConnection{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [string] $aws_region, 
+        [Parameter()] [ValidateSet(
+            'us-east-2','us-east-1','us-west-1','us-west-2',
+            'af-south-1',
+            'ap-east-1','ap-south-2','ap-southeast-3','ap-southeast-4','ap-south-1','ap-northeast-3','ap-northeast-2','ap-southeast-1','ap-southeast-2','ap-northeast-1',
+            'ca-central-1',
+            'eu-central-1','eu-west-1','eu-west-2','eu-south-1','eu-west-3','eu-south-2','eu-north-1','eu-central-2',
+            'il-central-1',
+            'me-south-1','me-central-1',
+            'sa-east-1',
+            'us-gov-east-1','us-gov-west-1'
+        )] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [ValidateSet('aws','aws-us-goc','aws-cn')] [string] $cloud_name, 
         [Parameter()] [switch] $is_role_anywhere, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
@@ -401,7 +412,7 @@ function New-CMAWSConnection{
 
 
     # Mandatory Parameters
-    $body=@{
+    $body = [ordered] @{
         "name" = $name
         "products" = @("cckm")
     }
@@ -645,9 +656,19 @@ function Update-CMAWSConnection{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [string] $aws_region, 
+        [Parameter()] [ValidateSet(
+            'us-east-2','us-east-1','us-west-1','us-west-2',
+            'af-south-1',
+            'ap-east-1','ap-south-2','ap-southeast-3','ap-southeast-4','ap-south-1','ap-northeast-3','ap-northeast-2','ap-southeast-1','ap-southeast-2','ap-northeast-1',
+            'ca-central-1',
+            'eu-central-1','eu-west-1','eu-west-2','eu-south-1','eu-west-3','eu-south-2','eu-north-1','eu-central-2',
+            'il-central-1',
+            'me-south-1','me-central-1',
+            'sa-east-1',
+            'us-gov-east-1','us-gov-west-1'
+        )] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [ValidateSet('aws','aws-us-goc','aws-cn')] [string] $cloud_name, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
         [Parameter()] [string] $anywhere_role_certfile, 
@@ -674,7 +695,7 @@ function Update-CMAWSConnection{
     }
     
     # Parameters
-    $body=@{}
+    $body = [ordered] @{}
 
     if($access_key_id){ $body.add('access_key_id', $access_key_id)}
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
@@ -902,9 +923,19 @@ function Test-CMAWSConnection{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [string] $aws_region, 
+        [Parameter()] [ValidateSet(
+            'us-east-2','us-east-1','us-west-1','us-west-2',
+            'af-south-1',
+            'ap-east-1','ap-south-2','ap-southeast-3','ap-southeast-4','ap-south-1','ap-northeast-3','ap-northeast-2','ap-southeast-1','ap-southeast-2','ap-northeast-1',
+            'ca-central-1',
+            'eu-central-1','eu-west-1','eu-west-2','eu-south-1','eu-west-3','eu-south-2','eu-north-1','eu-central-2',
+            'il-central-1',
+            'me-south-1','me-central-1',
+            'sa-east-1',
+            'us-gov-east-1','us-gov-west-1'
+        )] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [ValidateSet('aws','aws-us-goc','aws-cn')] [string] $cloud_name, 
         [Parameter()] [switch] $is_role_anywhere, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
@@ -933,7 +964,7 @@ function Test-CMAWSConnection{
     Write-Debug "Endpoint w Target: $($endpoint)"
 
     # Parameters
-    $body=@{}
+    $body = [ordered] @{}
 
     if($access_key_id){ $body.add('access_key_id', $access_key_id)}
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
@@ -1053,9 +1084,19 @@ function Test-CMAWSConnParameters{
         [Parameter()] [string] $secret_access_key, 
         [Parameter()] [string] $assume_role_arn, 
         [Parameter()] [string] $assume_role_external_id, 
-        [Parameter()] [string] $aws_region, 
+        [Parameter()][ValidateSet(
+            'us-east-2','us-east-1','us-west-1','us-west-2',
+            'af-south-1',
+            'ap-east-1','ap-south-2','ap-southeast-3','ap-southeast-4','ap-south-1','ap-northeast-3','ap-northeast-2','ap-southeast-1','ap-southeast-2','ap-northeast-1',
+            'ca-central-1',
+            'eu-central-1','eu-west-1','eu-west-2','eu-south-1','eu-west-3','eu-south-2','eu-north-1','eu-central-2',
+            'il-central-1',
+            'me-south-1','me-central-1',
+            'sa-east-1',
+            'us-gov-east-1','us-gov-west-1'
+        )] [string] $aws_region, 
         [Parameter()] [string] $aws_sts_regional_endpoints, 
-        [Parameter()] [string] $cloud_name, 
+        [Parameter()] [ValidateSet('aws','aws-us-goc','aws-cn')] [string] $cloud_name, 
         [Parameter()] [switch] $is_role_anywhere, 
         [Parameter()] [string] $anywhere_role_arn, 
         [Parameter()] [string] $anywhere_role_cert, 
@@ -1072,7 +1113,7 @@ function Test-CMAWSConnParameters{
     Write-Debug "Endpoint: $($endpoint)"
 
     # Parameters
-    $body=@{}
+    $body = [ordered] @{}
 
     if($access_key_id){ $body.add('access_key_id', $access_key_id)}
     if($secret_access_key){ $body.add('secret_access_key', $secret_access_key)}
