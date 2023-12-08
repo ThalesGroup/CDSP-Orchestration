@@ -81,6 +81,7 @@
         "Connections/CipherTrustManager-ConnectionMgr-Akeyless",
         "Connections/CipherTrustManager-ConnectionMgr-Azure",
         "Connections/CipherTrustManager-ConnectionMgr-Elasticsearch",
+        "Connections/CipherTrustManager-ConnectionMgr-Google",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -203,7 +204,14 @@
         "Update-CMElasticsearchConnection",
         "Remove-CMElasticsearchConnection",
         "Test-CMElasticsearchConnection",
-        "Test-CMElasticsearchConnParameters"
+        "Test-CMElasticsearchConnParameters",
+        "Find-CMGCPConnections",
+        "New-CMGCPConnection",
+        "Get-CMGCPConnection",
+        "Update-CMGCPConnection",
+        "Remove-CMGCPConnection",
+        "Test-CMGCPConnection",
+        "Test-CMGCPConnParameters"
 
     )
 

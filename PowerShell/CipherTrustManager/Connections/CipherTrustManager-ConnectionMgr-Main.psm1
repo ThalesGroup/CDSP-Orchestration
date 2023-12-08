@@ -516,7 +516,7 @@ param (
         
         "name"          = $name
         "cn"            = $cn
-        "algorithm"     = $algorithm
+        "algorithm"     = $algorithm.ToString()
         "size"          = $size
     }
 

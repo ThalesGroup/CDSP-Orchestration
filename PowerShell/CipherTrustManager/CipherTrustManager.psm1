@@ -361,3 +361,11 @@ Export-ModuleMember -Function Update-CMElasticsearchConnection
 Export-ModuleMember -Function Remove-CMElasticsearchConnection
 Export-ModuleMember -Function Test-CMElasticsearchConnection
 Export-ModuleMember -Function Test-CMElasticsearchConnParameters
+#Connection Manager - Google
+Export-ModuleMember -Function Find-CMGCPConnections
+Export-ModuleMember -Function New-CMGCPConnection
+Export-ModuleMember -Function Get-CMGCPConnection
+Export-ModuleMember -Function Update-CMGCPConnection
+Export-ModuleMember -Function Remove-CMGCPConnection
+Export-ModuleMember -Function Test-CMGCPConnection
+Export-ModuleMember -Function Test-CMGCPConnParameters
