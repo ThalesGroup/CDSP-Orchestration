@@ -82,6 +82,7 @@
         "Connections/CipherTrustManager-ConnectionMgr-Azure",
         "Connections/CipherTrustManager-ConnectionMgr-Elasticsearch",
         "Connections/CipherTrustManager-ConnectionMgr-Google",
+        "Connections/CipherTrustManager-ConnectionMgr-DSM",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -211,7 +212,19 @@
         "Update-CMGCPConnection",
         "Remove-CMGCPConnection",
         "Test-CMGCPConnection",
-        "Test-CMGCPConnParameters"
+        "Test-CMGCPConnParameters",
+        "Find-CMDSMConnections",
+        "New-CMDSMConnection",
+        "Get-CMDSMConnection",
+        "Update-CMDSMConnection",
+        "Remove-CMDSMConnection",
+        "Test-CMDSMConnection",
+        "Test-CMDSMConnParameters",
+        "Find-CMDSMConnectionNodes",
+        "Add-CMDSMConnectionNode",
+        "Get-CMDSMConnectionNode",
+        "Update-CMDSMConnectionNode",
+        "Remove-CMDSMConnectionNode"
 
     )
 

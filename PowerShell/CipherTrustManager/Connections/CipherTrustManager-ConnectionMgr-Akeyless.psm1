@@ -579,7 +579,7 @@ function Update-CMAkeylessConnection{
     The CipherTrust manager "id" value for the connection.
     Use the Find-CMAkeylessConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion copnfirmations. USE EXTREME CAUTION.
+    Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
     PS> Remove-CMAkeylessConnection -name "MyAkeylessConnection"
     Use the complete name of the connection. 

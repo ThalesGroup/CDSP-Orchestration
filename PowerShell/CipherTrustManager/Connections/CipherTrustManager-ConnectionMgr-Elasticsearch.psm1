@@ -354,6 +354,8 @@ function New-CMElasticsearchConnection{
     if((!$insecure_tls_skip_verify) -and (!$ca_cert -and !$ca_certfile)){
         return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
     }
+    if ((!$http_user -or !$http_password) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
+
 
     # Mandatory Parameters
     $body= [ordered] @{
@@ -667,7 +669,7 @@ function Update-CMElasticsearchConnection{
     The CipherTrust manager "id" value for the connection.
     Use the Find-CMElasticsearchConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion copnfirmations. USE EXTREME CAUTION.
+    Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
     PS> Remove-CMElasticsearchConnection -name "My Elasticsearch Connection"
     Use the complete name of the connection. 
@@ -800,6 +802,11 @@ function Test-CMElasticsearchConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
+    if((!$insecure_tls_skip_verify) -and (!$ca_cert -and !$ca_certfile)){
+        return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
+    }
+    if ((!$http_user -or !$http_password) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
+
     Write-Debug "Testing Azure Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
@@ -914,6 +921,11 @@ function Test-CMElasticsearchConnParameters{
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+
+    if((!$insecure_tls_skip_verify) -and (!$ca_cert -and !$ca_certfile)){
+        return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
+    }
+    if ((!$http_user -or !$http_password) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
 
     Write-Debug "Testing Elasticsearch Connection details."
     $endpoint = $CM_Session.REST_URL + $target_uri_test

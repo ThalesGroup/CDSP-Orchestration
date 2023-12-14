@@ -324,7 +324,7 @@ function New-CMDomain {
     .PARAMETER id
         The CipherTrust Manager id of the domain to be deleted.
     .PARAMETER force
-        Bypass all deletion copnfirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
         PS> Remove-CMDomain -name MyDomain 
     .LINK

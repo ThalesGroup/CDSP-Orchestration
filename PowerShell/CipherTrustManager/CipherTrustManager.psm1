@@ -369,3 +369,16 @@ Export-ModuleMember -Function Update-CMGCPConnection
 Export-ModuleMember -Function Remove-CMGCPConnection
 Export-ModuleMember -Function Test-CMGCPConnection
 Export-ModuleMember -Function Test-CMGCPConnParameters
+#Connection Manager - DSM
+Export-ModuleMember -Function Find-CMDSMConnections
+Export-ModuleMember -Function New-CMDSMConnection
+Export-ModuleMember -Function Get-CMDSMConnection
+Export-ModuleMember -Function Update-CMDSMConnection
+Export-ModuleMember -Function Remove-CMDSMConnection
+Export-ModuleMember -Function Test-CMDSMConnection
+Export-ModuleMember -Function Test-CMDSMConnParameters
+Export-ModuleMember -Function Find-CMDSMConnectionNodes
+Export-ModuleMember -Function Add-CMDSMConnectionNode
+Export-ModuleMember -Function Get-CMDSMConnectionNode
+Export-ModuleMember -Function Update-CMDSMConnectionNode
+Export-ModuleMember -Function Remove-CMDSMConnectionNode

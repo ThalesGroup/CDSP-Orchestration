@@ -345,7 +345,7 @@ function New-CMGCPConnection{
         "products" = @( "cckm" )
     }
 
-    if($key_file_file){ $key_file_json = (Get-Content $key_file_json)}
+    if($key_file_file){ $key_file_json = (Get-Content $key_file_file)}
         if($key_file_json){ $body.add('key_file', $key_file_json)}
 
     # Optional Parameters
@@ -550,7 +550,7 @@ function Update-CMGCPConnection{
     $body = [ordered] @{}
 
     # Optional Parameters
-    if($key_file_file){ $key_file_json = (Get-Content $key_file_json)}
+    if($key_file_file){ $key_file_json = (Get-Content $key_file_file)}
         if($key_file_json){ $body.add('key_file', $key_file_json)}
     if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($description){ $body.add('description', $description)}
@@ -608,7 +608,7 @@ function Update-CMGCPConnection{
     The CipherTrust manager "id" value for the connection.
     Use the Find-CMGCPConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion copnfirmations. USE EXTREME CAUTION.
+    Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
     PS> Remove-CMGCPConnection -name "My Google Connection"
     Use the complete name of the connection. 
@@ -742,7 +742,7 @@ function Test-CMGCPConnection{
     $body = [ordered] @{}
 
     # Optional Parameters
-    if($key_file_file){ $key_file_json = (Get-Content $key_file_json)}
+    if($key_file_file){ $key_file_json = (Get-Content $key_file_file)}
         if($key_file_json){ $body.add('key_file', $key_file_json)}
     if($cloud_name){ $body.add('cloud_name', $cloud_name.ToString())}
     if($description){ $body.add('description', $description)}
@@ -819,7 +819,7 @@ function Test-CMGCPConnParameters{
     $body = [ordered] @{
     }
 
-    if($key_file_file){ $key_file_json = (Get-Content $key_file_json)}
+    if($key_file_file){ $key_file_json = (Get-Content $key_file_file)}
         if($key_file_json){ $body.add('key_file', $key_file_json)}
 
     $jsonBody = $body | ConvertTo-JSON 

@@ -780,7 +780,7 @@ function Update-CMAWSConnection{
     The CipherTrust manager "id" value for the connection.
     Use the Find-CMAWSConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion copnfirmations. USE EXTREME CAUTION.
+    Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
     PS> Remove-CMAWSConnection -name "My AWS Connection"
     Use the complete name of the connection. 
