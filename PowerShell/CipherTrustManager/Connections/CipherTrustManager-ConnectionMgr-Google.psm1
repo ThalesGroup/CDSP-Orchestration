@@ -288,36 +288,35 @@ function Find-CMGCPConnections {
 
 <#
     .SYNOPSIS
-    Create a new CipherTrust Manager GCP Connection 
+        Create a new CipherTrust Manager GCP Connection 
     .DESCRIPTION
-    Creates a new GCP connection. 
+        Creates a new GCP connection. 
     .PARAMETER name
-    Unique connection name.
+        Unique connection name.
     .PARAMETER key_file_json
-    The contents of private key file of a GCP service account.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        The contents of private key file of a GCP service account.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER key_file_file
-    Specify a filename for the Google Private Key file.
+        Specify a filename for the Google Private Key file.
     .PARAMETER cloud_name
-    The only, and default, value is gcp. (Parameterized for future development.)
-    Filter the result based on the cloud name. 
-        - GCP
+        The only, and default, value is gcp. (Parameterized for future development.)
+        Filter the result based on the cloud name. 
+            - GCP
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-    PS> 
-    
+        PS> New-CMGCPConnection -name "MyGCPConnection1" -key_file_json '{"type":"service_account","private_key_id":"y437c51g956b8ab4908yb41541262a2fa3b0f84f","private_key":"-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQDnC1YYTtcpsbj6cV9M/1rOhEYWG9iNdnsMCK0AjMRtb79toU2v\nyW0JfJR/sR2vqFMD1wJFgpayqo5GDPa8Us23I/vvyWCkatouGYO27r84y5G2h74a\nZnnEaK7uLQ2OdGNHWcZv8gZhy7X5e6RJfKVVlYrgYtfEKv55E9dQSZrohQIDAQAB\nAoGAbzre7P7vyQvdkPyJs+jvj6LQlw462AflPyriFvSuED2PPDk+zFU9oCaQ21Sq\nhQmVRbD6T/qJkGRZ8FGHa6y1if6UVbUymr+0a1hIM7BbPwsG2hLXznYjXWZ8WFDb\nQyRWTZh4Zj0Br2DtoRjQOG8CHhC7LuFx434acu12VXxN8vUCQQDtS8GRzktOWRBL\n2l7MWCja3lkqyYR2Ns+tw79eEAYVrGsFZLu6gAMdmn53M+eO5h++Ypr7G+bazvwC\nD1XtiN+7AkEA+UFuq04YR3lTpCN1OeJ0VKXatVMFMjAejulHF3d3tRc4pIfAjgTk\n4M+K9y++4QtVdhsGO9sk1jwfHrRTn340vwJBAIJ25DYF9eFdllgd94Dh95ReKygb\nI3jbKdOfi9drd+zynuSYPZ6MQypDhsSDBQzL+SfzjsIA1Sv4IRYA2H2Ag4ECQAYw\nHKo+DxY/KddqVe+w8ohjcbGMtRVQ4oFTw0MO4Tbqs6pKAHrGHlSCcoW+drOpj16W\nPypfP2PeLDub6HOOM4sCQGWUXaHqJzfy2nHRAkr9WJEGgEMCMlGtFuMPH/Jc7aUt\nNXk9HfcpVO/spIVpyL7x480hq5DHn7KaGwi+Lk2W0A8=\n-----END RSA PRIVATE KEY-----\n\n","client_email":"test@some-project.iam.gserviceaccount.com"}' -description "My PowerShell Created GCP Connection" -metadata "red:stop,green:go"
     .EXAMPLE
-    PS> 
-    
-    This example uses certificate files for the External Certificate. It will import the files and convert to proper JSON format.
+        PS> New-CMGCPConnection -name "MyGCPConnection2" -key_file_file .\gcp_key_file.json -description "My PowerShell Created GCP Connection" -metadata "red:stop,green:go"
+        
+        This example uses certificate files for the External Certificate. It will import the files and convert to proper JSON format.
 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CMGCPConnection{
     param(
         [Parameter(Mandatory = $true,
@@ -401,23 +400,23 @@ function New-CMGCPConnection{
 
 <#
     .SYNOPSIS
-    Get full details on a CipherTrust Manager GCP Connection
+        Get full details on a CipherTrust Manager GCP Connection
     .DESCRIPTION
-    Retriving the full list of Google Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of Google Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-    The complete name of the GCP connection. Do not use wildcards.
+        The complete name of the GCP connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMGCPConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMGCPConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Get-CMGCPConnection -name "My GCP Connection"
-    Use the complete name of the connection. 
+        PS> Get-CMGCPConnection -name "My GCP Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Get-CMGCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Use the complete name of the connection. 
+        PS> Get-CMGCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Get-CMGCPConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -477,44 +476,44 @@ function Get-CMGCPConnection{
 
 <#
     .SYNOPSIS
-    Update an existing a new CipherTrust Manager GCP Connection 
+        Update an existing a new CipherTrust Manager GCP Connection 
     .DESCRIPTION
-    Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
+        Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-    Name of the existing CipherTrust Manager GCP connection.
+        Name of the existing CipherTrust Manager GCP connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Google connection.
+        CipherTrust Manager "id" value of the existing Google connection.
     .PARAMETER key_file_json
-    The contents of private key file of a GCP service account.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        The contents of private key file of a GCP service account.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER key_file_file
-    Specify a filename for the Google Private Key file.
+        Specify a filename for the Google Private Key file.
     .PARAMETER cloud_name
-    The only, and default, value is gcp. (Parameterized for future development.)
-    Filter the result based on the cloud name. 
-        - GCP
+        The only, and default, value is gcp. (Parameterized for future development.)
+        Filter the result based on the cloud name. 
+            - GCP
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    Existing meta data can be changed but no keys can be deleted.
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        Existing meta data can be changed but no keys can be deleted.
+        e.g. -metadata "red:stop,green:go,blue:ocean"
 
-    For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
+        For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-    PS> Update-CMGCPConnections -name MyGCPConnection -metadata "red:stop,green:go,blue:ocean"
-    This will update the metadata of the connection to include the key pairs shown.
+        PS> Update-CMGCPConnections -name MyGCPConnection -metadata "red:stop,green:go,blue:ocean"
+        This will update the metadata of the connection to include the key pairs shown.
 
-    Resulting in:
-    {
-        "meta": {
-            "blue": "ocean",
-            "red": "stop",
-            "green": "go"
+        Resulting in:
+        {
+            "meta": {
+                "blue": "ocean",
+                "red": "stop",
+                "green": "go"
+            }
         }
-    }
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function Update-CMGCPConnection{
     param(
@@ -599,25 +598,25 @@ function Update-CMGCPConnection{
 
 <#
     .SYNOPSIS
-    Delete a CipherTrust Manager Google Connection
+        Delete a CipherTrust Manager Google Connection
     .DESCRIPTION
-    Delete a CipherTrust Manager Google Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager Google Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-    The complete name of the Google connection. This parameter is case-sensitive.
+        The complete name of the Google connection. This parameter is case-sensitive.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMGCPConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMGCPConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion confirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-    PS> Remove-CMGCPConnection -name "My Google Connection"
-    Use the complete name of the connection. 
+        PS> Remove-CMGCPConnection -name "My Google Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Remove-CMGCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Using the id of the connection. 
+        PS> Remove-CMGCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Using the id of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CMGCPConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -689,25 +688,25 @@ function Remove-CMGCPConnection{
 
 <#
     .SYNOPSIS
-    Test existing connection.
+        Test existing connection.
     .DESCRIPTION
-    Tests that an existing connection with the given name, ID, or URI reaches the Google cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI reaches the Google cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
     .PARAMETER name
-    Name of the existing CipherTrust Manager Google connection.
+        Name of the existing CipherTrust Manager Google connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Google connection.
+        CipherTrust Manager "id" value of the existing Google connection.
     .PARAMETER key_file_json
-    The contents of private key file of a GCP service account.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        The contents of private key file of a GCP service account.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER key_file_file
-    Specify a filename for the Google Private Key file.
+        Specify a filename for the Google Private Key file.
     .PARAMETER cloud_name
-    The only, and default, value is gcp. (Parameterized for future development.)
-    Filter the result based on the cloud name. 
-        - GCP
+        The only, and default, value is gcp. (Parameterized for future development.)
+        Filter the result based on the cloud name. 
+            - GCP
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMGCPConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -790,17 +789,17 @@ function Test-CMGCPConnection{
 
 <#
     .SYNOPSIS
-    Test connection parameters for a non-existent connection. 
+        Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-    Tests that the connection parameters can be used to reach the Google account. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the Google account. This does not create a persistent connection.
     .PARAMETER key_file_json
-    The contents of private key file of a GCP service account.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        The contents of private key file of a GCP service account.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER key_file_file
-    Specify a filename for the Google Private Key file.
+        Specify a filename for the Google Private Key file.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMGCPConnParameters{
     param(
         [Parameter()] [string] $key_file_json, 

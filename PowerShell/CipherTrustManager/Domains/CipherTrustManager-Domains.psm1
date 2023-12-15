@@ -217,12 +217,12 @@ function Find-CMDomains {
     .PARAMETER hsm_kek_label
         (Optional) Optional name field for the domain KEK for an HSM-anchored domain. If not provided, a random UUID is assigned for KEK label.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    e.g. -metadata "red:stop,green:go,blue:ocean" 
-    e.g. -metadata "{"red":"stop","green":"go"}"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean" 
+        e.g. -metadata "{"red":"stop","green":"go"}"
     .EXAMPLE
-    PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356"
-    Creates a domain with the name MyDomain with a single administrator.
+        PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356"
+        Creates a domain with the name MyDomain with a single administrator.
     .EXAMPLE    
         PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356","contoso.com|myAdmin"
         Creates a domain with the name MyDomain with a two administrators in a comma-separated list. One administrator being local and the second from an LDAP Connection.

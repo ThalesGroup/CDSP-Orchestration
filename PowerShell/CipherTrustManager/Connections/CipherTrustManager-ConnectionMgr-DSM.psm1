@@ -262,41 +262,40 @@ function Find-CMDSMConnections {
 
 <#
     .SYNOPSIS
-    Create a new CipherTrust Manager DSM Connection. 
+        Create a new CipherTrust Manager DSM Connection. 
     .DESCRIPTION
-    Creates a new DSM connection. 
+        Creates a new DSM connection. 
     .PARAMETER name
-    Unique connection name.
+        Unique connection name.
     .PARAMETER nodename
-    Hostname of the FIRST DSM server in the DSM Cluster being conencted to. Use Add-CMDSMConnectionNode for EACH additional node.
+        Hostname of the FIRST DSM server in the DSM Cluster being conencted to. Use Add-CMDSMConnectionNode for EACH additional node.
     .PARAMETER dsmcertificate
-    Enter the PEM-formatted certificate text for the DSM being connected to.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        Enter the PEM-formatted certificate text for the DSM being connected to.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER dsmcertfile
-    Specify a filename for the DSM certificate.
+        Specify a filename for the DSM certificate.
     .PARAMETER dsmuser
-    Username for accessing DSM server. 
+        Username for accessing DSM server. 
     .PARAMETER dsmpass
-    Password of DSM server
+        Password of DSM server
     .PARAMETER dsmsecurecredentials
-    Supply a PSCredential object with the DSM username and password
+        Supply a PSCredential object with the DSM username and password
     .PARAMETER domain_id
-    (Optional) If DSM user is restricted to a domain, provide domain id.
+        (Optional) If DSM user is restricted to a domain, provide domain id.
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-    PS> New-CMDSMConnection -name "MyDSMCluster" -description "This is an Powershell created External DSM Connection" -nodename "dsm1.mydomain.com" -dsmcertificate "<PEM-formatted-certificate>" -dsmuser alladmin -dsmpass Thales123! -metadata "red:stop,green:go"
+        PS> New-CMDSMConnection -name "MyDSMCluster" -description "This is an Powershell created External DSM Connection" -nodename "dsm1.mydomain.com" -dsmcertificate "<PEM-formatted-certificate>" -dsmuser alladmin -dsmpass Thales123! -metadata "red:stop,green:go"
     .EXAMPLE
-    PS> New-CMDSMConnection -name "MyDSMCluster" -description "This is an Powershell created External DSM Connection" -nodename "dsm1.mydomain.com" -dsmcertfile .\dsmnode1cert.pem -dsmuser alladmin -dsmpass Thales123! -metadata "red:stop,green:go"
+        PS> New-CMDSMConnection -name "MyDSMCluster" -description "This is an Powershell created External DSM Connection" -nodename "dsm1.mydomain.com" -dsmcertfile .\dsmnode1cert.pem -dsmuser alladmin -dsmpass Thales123! -metadata "red:stop,green:go"
     .EXAMPLE
-    PS> New-CMDSMConnection -name "MyDSMCluster" -nodename "dsm1.mydomain.com" -dsmcertfile .\dsmnode1cert.pem -dsmsecurecredentials [PSCredential]$dsmcreds
-    
+        PS> New-CMDSMConnection -name "MyDSMCluster" -nodename "dsm1.mydomain.com" -dsmcertfile .\dsmnode1cert.pem -dsmsecurecredentials [PSCredential]$dsmcreds
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CMDSMConnection{
     param(
         [Parameter(Mandatory = $true,
@@ -397,23 +396,23 @@ function New-CMDSMConnection{
 
 <#
     .SYNOPSIS
-    Get full details on a CipherTrust Manager DSM Connection
+        Get full details on a CipherTrust Manager DSM Connection
     .DESCRIPTION
-    Retriving the full list of DSM Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of DSM Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-    The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the DSM connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Get-CMDSMConnection -name "My DSM Connection"
-    Use the complete name of the connection. 
+        PS> Get-CMDSMConnection -name "My DSM Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Get-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Use the complete name of the connection. 
+        PS> Get-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Get-CMDSMConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -473,43 +472,47 @@ function Get-CMDSMConnection{
 
 <#
     .SYNOPSIS
-    Update an existing a new CipherTrust Manager DSM Connection. This is ONLY used to update the DSM Credentials. Use "Update-CMDSMConnectionNode -id {id}" to update node information.
+        Update an existing a new CipherTrust Manager DSM Connection. This is ONLY used to update the DSM Credentials. Use "Update-CMDSMConnectionNode -id {id} -nodeid {node_id}" to update node information.
     .DESCRIPTION
-    Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
+        Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-    Name of the existing CipherTrust Manager DSM connection.
+        Name of the existing CipherTrust Manager DSM connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing DSM connection.
+        CipherTrust Manager "id" value of the existing DSM connection.
     .PARAMETER dsmuser
-    Username for accessing DSM server. 
+        Username for accessing DSM server. 
     .PARAMETER dsmpass
-    Password of DSM server
+        Password of DSM server
     .PARAMETER dsmsecurecredentials
-    Supply a PSCredential object with the DSM username and password
+        Supply a PSCredential object with the DSM username and password
     .PARAMETER domain_id
-    (Optional) If DSM user is restricted to a domain, provide domain id.
+        (Optional) If DSM user is restricted to a domain, provide domain id.
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    Existing meta data can be changed but no keys can be deleted.
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        Existing meta data can be changed but no keys can be deleted.
+        e.g. -metadata "red:stop,green:go,blue:ocean"
 
-    For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
+        For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-    PS> Update-CMDSMConnections -name MyDSMConnection -metadata "red:stop,green:go,blue:ocean"
-    This will update the metadata of the connection to include the key pairs shown.
+        PS> Update-CMDSMConnection -name MyDSMConnection -dsmuser <newuser> -dsmpass <newpass>
+    .EXAMPLE
+        PS> Update-CMDSMConnection -name MyDSMConnection -dsmsecurecredentials $mycreds
+    .EXAMPLE
+        PS> Update-CMDSMConnections -name MyDSMConnection -metadata "red:stop,green:go,blue:ocean"
+        This will update the metadata of the connection to include the key pairs shown.
 
-    Resulting in:
-    {
-        "meta": {
-            "blue": "ocean",
-            "red": "stop",
-            "green": "go"
+        Resulting in:
+        {
+            "meta": {
+                "blue": "ocean",
+                "red": "stop",
+                "green": "go"
+            }
         }
-    }
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function Update-CMDSMConnection{
     param(
@@ -600,25 +603,25 @@ function Update-CMDSMConnection{
 
 <#
     .SYNOPSIS
-    Delete a CipherTrust Manager DSM Connection
+        Delete a CipherTrust Manager DSM Connection
     .DESCRIPTION
-    Delete a CipherTrust Manager DSM Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager DSM Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-    The complete name of the DSM connection. This parameter is case-sensitive.
+        The complete name of the DSM connection. This parameter is case-sensitive.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion confirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-    PS> Remove-CMDSMConnection -name "My DSM Connection"
-    Use the complete name of the connection. 
+        PS> Remove-CMDSMConnection -name "My DSM Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Using the id of the connection. 
+        PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Using the id of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CMDSMConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -690,16 +693,16 @@ function Remove-CMDSMConnection{
 
 <#
     .SYNOPSIS
-    Test existing connection.
+        Test existing connection.
     .DESCRIPTION
-    Tests that an existing connection with the given name, ID, or URI reaches the Google cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI reaches the Google cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
     .PARAMETER name
-    Name of the existing CipherTrust Manager DSM connection.
+        Name of the existing CipherTrust Manager DSM connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Google connection.
+        CipherTrust Manager "id" value of the existing Google connection.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMDSMConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -758,27 +761,27 @@ function Test-CMDSMConnection{
 
 <#
     .SYNOPSIS
-    Test connection parameters for a non-existent connection. 
+        Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-    Tests that the connection parameters can be used to reach the DSM account. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the DSM account. This does not create a persistent connection.
     .PARAMETER nodename
-    Hostname of the DSM server in the DSM Cluster being tested.
+        Hostname of the DSM server in the DSM Cluster being tested.
     .PARAMETER dsmcertificate
-    Enter the PEM-formatted certificate text for the DSM being connected to.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        Enter the PEM-formatted certificate text for the DSM being connected to.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER dsmcertfile
-    Specify a filename for the DSM certificate.
+        Specify a filename for the DSM certificate.
     .PARAMETER dsmuser
-    Username for accessing DSM server. 
+        Username for accessing DSM server. 
     .PARAMETER dsmpass
-    Password of DSM server
+        Password of DSM server
     .PARAMETER dsmsecurecredentials
-    Supply a PSCredential object with the DSM username and password
+        Supply a PSCredential object with the DSM username and password
     .PARAMETER domain_id
-    (Optional) If DSM user is restricted to a domain, provide domain id.
+        (Optional) If DSM user is restricted to a domain, provide domain id.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMDSMConnParameters{
     param(
         [Parameter()] [string] $nodename, 
@@ -857,23 +860,23 @@ function Test-CMDSMConnParameters{
 
 <#
     .SYNOPSIS
-    Get list of nodes attached to a CipherTrust Manager DSM Connection
+        Get list of nodes attached to a CipherTrust Manager DSM Connection
     .DESCRIPTION
-    Get list of nodes attached to a CipherTrust Manager DSM Connection
+        Get list of nodes attached to a CipherTrust Manager DSM Connection
     .PARAMETER name
-    The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the DSM connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Find-CMDSMConnectionNodes -name "My DSM Connection"
-    Use the complete name of the connection. 
+        PS> Find-CMDSMConnectionNodes -name "My DSM Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Find-CMDSMConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Use the complete name of the connection. 
+        PS> Find-CMDSMConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
     function Find-CMDSMConnectionNodes{
         param(
             [Parameter(Mandatory = $false,
@@ -932,30 +935,30 @@ function Test-CMDSMConnParameters{
 
 <#
     .SYNOPSIS
-    Add a nodes to a CipherTrust Manager DSM Connection
+        Add a nodes to a CipherTrust Manager DSM Connection
     .DESCRIPTION
-    Add a nodes to a CipherTrust Manager DSM Connection
+        Add a nodes to a CipherTrust Manager DSM Connection
     .PARAMETER name
-    The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the DSM connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
     .PARAMETER nodename
-    Hostname of the DSM server in the DSM Cluster being added.
+        Hostname of the DSM server in the DSM Cluster being added.
     .PARAMETER dsmcertificate
-    Enter the PEM-formatted certificate text for the DSM being connected to.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        Enter the PEM-formatted certificate text for the DSM being connected to.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER dsmcertfile
-    Specify a filename for the DSM certificate.
+        Specify a filename for the DSM certificate.
     .EXAMPLE
-    PS> Add-CMDSMConnectionNode -name "My DSM Connection" -nodename "dsm2.mydomain.local" -dsmcertificate <PEM-formatted-certificate-text>
-    Use the complete name of the connection. 
+        PS> Add-CMDSMConnectionNode -name "My DSM Connection" -nodename "dsm2.mydomain.local" -dsmcertificate <PEM-formatted-certificate-text>
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Add-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodename "dsm2.mydomain.local" -dsmcertfile .\dsm2_cert.pem
-    Use the complete name of the connection. 
+        PS> Add-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodename "dsm2.mydomain.local" -dsmcertfile .\dsm2_cert.pem
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
     function Add-CMDSMConnectionNode{
         param(
             [Parameter(Mandatory = $false,
@@ -1031,25 +1034,25 @@ function Test-CMDSMConnParameters{
 
 <#
     .SYNOPSIS
-    Get detail on an individual node of a CipherTrust Manager DSM Connection
+        Get detail on an individual node of a CipherTrust Manager DSM Connection
     .DESCRIPTION
-    Get detail on an individual node of a CipherTrust Manager DSM Connection
+        Get detail on an individual node of a CipherTrust Manager DSM Connection
     .PARAMETER name
-    The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the DSM connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
     .PARAMETER nodeid
-    The Node "id" value for the connection.
-    Use the Find-CMDSMConnectionNodes cmdlet to find the appropriate id value.
+        The Node "id" value for the connection.
+        Use the Find-CMDSMConnectionNodes cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Get-CMDSMConnectionNode -name "My DSM Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab"
-    Use the complete name of the connection. 
+        PS> Get-CMDSMConnectionNode -name "My DSM Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Get-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" 
+        PS> Get-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
     function Get-CMDSMConnectionNodes{
         param(
             [Parameter(Mandatory = $false,
@@ -1112,27 +1115,27 @@ function Test-CMDSMConnParameters{
 
 <#
     .SYNOPSIS
-    Delete a node from a CipherTrust Manager DSM Connection.
+        Delete a node from a CipherTrust Manager DSM Connection.
     .DESCRIPTION
-    Delete a node from a CipherTrust Manager DSM Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a node from a CipherTrust Manager DSM Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-    The complete name of the DSM connection. This parameter is case-sensitive.
+        The complete name of the DSM connection. This parameter is case-sensitive.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
     .PARAMETER nodeid
-    Node ID of the node in the DSM Cluster being removed.
+        Node ID of the node in the DSM Cluster being removed.
     .PARAMETER force
-    Bypass all deletion confirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-    PS> Remove-CMDSMConnection -name "My DSM Connection"
-    Use the complete name of the connection. 
+        PS> Remove-CMDSMConnection -name "My DSM Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Using the id of the connection. 
+        PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Using the id of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
     function Remove-CMDSMConnectionNode{
         param(
             [Parameter(Mandatory = $false,
@@ -1205,29 +1208,29 @@ function Test-CMDSMConnParameters{
 
 <#
     .SYNOPSIS
-    Update an existing node of a CipherTrust Manager DSM Connection
+        Update an existing node of a CipherTrust Manager DSM Connection
     .DESCRIPTION
-    Update an existing node of a CipherTrust Manager DSM Connection
+        Update an existing node of a CipherTrust Manager DSM Connection
     .PARAMETER name
-    The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the DSM connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
     .PARAMETER nodeid
-    Node ID of the node in the DSM Cluster being updated.
+        Node ID of the node in the DSM Cluster being updated.
     .PARAMETER dsmcertificate
-    Enter the PEM-formatted certificate text for the DSM being connected to.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        Enter the PEM-formatted certificate text for the DSM being connected to.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER dsmcertfile
-    Specify a filename for the DSM certificate.
+        Specify a filename for the DSM certificate.
     .EXAMPLE
-    PS> Update-CMDSMConnectionNode -name "My DSM Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -dsmcertificate <PEM-formatted-certificate-text>
-    Use the complete name of the connection. 
+        PS> Update-CMDSMConnectionNode -name "My DSM Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -dsmcertificate <PEM-formatted-certificate-text>
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Update-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -dsmcertfile .\dsm2_cert.pem
+        PS> Update-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -dsmcertfile .\dsm2_cert.pem
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
     function Update-CMDSMConnectionNode{
         param(
             [Parameter(Mandatory = $false,

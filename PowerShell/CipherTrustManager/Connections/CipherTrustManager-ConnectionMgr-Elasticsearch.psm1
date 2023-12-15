@@ -285,48 +285,44 @@ function Find-CMElasticsearchConnections {
 
 <#
     .SYNOPSIS
-    Create a new CipherTrust Manager Elasticsearch Connection 
+        Create a new CipherTrust Manager Elasticsearch Connection 
     .DESCRIPTION
-    Creates a new Elasticsearch connection. 
+        Creates a new Elasticsearch connection. 
     .PARAMETER name
-    Unique connection name.
+        Unique connection name.
     .PARAMETER target
-    IP for Hostname/FQDN of the log-forwarder server.
+        IP for Hostname/FQDN of the log-forwarder server.
     .PARAMETER port
-    Port of the log-forwarder server.
+        Port of the log-forwarder server.
     .PARAMETER description
-    (Optional) Description about the connection.
+        (Optional) Description about the connection.
     .PARAMETER ca_cert
-    (Optional) CA certificate in PEM format.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) CA certificate in PEM format.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-    (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
     .PARAMETER http_pass
-    (Optional) HTTP basic auth password.
+        (Optional) HTTP basic auth password.
     .PARAMETER http_user
-    (Optional) HTTP basic auth username.
+        (Optional) HTTP basic auth username.
     .PARAMETER http_securecreds
-    (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
+        (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
     .PARAMETER insecure_tls_skip_verify
-    (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
+        (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
     .PARAMETER transport
-    (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
-        - tcp
-        - tls
+        (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
+            - tcp
+            - tls
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-    PS> 
-    
+        PS> New-CMElasticsearchConnection -name "My Elasticsearch Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_user <user> -http_pass <passowrd> -transport tls -metadata "red:stop,green:go"
     .EXAMPLE
-    PS> 
-    
-    This example uses certificate files for the External Certificate. It will import the files and convert to proper JSON format.
-
+        PS> New-CMElasticsearchConnection -name "My Elasticsearch Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_securecreds $mycred -transport tls
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CMElasticsearchConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -431,23 +427,23 @@ function New-CMElasticsearchConnection{
 
 <#
     .SYNOPSIS
-    Get full details on a CipherTrust Manager Elasticsearch Connection
+        Get full details on a CipherTrust Manager Elasticsearch Connection
     .DESCRIPTION
-    Retriving the full list of Elasticsearch Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of Elasticsearch Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-    The complete name of the Elasticsearch connection. Do not use wildcards.
+        The complete name of the Elasticsearch connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMElasticsearchConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMElasticsearchConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Get-CMElasticsearchConnection -name "My Elasticsearch Connection"
-    Use the complete name of the connection. 
+        PS> Get-CMElasticsearchConnection -name "My Elasticsearch Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Get-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Use the complete name of the connection. 
+        PS> Get-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Get-CMElasticsearchConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -506,56 +502,56 @@ function Get-CMElasticsearchConnection{
 
 <#
     .SYNOPSIS
-    Update an existing a new CipherTrust Manager Elasticsearch Connection 
+        Update an existing a new CipherTrust Manager Elasticsearch Connection 
     .DESCRIPTION
-    Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
+        Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-    Name of the existing CipherTrust Manager Elasticsearch connection.
+        Name of the existing CipherTrust Manager Elasticsearch connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Elasticsearch connection.
+        CipherTrust Manager "id" value of the existing Elasticsearch connection.
     .PARAMETER target
-    IP for Hostname/FQDN of the log-forwarder server.
+        IP for Hostname/FQDN of the log-forwarder server.
     .PARAMETER port
-    Port of the log-forwarder server.
+        Port of the log-forwarder server.
     .PARAMETER description
-    (Optional) Description about the connection.
+        (Optional) Description about the connection.
     .PARAMETER ca_cert
-    (Optional) CA certificate in PEM format.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) CA certificate in PEM format.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-    (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
     .PARAMETER http_securecreds
-    (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
+        (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
     .PARAMETER http_pass
-    (Optional) HTTP basic auth password.
+        (Optional) HTTP basic auth password.
     .PARAMETER http_user
-    (Optional) HTTP basic auth username.
+        (Optional) HTTP basic auth username.
     .PARAMETER insecure_tls_skip_verify
-    (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
+        (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
     .PARAMETER transport
-    (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
-        - tcp
-        - tls
+        (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
+            - tcp
+            - tls
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    Existing meta data can be changed but no keys can be deleted.
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        Existing meta data can be changed but no keys can be deleted.
+        e.g. -metadata "red:stop,green:go,blue:ocean"
 
-    For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
+        For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-    PS> Update-CMAzureConnections -name MyElasticsearchConnection -metadata "red:stop,green:go,blue:ocean"
-    This will update the metadata of the connection to include the key pairs shown.
+        PS> Update-CMAzureConnections -name MyElasticsearchConnection -metadata "red:stop,green:go,blue:ocean"
+        This will update the metadata of the connection to include the key pairs shown.
 
-    Resulting in:
-    {
-        "meta": {
-            "blue": "ocean",
-            "red": "stop",
-            "green": "go"
+        Resulting in:
+        {
+            "meta": {
+                "blue": "ocean",
+                "red": "stop",
+                "green": "go"
+            }
         }
-    }
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function Update-CMElasticsearchConnection{
     param(
@@ -660,25 +656,25 @@ function Update-CMElasticsearchConnection{
 
 <#
     .SYNOPSIS
-    Delete a CipherTrust Manager Elasticsearch Connection
+        Delete a CipherTrust Manager Elasticsearch Connection
     .DESCRIPTION
-    Delete a CipherTrust Manager Elasticsearch Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager Elasticsearch Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-    The complete name of the Elasticsearch connection. This parameter is case-sensitive.
+        The complete name of the Elasticsearch connection. This parameter is case-sensitive.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMElasticsearchConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMElasticsearchConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion confirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-    PS> Remove-CMElasticsearchConnection -name "My Elasticsearch Connection"
-    Use the complete name of the connection. 
+        PS> Remove-CMElasticsearchConnection -name "My Elasticsearch Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Remove-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Using the id of the connection. 
+        PS> Remove-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Using the id of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CMElasticsearchConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -750,37 +746,37 @@ function Remove-CMElasticsearchConnection{
 
 <#
     .SYNOPSIS
-    Test existing connection.
+        Test existing connection.
     .DESCRIPTION
-    Tests that an existing connection with the given name, ID, or URI Elasticsearch target. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI Elasticsearch target. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
     .PARAMETER name
-    Name of the existing CipherTrust Manager Elasticsearch connection.
+        Name of the existing CipherTrust Manager Elasticsearch connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Elasticsearch connection.
+        CipherTrust Manager "id" value of the existing Elasticsearch connection.
     .PARAMETER target
-    IP for Hostname/FQDN of the log-forwarder server.
+        IP for Hostname/FQDN of the log-forwarder server.
     .PARAMETER port
-    Port of the log-forwarder server.
+        Port of the log-forwarder server.
     .PARAMETER ca_cert
-    (Optional) CA certificate in PEM format.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) CA certificate in PEM format.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-    (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
     .PARAMETER http_securecreds
-    (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
+        (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
     .PARAMETER http_pass
-    (Optional) HTTP basic auth password.
+        (Optional) HTTP basic auth password.
     .PARAMETER http_user
-    (Optional) HTTP basic auth username.
+        (Optional) HTTP basic auth username.
     .PARAMETER insecure_tls_skip_verify
-    (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
+        (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
     .PARAMETER transport
-    (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
-        - tcp
-        - tls
+        (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
+            - tcp
+            - tls
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMElasticsearchConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -880,33 +876,33 @@ function Test-CMElasticsearchConnection{
 
 <#
     .SYNOPSIS
-    Test connection parameters for a non-existent connection. 
+        Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-    Tests that the connection parameters can be used to reach the Elasticsearch log server. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the Elasticsearch log server. This does not create a persistent connection.
     .PARAMETER target
-    IP for Hostname/FQDN of the log-forwarder server.
+        IP for Hostname/FQDN of the log-forwarder server.
     .PARAMETER port
-    Port of the log-forwarder server.
+        Port of the log-forwarder server.
     .PARAMETER ca_cert
-    (Optional) CA certificate in PEM format.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) CA certificate in PEM format.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-    (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
     .PARAMETER http_securecreds
-    (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
+        (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
     .PARAMETER http_pass
-    (Optional) HTTP basic auth password.
+        (Optional) HTTP basic auth password.
     .PARAMETER http_user
-    (Optional) HTTP basic auth username.
+        (Optional) HTTP basic auth username.
     .PARAMETER insecure_tls_skip_verify
-    (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
+        (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
     .PARAMETER transport
-    (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
-        - tcp
-        - tls
+        (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
+            - tcp
+            - tls
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMElasticsearchConnParameters{
     param(
         [Parameter(Mandatory)] [string] $target, 

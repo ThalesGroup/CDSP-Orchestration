@@ -305,76 +305,75 @@ function Find-CMAzureConnections {
 
 <#
     .SYNOPSIS
-    Create a new CipherTrust Manager Azure Connection 
+        Create a new CipherTrust Manager Azure Connection 
     .DESCRIPTION
-    Creates a new Azure connection. The connection can be created with Client Secret or Certificate authentication. Currently Azure Stack connection supports only Client Secret.
+        Creates a new Azure connection. The connection can be created with Client Secret or Certificate authentication. Currently Azure Stack connection supports only Client Secret.
     .PARAMETER name
-    Unique connection name.
+        Unique connection name.
     .PARAMETER client_id
-    Unique Identifier (client ID) for the Azure application.
+        Unique Identifier (client ID) for the Azure application.
     .PARAMETER tenant_id
-    Tenant ID of the Azure application.
+        Tenant ID of the Azure application.
     .PARAMETER active_directory_endpoint
-    (Optional) Azure stack active directory authority URL
+        (Optional) Azure stack active directory authority URL
     .PARAMETER azure_stack_connection_type
-    (Optional) Azure stack connection type
-        Options:
-        AAD
-        ADFS
+        (Optional) Azure stack connection type
+            Options:
+            AAD
+            ADFS
     .PARAMETER azure_stack_server_cert
-    (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER azure_stack_server_cert_file
-    (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
+        (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
     .PARAMETER cert_duration
-    (Optional) Duration in days for which the azure certificate is valid, default (730 i.e. 2 Years).
+        (Optional) Duration in days for which the azure certificate is valid, default (730 i.e. 2 Years).
     .PARAMETER certificate
-    (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER extcertfile
-    (Optional) Specify the filename for the Externally-signed connection certificate. 
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation     
+        (Optional) Specify the filename for the Externally-signed connection certificate. 
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation     
     .PARAMETER client_secret
-    (Required in Azure Stack connection) Secret key for the Azure application. 
+        (Required in Azure Stack connection) Secret key for the Azure application. 
     .PARAMETER cloud_name
-        - AzureCloud
-        - AzureChinaCloud
-        - AzureUSGovernment
-        - AzureStock
+            - AzureCloud
+            - AzureChinaCloud
+            - AzureUSGovernment
+            - AzureStock
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER external_certificate_used
-    (Optional) true if the certificate associated with the connection is generated externally, false otherwise.
+        (Optional) true if the certificate associated with the connection is generated externally, false otherwise.
     .PARAMETER is_certificate_used
-    (Optional) User has the option to choose the Certificate Authentication method instead of Client Secret for Azure Cloud connection. In order to use the Certificate, set it to true. Once the connection is created, in the response user will get a certificate. By default, the certificate is valid for 2 Years. User can update the certificate in the existing connection by setting it to true in Update (PATCH) API call.
+        (Optional) User has the option to choose the Certificate Authentication method instead of Client Secret for Azure Cloud connection. In order to use the Certificate, set it to true. Once the connection is created, in the response user will get a certificate. By default, the certificate is valid for 2 Years. User can update the certificate in the existing connection by setting it to true in Update (PATCH) API call.
     .PARAMETER key_vault_dns_suffix
-    (Optional) Azure stack key vault dns suffix
+        (Optional) Azure stack key vault dns suffix
     .PARAMETER management_url
-    (Optional) Azure stack management URL
+        (Optional) Azure stack management URL
     .PARAMETER resource_manager_url
-    (Optional) Azure stack resource manager URL.
+        (Optional) Azure stack resource manager URL.
     .PARAMETER vault_resource_url
-    (Optional) Azure stack vault service resource URL
+        (Optional) Azure stack vault service resource URL
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-    PS> 
-    
+        PS> New-CMAzureConnection -name MyAzureConnection1 -client_id e92fab5c-d1e6-4e56-8bf7-c982343341ca -tenant_id f61d9cef-a2cc-4b5a-ac93-a62fab5a1477 -cloud_name AzureCloud -metadata "blue:ocean,green:grass" -is_certificate_used
     .EXAMPLE
-    PS> 
+        PS> New-CMAzureConnection -name MyAzureConnection1 -client_id e92fab5c-d1e6-4e56-8bf7-c982343341ca -tenant_id f61d9cef-a2cc-4b5a-ac93-a62fab5a1477 -cloud_name AzureCloud -metadata "blue:ocean,green:grass" -extcertfile mycert.pem
     
-    This example uses certificate files for the External Certificate. It will import the files and convert to proper JSON format.
+        This example uses certificate files for the External Certificate. It will import the files and convert to proper JSON format.
 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function New-CMAzureConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -490,23 +489,23 @@ function New-CMAzureConnection{
 
 <#
     .SYNOPSIS
-    Get full details on a CipherTrust Manager Azure Connection
+        Get full details on a CipherTrust Manager Azure Connection
     .DESCRIPTION
-    Retriving the full list of Azure Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of Azure Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-    The complete name of the Azure connection. Do not use wildcards.
+        The complete name of the Azure connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMAzureConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMAzureConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Get-CMAzureConnection -name "My Azure Connection"
-    Use the complete name of the connection. 
+        PS> Get-CMAzureConnection -name "My Azure Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Get-CMAzureConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Use the complete name of the connection. 
+        PS> Get-CMAzureConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Get-CMAzureConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -566,82 +565,82 @@ function Get-CMAzureConnection{
 
 <#
     .SYNOPSIS
-    Update an existing a new CipherTrust Manager Azure Connection 
+        Update an existing a new CipherTrust Manager Azure Connection 
     .DESCRIPTION
-    Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
+        Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-    Name of the existing CipherTrust Manager Azure connection.
+        Name of the existing CipherTrust Manager Azure connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Azure connection.
+        CipherTrust Manager "id" value of the existing Azure connection.
     .PARAMETER client_id
-    Unique Identifier (client ID) for the Azure application.
+        Unique Identifier (client ID) for the Azure application.
     .PARAMETER tenant_id
-    Tenant ID of the Azure application.
+        Tenant ID of the Azure application.
     .PARAMETER active_directory_endpoint
-    (Optional) Azure stack active directory authority URL
+        (Optional) Azure stack active directory authority URL
     .PARAMETER azure_stack_connection_type
-    (Optional) Azure stack connection type
-        Options:
-        AAD
-        ADFS
+        (Optional) Azure stack connection type
+            Options:
+            AAD
+            ADFS
     .PARAMETER azure_stack_server_cert
-    (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER azure_stack_server_cert_file
-    (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
+        (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
     .PARAMETER cert_duration
-    (Optional) Duration in days for which the azure certificate is valid, default (730 i.e. 2 Years).
+        (Optional) Duration in days for which the azure certificate is valid, default (730 i.e. 2 Years).
     .PARAMETER certificate
-    (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER extcertfile
-    (Optional) Specify the filename for the Externally-signed connection certificate. 
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation     
+        (Optional) Specify the filename for the Externally-signed connection certificate. 
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation     
     .PARAMETER client_secret
-    (Required in Azure Stack connection) Secret key for the Azure application. 
+        (Required in Azure Stack connection) Secret key for the Azure application. 
     .PARAMETER cloud_name
         - AzureCloud
         - AzureChinaCloud
         - AzureUSGovernment
         - AzureStock
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER external_certificate_used
-    (Optional) true if the certificate associated with the connection is generated externally, false otherwise.
+        (Optional) true if the certificate associated with the connection is generated externally, false otherwise.
     .PARAMETER is_certificate_used
-    (Optional) User has the option to choose the Certificate Authentication method instead of Client Secret for Azure Cloud connection. In order to use the Certificate, set it to true. Once the connection is created, in the response user will get a certificate. By default, the certificate is valid for 2 Years. User can update the certificate in the existing connection by setting it to true in Update (PATCH) API call.
+        (Optional) User has the option to choose the Certificate Authentication method instead of Client Secret for Azure Cloud connection. In order to use the Certificate, set it to true. Once the connection is created, in the response user will get a certificate. By default, the certificate is valid for 2 Years. User can update the certificate in the existing connection by setting it to true in Update (PATCH) API call.
     .PARAMETER key_vault_dns_suffix
-    (Optional) Azure stack key vault dns suffix
+        (Optional) Azure stack key vault dns suffix
     .PARAMETER management_url
-    (Optional) Azure stack management URL
+        (Optional) Azure stack management URL
     .PARAMETER resource_manager_url
-    (Optional) Azure stack resource manager URL.
+        (Optional) Azure stack resource manager URL.
     .PARAMETER vault_resource_url
-    (Optional) Azure stack vault service resource URL
+        (Optional) Azure stack vault service resource URL
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    Existing meta data can be changed but no keys can be deleted.
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        Existing meta data can be changed but no keys can be deleted.
+        e.g. -metadata "red:stop,green:go,blue:ocean"
 
-    For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
+        For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-    PS> Update-CMAzureConnections -name MyAzureConnection -metadata "red:stop,green:go,blue:ocean"
-    This will update the metadata of the connection to include the key pairs shown.
+        PS> Update-CMAzureConnections -name MyAzureConnection -metadata "red:stop,green:go,blue:ocean"
+        This will update the metadata of the connection to include the key pairs shown.
 
-    Resulting in:
-    {
-        "meta": {
-            "blue": "ocean",
-            "red": "stop",
-            "green": "go"
+        Resulting in:
+        {
+            "meta": {
+                "blue": "ocean",
+                "red": "stop",
+                "green": "go"
+            }
         }
-    }
     .LINK
     https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
@@ -756,25 +755,25 @@ function Update-CMAzureConnection{
 
 <#
     .SYNOPSIS
-    Delete a CipherTrust Manager Azure Connection
+        Delete a CipherTrust Manager Azure Connection
     .DESCRIPTION
-    Delete a CipherTrust Manager Azure Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager Azure Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-    The complete name of the Azure connection. This parameter is case-sensitive.
+        The complete name of the Azure connection. This parameter is case-sensitive.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMAzureConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMAzureConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion confirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-    PS> Remove-CMAzureConnection -name "My Azure Connection"
-    Use the complete name of the connection. 
+        PS> Remove-CMAzureConnection -name "My Azure Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Remove-CMAzureConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Using the id of the connection. 
+        PS> Remove-CMAzureConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Using the id of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CMAzureConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -846,53 +845,53 @@ function Remove-CMAzureConnection{
 
 <#
     .SYNOPSIS
-    Test existing connection.
+        Test existing connection.
     .DESCRIPTION
-    Tests that an existing connection with the given name, ID, or URI reaches the Azure cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI reaches the Azure cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
     .PARAMETER name
-    Name of the existing CipherTrust Manager Azure connection.
+        Name of the existing CipherTrust Manager Azure connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Azure connection.
+        CipherTrust Manager "id" value of the existing Azure connection.
     .PARAMETER client_id
-    Unique Identifier (client ID) for the Azure application.
+        Unique Identifier (client ID) for the Azure application.
     .PARAMETER tenant_id
-    Tenant ID of the Azure application.
+        Tenant ID of the Azure application.
     .PARAMETER active_directory_endpoint
-    (Optional) Azure stack active directory authority URL
+        (Optional) Azure stack active directory authority URL
     .PARAMETER azure_stack_connection_type
-    (Optional) Azure stack connection type
-        Options:
-        AAD
-        ADFS
+        (Optional) Azure stack connection type
+            Options:
+            AAD
+            ADFS
     .PARAMETER azure_stack_server_cert
-    (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER azure_stack_server_cert_file
-    (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
+        (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
     .PARAMETER certificate
-    (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER extcertfile
-    (Optional) Specify the filename for the Externally-signed connection certificate. 
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation     
+        (Optional) Specify the filename for the Externally-signed connection certificate. 
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation     
     .PARAMETER client_secret
-    (Required in Azure Stack connection) Secret key for the Azure application. 
+        (Required in Azure Stack connection) Secret key for the Azure application. 
     .PARAMETER cloud_name
         - AzureCloud
         - AzureChinaCloud
         - AzureUSGovernment
         - AzureStock
     .PARAMETER management_url
-    (Optional) Azure stack management URL
+        (Optional) Azure stack management URL
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMAzureConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -982,49 +981,49 @@ function Test-CMAzureConnection{
 
 <#
     .SYNOPSIS
-    Test connection parameters for a non-existent connection. 
+        Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-    Tests that the connection parameters can be used to reach the Azure account. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the Azure account. This does not create a persistent connection.
     .PARAMETER client_id
-    Unique Identifier (client ID) for the Azure application.
+        Unique Identifier (client ID) for the Azure application.
     .PARAMETER tenant_id
-    Tenant ID of the Azure application.
+        Tenant ID of the Azure application.
     .PARAMETER active_directory_endpoint
-    (Optional) Azure stack active directory authority URL
+        (Optional) Azure stack active directory authority URL
     .PARAMETER azure_stack_connection_type
-    (Optional) Azure stack connection type
-        Options:
-        AAD
-        ADFS
+        (Optional) Azure stack connection type
+            Options:
+            AAD
+            ADFS
     .PARAMETER azure_stack_server_cert
-    (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Azure stack server certificate. Use the PEM-formatted certificate text.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER azure_stack_server_cert_file
-    (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
+        (Optional) Specify the filename for a PEM certificate for Azure stack server certificate. 
     .PARAMETER certificate
-    (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Optional) Externally-signed connection certificate. Use the PEM-formatted certificate text.
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER extcertfile
-    (Optional) Specify the filename for the Externally-signed connection certificate. 
-    This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
-    The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
-    User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
-    While it can be used from the command-line, the switch is best used when running automation     
+        (Optional) Specify the filename for the Externally-signed connection certificate. 
+        This option cannot be used with option is_certificate_used and client_secret. User first has to generate a new Certificate Signing Request (CSR) in POST /v1/connectionmgmt/connections/csr. 
+        The generated CSR can be signed with any internal or external CA. The Certificate must have an RSA key strength of 2048 or 4096. 
+        User can also update the new external certificate in the existing connection in Update (PATCH) API call. Any unused certificate will automatically deleted in 24 hours.
+        While it can be used from the command-line, the switch is best used when running automation     
     .PARAMETER client_secret
-    (Required in Azure Stack connection) Secret key for the Azure application. 
+        (Required in Azure Stack connection) Secret key for the Azure application. 
     .PARAMETER cloud_name
         - AzureCloud
         - AzureChinaCloud
         - AzureUSGovernment
         - AzureStock
     .PARAMETER management_url
-    (Optional) Azure stack management URL
+        (Optional) Azure stack management URL
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMAzureConnParameters{
     param(
         [Parameter()] [string] $client_id, 

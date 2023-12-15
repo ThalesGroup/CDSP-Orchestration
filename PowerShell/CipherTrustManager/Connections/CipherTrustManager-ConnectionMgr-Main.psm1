@@ -481,9 +481,6 @@ function Remove-CMConnection {
         PS> New-CMConnectionCSR -name "MyConnectionCert" -cn "mydevice.ciphertrustmanager.local" 
     .EXAMPLE
         PS> New-CMConnectionCSR -name "MyConnectionCert" -cn "mydevice.ciphertrustmanager.local" -size 2048 -dnsNames "mydevice.contoso.com,mydevice.contoso.local" -ipAddresses "10.0.0.1" -emailAddresses "support@contoso.com" -ou "Security" -o "Thales DIS" -l "Plantation" -st "Florida" -c "USA"
-    .EXAMPLE
-        PS> 
-        
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>

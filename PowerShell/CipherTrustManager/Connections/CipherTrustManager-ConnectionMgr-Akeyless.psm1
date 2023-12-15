@@ -278,27 +278,26 @@ function Find-CMAkeylessConnections {
 
 <#
     .SYNOPSIS
-    Create a new CipherTrust Manager Akeyless Connection 
+        Create a new CipherTrust Manager Akeyless Connection 
     .DESCRIPTION
-    Creates a new Akeyless connection. Each Akeyless connection has an access ID, an access key, and a type parameter. There are two types of Akeyless connections. The first type, called gateway, contains the credentials that enable a connection between the Akeyless gateway and the Akeyless server in the cloud. The second type, called sso, contains the credentials that enable a connection between the CM and the Akeyless gateway for SSO.
-    The access key is a secret and is protected by the CM.
+        Creates a new Akeyless connection. Each Akeyless connection has an access ID, an access key, and a type parameter. There are two types of Akeyless connections. The first type, called gateway, contains the credentials that enable a connection between the Akeyless gateway and the Akeyless server in the cloud. The second type, called sso, contains the credentials that enable a connection between the CM and the Akeyless gateway for SSO.
+        The access key is a secret and is protected by the CM.
     .PARAMETER name
-    Unique connection name.
+        Unique connection name.
     .PARAMETER access_key
-    The key used for accessing the Akeyless server.
+        The key used for accessing the Akeyless server.
     .PARAMETER access_key_id
-    The ID of a key used for accessing the Akeyless server.
+        The ID of a key used for accessing the Akeyless server.
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-    PS> New-CMAkeylessConnection -name MyTestAKeylessConnection -description "This is my Test AKeyless Connection" -access_key_id abc123abc123 --access_key xyz987xyz987 -metadata "red:stop,:green:go,blue:ocean" 
-    
+        PS> New-CMAkeylessConnection -name MyTestAKeylessConnection -description "This is my Test AKeyless Connection" -access_key_id abc123abc123 --access_key xyz987xyz987 -metadata "red:stop,:green:go,blue:ocean" 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        #>
 function New-CMAkeylessConnection{
     param(
         [Parameter()] [string] $name, 
@@ -375,23 +374,23 @@ function New-CMAkeylessConnection{
 
 <#
     .SYNOPSIS
-    Get full details on a CipherTrust Manager AKeyless Connection
+        Get full details on a CipherTrust Manager AKeyless Connection
     .DESCRIPTION
-    Returns the details of a connection with the given name, ID, or URI.
+        Returns the details of a connection with the given name, ID, or URI.
     .PARAMETER name
-    The complete name of the AKeyless connection. Do not use wildcards.
+        The complete name of the AKeyless connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMAkeylessConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMAkeylessConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Get-CMAkeylessConnection -name "MyAkeylessConnection"
-    Use the complete name of the connection. 
+        PS> Get-CMAkeylessConnection -name "MyAkeylessConnection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Get-CMAkeylessConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Use the complete name of the connection. 
+        PS> Get-CMAkeylessConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Get-CMAkeylessConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -451,42 +450,42 @@ function Get-CMAkeylessConnection{
 
 <#
     .SYNOPSIS
-    Update an existing a new CipherTrust Manager Akeyless Connection 
+        Update an existing a new CipherTrust Manager Akeyless Connection 
     .DESCRIPTION
-    Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
+        Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-    Name of the existing CipherTrust Manager Akeyless connection.
+        Name of the existing CipherTrust Manager Akeyless connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing AKeyless connection.
+        CipherTrust Manager "id" value of the existing AKeyless connection.
     .PARAMETER access_key
-    (Optional) The key used for accessing the Akeyless server.
+        (Optional) The key used for accessing the Akeyless server.
     .PARAMETER access_key_id
-    (Optional) The ID of a key used for accessing the Akeyless server.
+        (Optional) The ID of a key used for accessing the Akeyless server.
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    Existing meta data can be changed but no keys can be deleted.
-    e.g. -metadata "red:stop,green:go,blue:ocean"
-    
-    For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        Existing meta data can be changed but no keys can be deleted.
+        e.g. -metadata "red:stop,green:go,blue:ocean"
+        
+        For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-    PS> Update-CMAkeylessConnections -name MyAkeylessConnection -access_key <NewAccessKey> -access_key <NewAccessKeyID>
-    Updates the connection name "MyAkeylessConnection" with a new access_key/key_id keypair.
+        PS> Update-CMAkeylessConnections -name MyAkeylessConnection -access_key <NewAccessKey> -access_key <NewAccessKeyID>
+        Updates the connection name "MyAkeylessConnection" with a new access_key/key_id keypair.
     .EXAMPLE
-    PS> Update-CMAkeylessConnections -name MyAkeylessConnection -metadata "red:stop,green:go,blue:ocean"
-    This will update the metadata of the connection to include the key pairs shown.
+        PS> Update-CMAkeylessConnections -name MyAkeylessConnection -metadata "red:stop,green:go,blue:ocean"
+        This will update the metadata of the connection to include the key pairs shown.
 
-    Resulting in:
-    {
-        "meta": {
-            "blue": "ocean",
-            "red": "stop",
-            "green": "go"
+        Resulting in:
+        {
+            "meta": {
+                "blue": "ocean",
+                "red": "stop",
+                "green": "go"
+            }
         }
-    }
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function Update-CMAkeylessConnection{
     param(
@@ -570,25 +569,25 @@ function Update-CMAkeylessConnection{
 
 <#
     .SYNOPSIS
-    Delete a CipherTrust Manager Akeyless Connection
+        Delete a CipherTrust Manager Akeyless Connection
     .DESCRIPTION
-    Delete a CipherTrust Manager Akeyless Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager Akeyless Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-    The complete name of the Akeyless connection. This parameter is case-sensitive.
+        The complete name of the Akeyless connection. This parameter is case-sensitive.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMAkeylessConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMAkeylessConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion confirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-    PS> Remove-CMAkeylessConnection -name "MyAkeylessConnection"
-    Use the complete name of the connection. 
+        PS> Remove-CMAkeylessConnection -name "MyAkeylessConnection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Remove-CMAkeylessConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Using the id of the connection. 
+        PS> Remove-CMAkeylessConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Using the id of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CMAkeylessConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -659,16 +658,16 @@ function Remove-CMAkeylessConnection{
 
 <#
     .SYNOPSIS
-    Test existing connection.
+        Test existing connection.
     .DESCRIPTION
-    Tests that an existing connection with the given name, ID, or URI reaches the Akeyless cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not create a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI reaches the Akeyless cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not create a persistent connection.
     .PARAMETER name
-    Name of the existing CipherTrust Manager Akeyless connection.
+        Name of the existing CipherTrust Manager Akeyless connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing Akeyless connection.
+        CipherTrust Manager "id" value of the existing Akeyless connection.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMAkeylessConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -727,16 +726,16 @@ function Test-CMAkeylessConnection{
 
 <#
     .SYNOPSIS
-    Test connection parameters for a non-existent connection. 
+        Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-    Tests that the connection parameters can be used to reach the AKeyless account. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the AKeyless account. This does not create a persistent connection.
     .PARAMETER access_key
-    The key used for accessing the Akeyless server.
+        The key used for accessing the Akeyless server.
     .PARAMETER access_key_id
-    The ID of a key used for accessing the Akeyless server.
+        The ID of a key used for accessing the Akeyless server.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMAkeylessConnParameters{
     param(
         [Parameter()] [string] $access_key, 

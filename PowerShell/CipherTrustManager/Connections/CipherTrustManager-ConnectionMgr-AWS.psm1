@@ -308,68 +308,66 @@ function Find-CMAWSConnections {
 
 <#
     .SYNOPSIS
-    Create a new CipherTrust Manager AWS Connection 
+        Create a new CipherTrust Manager AWS Connection 
     .DESCRIPTION
-    Creates a new AWS connection. You can either create a connection using the Secret Access Key and ID or use the Certificate-based authentication to create an IAM Roles Anywhere connection.
+        Creates a new AWS connection. You can either create a connection using the Secret Access Key and ID or use the Certificate-based authentication to create an IAM Roles Anywhere connection.
     .PARAMETER name
-    Unique connection name.
+        Unique connection name.
     .PARAMETER access_key_id
-    (Optional) Client ID of the AWS User
+        (Optional) Client ID of the AWS User
     .PARAMETER secret_access_key
-    (Optional) Client secret associated with the access key ID of the AWS user.
+        (Optional) Client secret associated with the access key ID of the AWS user.
     .PARAMETER assume_role_arn
-    (Optional) AWS IAM Role ARN
+        (Optional) AWS IAM Role ARN
     .PARAMETER assume_role_external_id
-    (Optional)Specify AWS Role external ID.
+        (Optional)Specify AWS Role external ID.
     .PARAMETER aws_region
-    (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
+        (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
 
-        for aws, default region will be "us-east-1"
-        for aws-us-gov, default region will be "us-gov-east-1"
-        for aws-cn, default region will be "cn-north-1"
+            for aws, default region will be "us-east-1"
+            for aws-us-gov, default region will be "us-gov-east-1"
+            for aws-cn, default region will be "cn-north-1"
     .PARAMETER aws_sts_regional_endpoints
-    (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
+        (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
 
-        legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
-        regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
+            legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
+            regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
 
-        To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
+            To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
     .PARAMETER cloud_name
-    (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
+        (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER is_role_anywhere
-    (Optional) Use this switch to create connections of type AWS IAM Anywhere with temporary credentials.
+        (Optional) Use this switch to create connections of type AWS IAM Anywhere with temporary credentials.
     .PARAMETER anywhere_role_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
     .PARAMETER anywhere_role_cert
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER anywhere_role_certfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_role_privkey
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections. 
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections. 
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
     .PARAMETER anywhere_role_keyfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_profile_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
     .PARAMETER anywhere_trust_anchor_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    e.g. -metadata "red:stop,green:go,blue:ocean"
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-    PS> New-CMAWSConnection -name MyTestAWSConnection2 -description "This is my Test AWS Connection" -access_key_id abc123abc123 -secret_access_key xyz987xyz987 -assume_role_arn "arn:aws:iam::123456789012:user/johndoe" -assume_role_external_id EXT_ROLE_ID -aws_region us-west-1 -aws_sts_regional_endpoints regional -cloud_name aws-us-gov -metadata "red:stop,:green:go,blue:ocean" 
-    
+        PS> New-CMAWSConnection -name MyTestAWSConnection2 -description "This is my Test AWS Connection" -access_key_id abc123abc123 -secret_access_key xyz987xyz987 -assume_role_arn "arn:aws:iam::123456789012:user/johndoe" -assume_role_external_id EXT_ROLE_ID -aws_region us-west-1 -aws_sts_regional_endpoints regional -cloud_name aws-us-gov -metadata "red:stop,:green:go,blue:ocean" 
     .EXAMPLE
-    PS> New-CMAWSConnection -name MyTestAWSConnection3 -description "This is my Test AWS Connection" -assume_role_arn "arn:aws:iam::123456789012:user/johndoe" -assume_role_external_id EXT_ROLE_ID -aws_region us-west-1 -aws_sts_regional_endpoints regional -cloud_name aws-us-gov -is_role_anywhere -anywhere_role_arn "arn:aws:iam::123456789012:user/johndoe" -anywhere_role_certfile mongocert.pem -anywhere_role_keyfile mongokey.pem -anywhere_profile_arn "arn:aws:iam::123456789012:user" -anywhere_trust_anchor_arn "arn:aws:iam::123456789012:user/johndoe" -metadata "red:stop,green:go,blue:ocean"
-    
-    This example uses certificate files for the IAM Role Anywhere certificate. It will import the files and convert to proper JSON format.
-
+        PS> New-CMAWSConnection -name MyTestAWSConnection3 -description "This is my Test AWS Connection" -assume_role_arn "arn:aws:iam::123456789012:user/johndoe" -assume_role_external_id EXT_ROLE_ID -aws_region us-west-1 -aws_sts_regional_endpoints regional -cloud_name aws-us-gov -is_role_anywhere -anywhere_role_arn "arn:aws:iam::123456789012:user/johndoe" -anywhere_role_certfile mongocert.pem -anywhere_role_keyfile mongokey.pem -anywhere_profile_arn "arn:aws:iam::123456789012:user" -anywhere_trust_anchor_arn "arn:aws:iam::123456789012:user/johndoe" -metadata "red:stop,green:go,blue:ocean"
+        
+        This example uses certificate files for the IAM Role Anywhere certificate. It will import the files and convert to proper JSON format.
     .LINK
     https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+#>
 function New-CMAWSConnection{
     param(
         [Parameter(Mandatory = $true,
@@ -495,23 +493,23 @@ function New-CMAWSConnection{
 
 <#
     .SYNOPSIS
-    Get full details on a CipherTrust Manager AWS Connection
+        Get full details on a CipherTrust Manager AWS Connection
     .DESCRIPTION
-    Retriving the full list of AWS Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of AWS Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-    The complete name of the AWS connection. Do not use wildcards.
+        The complete name of the AWS connection. Do not use wildcards.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMAWSConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMAWSConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-    PS> Get-CMAWSConnection -name "My AWS Connection"
-    Use the complete name of the connection. 
+        PS> Get-CMAWSConnection -name "My AWS Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Get-CMAWSConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Use the complete name of the connection. 
+        PS> Get-CMAWSConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Use the complete name of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Get-CMAWSConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -571,77 +569,77 @@ function Get-CMAWSConnection{
 
 <#
     .SYNOPSIS
-    Update an existing a new CipherTrust Manager AWS Connection 
+        Update an existing a new CipherTrust Manager AWS Connection 
     .DESCRIPTION
-    Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
+        Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-    Name of the existing CipherTrust Manager AWS connection.
+        Name of the existing CipherTrust Manager AWS connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing AWS connection.
+        CipherTrust Manager "id" value of the existing AWS connection.
     .PARAMETER access_key_id
-    (Optional) Client ID of the AWS User
+        (Optional) Client ID of the AWS User
     .PARAMETER secret_access_key
-    (Optional) Client secret associated with the access key ID of the AWS user.
+        (Optional) Client secret associated with the access key ID of the AWS user.
     .PARAMETER assume_role_arn
-    (Optional) AWS IAM Role ARN
+        (Optional) AWS IAM Role ARN
     .PARAMETER assume_role_external_id
-    (Optional)Specify AWS Role external ID.
+        (Optional)Specify AWS Role external ID.
     .PARAMETER aws_region
-    (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
+        (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
 
-        for aws, default region will be "us-east-1"
-        for aws-us-gov, default region will be "us-gov-east-1"
-        for aws-cn, default region will be "cn-north-1"
+            for aws, default region will be "us-east-1"
+            for aws-us-gov, default region will be "us-gov-east-1"
+            for aws-cn, default region will be "cn-north-1"
     .PARAMETER aws_sts_regional_endpoints
-    (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
+        (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
 
-        legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
-        regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
+            legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
+            regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
 
-        To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
+            To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
     .PARAMETER cloud_name
-    (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
+        (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
     .PARAMETER description
-    (Optional) Description of the connection.
+        (Optional) Description of the connection.
     .PARAMETER anywhere_role_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
     .PARAMETER anywhere_role_cert
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER anywhere_role_certfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_role_privkey
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections. 
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections. 
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
     .PARAMETER anywhere_role_keyfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_profile_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
     .PARAMETER anywhere_trust_anchor_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
     .PARAMETER metadata
-    (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-    Existing meta data can be changed but no keys can be deleted.
-    e.g. -metadata "red:stop,green:go,blue:ocean" {
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        Existing meta data can be changed but no keys can be deleted.
+        e.g. -metadata "red:stop,green:go,blue:ocean" {
 
-    For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
+        For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-    PS> Update-CMAWSConnections -name MyAWSConnection -access_key_id <NewAccessKey> -secret_access_key <NewSecret>
-    Updates the connection name "MyAWSConnection" with a new access/secret keypair.
+        PS> Update-CMAWSConnections -name MyAWSConnection -access_key_id <NewAccessKey> -secret_access_key <NewSecret>
+        Updates the connection name "MyAWSConnection" with a new access/secret keypair.
     .EXAMPLE
-    PS> Update-CMAWSConnections -name MyAWSConnection -metadata "red:stop,green:go,blue:ocean"
-    This will update the metadata of the connection to include the key pairs shown.
+        PS> Update-CMAWSConnections -name MyAWSConnection -metadata "red:stop,green:go,blue:ocean"
+        This will update the metadata of the connection to include the key pairs shown.
 
-    Resulting in:
-    {
-        "meta": {
-            "blue": "ocean",
-            "red": "stop",
-            "green": "go"
+        Resulting in:
+        {
+            "meta": {
+                "blue": "ocean",
+                "red": "stop",
+                "green": "go"
+            }
         }
-    }
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
 function Update-CMAWSConnection{
     param(
@@ -771,25 +769,25 @@ function Update-CMAWSConnection{
 
 <#
     .SYNOPSIS
-    Delete a CipherTrust Manager AWS Connection
+        Delete a CipherTrust Manager AWS Connection
     .DESCRIPTION
-    Delete a CipherTrust Manager AWS Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager AWS Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-    The complete name of the AWS connection. This parameter is case-sensitive.
+        The complete name of the AWS connection. This parameter is case-sensitive.
     .PARAMETER id
-    The CipherTrust manager "id" value for the connection.
-    Use the Find-CMAWSConnections cmdlet to find the appropriate id value.
+        The CipherTrust manager "id" value for the connection.
+        Use the Find-CMAWSConnections cmdlet to find the appropriate id value.
     .PARAMETER force
-    Bypass all deletion confirmations. USE EXTREME CAUTION.
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-    PS> Remove-CMAWSConnection -name "My AWS Connection"
-    Use the complete name of the connection. 
+        PS> Remove-CMAWSConnection -name "My AWS Connection"
+        Use the complete name of the connection. 
     .EXAMPLE
-    PS> Remove-CMAWSConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
-    Using the id of the connection. 
+        PS> Remove-CMAWSConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        Using the id of the connection. 
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Remove-CMAWSConnection{
     param(
         [Parameter(Mandatory = $false,
@@ -860,54 +858,54 @@ function Remove-CMAWSConnection{
 
 <#
     .SYNOPSIS
-    Test existing connection.
+        Test existing connection.
     .DESCRIPTION
-    Tests that an existing connection with the given name, ID, or URI reaches the AWS cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not create a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI reaches the AWS cloud. If no connection parameters are provided in request, the existing parameters will be used. This does not create a persistent connection.
     .PARAMETER name
-    Name of the existing CipherTrust Manager AWS connection.
+        Name of the existing CipherTrust Manager AWS connection.
     .PARAMETER id
-    CipherTrust Manager "id" value of the existing AWS connection.
+        CipherTrust Manager "id" value of the existing AWS connection.
     .PARAMETER access_key_id
-    (Optional) Client ID of the AWS User
+        (Optional) Client ID of the AWS User
     .PARAMETER secret_access_key
-    (Optional) Client secret associated with the access key ID of the AWS user.
+        (Optional) Client secret associated with the access key ID of the AWS user.
     .PARAMETER assume_role_arn
-    (Optional) AWS IAM Role ARN
+        (Optional) AWS IAM Role ARN
     .PARAMETER assume_role_external_id
-    (Optional)Specify AWS Role external ID.
+        (Optional)Specify AWS Role external ID.
     .PARAMETER aws_region
-    (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
+        (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
 
-        for aws, default region will be "us-east-1"
-        for aws-us-gov, default region will be "us-gov-east-1"
-        for aws-cn, default region will be "cn-north-1"
+            for aws, default region will be "us-east-1"
+            for aws-us-gov, default region will be "us-gov-east-1"
+            for aws-cn, default region will be "cn-north-1"
     .PARAMETER aws_sts_regional_endpoints
-    (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
+        (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
 
-        legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
-        regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
+            legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
+            regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
 
-        To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
+            To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
     .PARAMETER cloud_name
-    (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
+        (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
     .PARAMETER is_role_anywhere
-    (Optional) Use this switch to create connections of type AWS IAM Anywhere with temporary credentials.
+        (Optional) Use this switch to create connections of type AWS IAM Anywhere with temporary credentials.
     .PARAMETER anywhere_role_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
     .PARAMETER anywhere_role_cert
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER anywhere_role_certfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_role_privkey
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections.
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
     .PARAMETER anywhere_role_keyfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_profile_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
     .PARAMETER anywhere_trust_anchor_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
     .LINK
     https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
     #>
@@ -1031,53 +1029,53 @@ function Test-CMAWSConnection{
 
 <#
     .SYNOPSIS
-    Test connection parameters for a non-existent connection. 
+        Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-    Tests that the connection parameters can be used to reach the AWS account. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the AWS account. This does not create a persistent connection.
     .PARAMETER access_key_id
-    (Optional) Client ID of the AWS User
+        (Optional) Client ID of the AWS User
     .PARAMETER secret_access_key
-    (Optional) Client secret associated with the access key ID of the AWS user.
+        (Optional) Client secret associated with the access key ID of the AWS user.
     .PARAMETER assume_role_arn
-    (Optional) AWS IAM Role ARN
+        (Optional) AWS IAM Role ARN
     .PARAMETER assume_role_external_id
-    (Optional)Specify AWS Role external ID.
+        (Optional)Specify AWS Role external ID.
     .PARAMETER aws_region
-    (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
+        (Optional)AWS region. only used when aws_sts_regional_endpoints is equal to regional otherwise, it takes default values according to Cloud Name given. Default values are:
 
-        for aws, default region will be "us-east-1"
-        for aws-us-gov, default region will be "us-gov-east-1"
-        for aws-cn, default region will be "cn-north-1"
+            for aws, default region will be "us-east-1"
+            for aws-us-gov, default region will be "us-gov-east-1"
+            for aws-cn, default region will be "cn-north-1"
     .PARAMETER aws_sts_regional_endpoints
-    (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
+        (Optional)By default, AWS Security Token Service (AWS STS) is available as a global service, and all AWS STS requests go to a single endpoint at https://sts.amazonaws.com. Global requests map to the US East (N. Virginia) Region. AWS recommends using Regional AWS STS endpoints instead of the global endpoint to reduce latency, build in redundancy, and increase session token validity. valid values are:
 
-        legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
-        regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
+            legacy (default): Uses the global AWS STS endpoint, sts.amazonaws.com
+            regional: The SDK or tool always uses the AWS STS endpoint for the currently configured Region.
 
-        To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
+            To know more about AWS STS please go through the following link https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html
     .PARAMETER cloud_name
-    (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
+        (Optional)Name of the cloud. Options: aws (default), aws-us-goc, or aws-cn
     .PARAMETER is_role_anywhere
-    (Optional) Use this switch to create connections of type AWS IAM Anywhere with temporary credentials.
+        (Optional) Use this switch to create connections of type AWS IAM Anywhere with temporary credentials.
     .PARAMETER anywhere_role_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Role ARN.
     .PARAMETER anywhere_role_cert
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted certificate text for AWS IAM Anywhere Cloud connections. 
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER anywhere_role_certfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM certificate for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_role_privkey
-    (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections. 
-    While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
+        (Required if using IAM Role Anywhere) Upload the PEM-formatted private key text for AWS IAM Anywhere Cloud connections. 
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted private key then pass the variable to the command.
     .PARAMETER anywhere_role_keyfile
-    (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
+        (Required if using IAM Role Anywhere) Specify the filename for a PEM private key for AWS IAM Anywhere Cloud connections.
     .PARAMETER anywhere_profile_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Profile ARN.
     .PARAMETER anywhere_trust_anchor_arn
-    (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
+        (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
-    #>
+        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+#>
 function Test-CMAWSConnParameters{
     param(
         [Parameter()] [string] $access_key_id, 
