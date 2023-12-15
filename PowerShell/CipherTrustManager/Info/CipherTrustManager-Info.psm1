@@ -189,7 +189,7 @@ function Set-CMName {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
-        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {

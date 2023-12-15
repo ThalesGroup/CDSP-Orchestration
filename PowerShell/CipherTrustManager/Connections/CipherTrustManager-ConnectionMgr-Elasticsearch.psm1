@@ -301,7 +301,7 @@ function Find-CMElasticsearchConnections {
     While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
     (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
-    .PARAMETER http_password
+    .PARAMETER http_pass
     (Optional) HTTP basic auth password.
     .PARAMETER http_user
     (Optional) HTTP basic auth username.
@@ -338,7 +338,7 @@ function New-CMElasticsearchConnection{
         [Parameter()] [string] $ca_cert, 
         [Parameter()] [string] $ca_certfile, 
         [Parameter()] [pscredential] $http_securecreds, 
-        [Parameter()] [string] $http_password,
+        [Parameter()] [string] $http_pass,
         [Parameter()] [string] $http_user, 
         [Parameter()] [switch] $insecure_tls_skip_verify, 
         [Parameter()] [transportType] $transport, 
@@ -354,7 +354,7 @@ function New-CMElasticsearchConnection{
     if((!$insecure_tls_skip_verify) -and (!$ca_cert -and !$ca_certfile)){
         return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
     }
-    if ((!$http_user -or !$http_password) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
+    if ((!$http_user -or !$http_pass) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
 
 
     # Mandatory Parameters
@@ -376,7 +376,7 @@ function New-CMElasticsearchConnection{
         $body.elasticsearch_params.add('http_user', $http_securecreds.username)
         $body.elasticsearch_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
     }else{
-        if($http_password){ $body.elasticsearch_params.add('http_password', $http_password)}
+        if($http_pass){ $body.elasticsearch_params.add('http_password', $http_pass)}
         if($http_user){ $body.elasticsearch_params.add('http_user', $http_user)}
     }
     if($insecure_tls_skip_verify){ $body.elasticsearch_params.add('insecure_tls_skip_verify', $true)}
@@ -526,7 +526,7 @@ function Get-CMElasticsearchConnection{
     (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
     .PARAMETER http_securecreds
     (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
-    .PARAMETER http_password
+    .PARAMETER http_pass
     (Optional) HTTP basic auth password.
     .PARAMETER http_user
     (Optional) HTTP basic auth username.
@@ -571,7 +571,7 @@ function Update-CMElasticsearchConnection{
         [Parameter()] [string] $ca_cert, 
         [Parameter()] [string] $ca_certfile, 
         [Parameter()] [pscredential] $http_securecreds, 
-        [Parameter()] [string] $http_password, 
+        [Parameter()] [string] $http_pass, 
         [Parameter()] [string] $http_user, 
         [Parameter()] [switch] $insecure_tls_skip_verify, 
         [Parameter()] [transportType] $transport, 
@@ -610,7 +610,7 @@ function Update-CMElasticsearchConnection{
         $body.elasticsearch_params.add('http_user', $http_securecreds.username)
         $body.elasticsearch_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
     }else{
-        if($http_password){ $body.elasticsearch_params.add('http_password', $http_password)}
+        if($http_pass){ $body.elasticsearch_params.add('http_password', $http_pass)}
         if($http_user){ $body.elasticsearch_params.add('http_user', $http_user)}
     }
     if($insecure_tls_skip_verify){ $body.elasticsearch_params.add('insecure_tls_skip_verify', $true)}
@@ -768,7 +768,7 @@ function Remove-CMElasticsearchConnection{
     (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
     .PARAMETER http_securecreds
     (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
-    .PARAMETER http_password
+    .PARAMETER http_pass
     (Optional) HTTP basic auth password.
     .PARAMETER http_user
     (Optional) HTTP basic auth username.
@@ -794,7 +794,7 @@ function Test-CMElasticsearchConnection{
         [Parameter()] [string] $ca_cert, 
         [Parameter()] [string] $ca_certfile, 
         [Parameter()] [pscredential] $http_securecreds, 
-        [Parameter()] [string] $http_password, 
+        [Parameter()] [string] $http_pass, 
         [Parameter()] [string] $http_user, 
         [Parameter()] [switch] $insecure_tls_skip_verify, 
         [Parameter()] [transportType] $transport
@@ -805,7 +805,7 @@ function Test-CMElasticsearchConnection{
     if((!$insecure_tls_skip_verify) -and (!$ca_cert -and !$ca_certfile)){
         return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
     }
-    if ((!$http_user -or !$http_password) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
+    if ((!$http_user -or !$http_pass) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
 
     Write-Debug "Testing Azure Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
@@ -838,7 +838,7 @@ function Test-CMElasticsearchConnection{
         $body.elasticsearch_params.add('http_user', $http_securecreds.username)
         $body.elasticsearch_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
     }else{
-        if($http_password){ $body.elasticsearch_params.add('http_password', $http_password)}
+        if($http_pass){ $body.elasticsearch_params.add('http_password', $http_pass)}
         if($http_user){ $body.elasticsearch_params.add('http_user', $http_user)}
     }
     if($insecure_tls_skip_verify){ $body.elasticsearch_params.add('insecure_tls_skip_verify', $true)}
@@ -894,7 +894,7 @@ function Test-CMElasticsearchConnection{
     (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
     .PARAMETER http_securecreds
     (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
-    .PARAMETER http_password
+    .PARAMETER http_pass
     (Optional) HTTP basic auth password.
     .PARAMETER http_user
     (Optional) HTTP basic auth username.
@@ -914,7 +914,7 @@ function Test-CMElasticsearchConnParameters{
         [Parameter()] [string] $ca_cert, 
         [Parameter()] [string] $ca_certfile, 
         [Parameter()] [pscredential] $http_securecreds, 
-        [Parameter()] [string] $http_password, 
+        [Parameter()] [string] $http_pass, 
         [Parameter()] [string] $http_user, 
         [Parameter()] [switch] $insecure_tls_skip_verify, 
         [Parameter()] [transportType] $transport
@@ -925,7 +925,7 @@ function Test-CMElasticsearchConnParameters{
     if((!$insecure_tls_skip_verify) -and (!$ca_cert -and !$ca_certfile)){
         return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
     }
-    if ((!$http_user -or !$http_password) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
+    if ((!$http_user -or !$http_pass) -and !$http_securecreds) { return "Missing Elasticsearch Credentials. Please try again."}
 
     Write-Debug "Testing Elasticsearch Connection details."
     $endpoint = $CM_Session.REST_URL + $target_uri_test
@@ -947,7 +947,7 @@ function Test-CMElasticsearchConnParameters{
         $body.elasticsearch_params.add('http_user', $http_securecreds.username)
         $body.elasticsearch_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
     }else{
-        if($http_password){ $body.elasticsearch_params.add('http_password', $http_password)}
+        if($http_pass){ $body.elasticsearch_params.add('http_password', $http_pass)}
         if($http_user){ $body.elasticsearch_params.add('http_user', $http_user)}
     }
     if($insecure_tls_skip_verify){ $body.elasticsearch_params.add('insecure_tls_skip_verify', $true)}
