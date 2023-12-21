@@ -395,3 +395,11 @@ Export-ModuleMember -Function Add-CMHadoopConnectionNode
 Export-ModuleMember -Function Get-CMHadoopConnectionNode
 Export-ModuleMember -Function Update-CMHadoopConnectionNode
 Export-ModuleMember -Function Remove-CMHadoopConnectionNode
+#Connection Manager - Loki
+Export-ModuleMember -Function Find-CMLokiConnections
+Export-ModuleMember -Function New-CMLokiConnection
+Export-ModuleMember -Function Get-CMLokiConnection
+Export-ModuleMember -Function Update-CMLokiConnection
+Export-ModuleMember -Function Remove-CMLokiConnection
+Export-ModuleMember -Function Test-CMLokiConnection
+Export-ModuleMember -Function Test-CMLokiConnParameters

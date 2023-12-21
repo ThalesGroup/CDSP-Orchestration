@@ -84,6 +84,7 @@
         "Connections/CipherTrustManager-ConnectionMgr-Google",
         "Connections/CipherTrustManager-ConnectionMgr-DSM",
         "Connections/CipherTrustManager-ConnectionMgr-Hadoop",
+        "Connections/CipherTrustManager-ConnectionMgr-Loki",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -237,7 +238,14 @@
         "Add-CMHadoopConnectionNode",
         "Get-CMHadoopConnectionNode",
         "Update-CMHadoopConnectionNode",
-        "Remove-CMHadoopConnectionNode"
+        "Remove-CMHadoopConnectionNode",
+        "Find-CMLokiConnections",
+        "New-CMLokiConnection",
+        "Get-CMLokiConnection",
+        "Update-CMLokiConnection",
+        "Remove-CMLokiConnection",
+        "Test-CMLokiConnection",
+        "Test-CMLokiConnParameters"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ConnectionMgr-Elasticsearch.psm1                                               #
+# File:             CipherTrustManager-ConnectionMgr-Loki.psm1                                               #
 # Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
@@ -21,8 +21,8 @@ Add-Type -TypeDefinition @"
 ####
 # Local Variables
 ####
-$target_uri = "/connectionmgmt/services/log-forwarders/elasticsearch/connections"
-$target_uri_test = "/connectionmgmt/services/log-forwarders/elasticsearch/connection-test"
+$target_uri = "/connectionmgmt/services/log-forwarders/loki/connections"
+$target_uri_test = "/connectionmgmt/services/log-forwarders/loki/connection-test"
 ####
 
 #Allow for backwards compatibility with PowerShell 5.1
@@ -30,13 +30,13 @@ $target_uri_test = "/connectionmgmt/services/log-forwarders/elasticsearch/connec
 #For PS 5.x to use SSL handler bypass code.
 
 if($PSVersionTable.PSVersion.Major -ge 6){
-    Write-Debug "Setting PS6+ Defaults - Connections Elasticsearch Module"
+    Write-Debug "Setting PS6+ Defaults - Connections Loki Module"
     $PSDefaultParameterValues = @{
         "Invoke-RestMethod:SkipCertificateCheck"=$True
         "ConvertTo-JSON:Depth"=5
     }
 }else{
-    Write-Debug "Setting PS5.1 Defaults - Connections Elasticsearch Module"
+    Write-Debug "Setting PS5.1 Defaults - Connections Loki Module"
     $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
     # Allow the use of self signed certificates and set TLS
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -58,11 +58,11 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 }
 
 
-#This project mirrors the "Connection Manager - Elasticsearch Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/Elasticsearch Connections)
+#This project mirrors the "Connection Manager - Loki Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/Loki Connections)
 
 #Connection Manager - CM Connections
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections"
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections - get"
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections"
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections - get"
 
 <#
     .SYNOPSIS
@@ -70,8 +70,8 @@ if($PSVersionTable.PSVersion.Major -ge 6){
     .DESCRIPTION
         Returns a list of all connections. The results can be filtered using the query parameters.
         Results are returned in pages. Each page of results includes the total results found, and information for requesting the next page of results, using the skip and limit query parameters. 
-        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/Elasticsearch Connections
-        #/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections-get).   
+        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/Loki Connections
+        #/v1/connectionmgmt/services/log-forwarders/loki/connections-get).   
     .PARAMETER name
         Filter by the Conection name
     .PARAMETER id
@@ -110,7 +110,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Find-CMElasticsearchConnections {
+function Find-CMLokiConnections {
     param
     (
         [Parameter(Mandatory = $false,
@@ -131,7 +131,7 @@ function Find-CMElasticsearchConnections {
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-    Write-Debug "Getting a List of all Elastic Search Connections in CM"
+    Write-Debug "Getting a List of all Loki Connections in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
     
@@ -274,20 +274,20 @@ function Find-CMElasticsearchConnections {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "List of all CM Connections to Elastic Search with supplied parameters."
+    Write-Debug "List of all CM Connections to Loki with supplied parameters."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
 }    
 
-#Connection Manager - Elasticsearch Connections
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections"
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections - post"
+#Connection Manager - Loki Connections
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections"
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections - post"
 
 <#
     .SYNOPSIS
-        Create a new CipherTrust Manager Elasticsearch Connection 
+        Create a new CipherTrust Manager Loki Connection 
     .DESCRIPTION
-        Creates a new Elasticsearch connection. 
+        Creates a new Loki connection. 
     .PARAMETER name
         Unique connection name.
     .PARAMETER target
@@ -300,7 +300,7 @@ function Find-CMElasticsearchConnections {
         (Optional) CA certificate in PEM format.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Loki CA certificate. 
     .PARAMETER http_pass
         (Optional) HTTP basic auth password.
     .PARAMETER http_user
@@ -317,13 +317,13 @@ function Find-CMElasticsearchConnections {
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
         e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> New-CMElasticsearchConnection -name "My Elasticsearch Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_user <user> -http_pass <passowrd> -transport tls -metadata "red:stop,green:go"
+        PS> New-CMLokiConnection -name "My Loki Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_user <user> -http_pass <passowrd> -transport tls -metadata "red:stop,green:go"
     .EXAMPLE
-        PS> New-CMElasticsearchConnection -name "My Elasticsearch Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_securecreds $mycred -transport tls
+        PS> New-CMLokiConnection -name "My Loki Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_securecreds $mycred -transport tls
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CMElasticsearchConnection{
+function New-CMLokiConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -343,7 +343,7 @@ function New-CMElasticsearchConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an Elasticsearch Connection in CM"
+    Write-Debug "Creating an Loki Connection in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
@@ -351,31 +351,30 @@ function New-CMElasticsearchConnection{
         return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
     }
 
-
     # Mandatory Parameters
     $body= [ordered] @{
         "name" = $name
         "host" = $target
         "port" = $port
         "products" = @("logger")
-        "elasticsearch_params" = @{}
+        "loki_params" = @{}
     }
 
     # Optional Parameters
     if($description){ $body.add('description', $description)}
     if($ca_certfile){ $ca_cert = (Get-Content $ca_certfile -raw)}
-        if($ca_cert){ $body.elasticsearch_params.add('ca_cert', $ca_cert)}
+        if($ca_cert){ $body.loki_params.add('ca_cert', $ca_cert)}
     if($http_securecreds){
         Write-Debug "What is my credential user? $($http_securecreds.username)" 
         Write-debug "What is my credential password? $($http_securecreds.password | ConvertFrom-SecureString)"
-        $body.elasticsearch_params.add('http_user', $http_securecreds.username)
-        $body.elasticsearch_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
+        $body.loki_params.add('http_user', $http_securecreds.username)
+        $body.loki_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
     }else{
-        if($http_pass){ $body.elasticsearch_params.add('http_password', $http_pass)}
-        if($http_user){ $body.elasticsearch_params.add('http_user', $http_user)}
+        if($http_pass){ $body.loki_params.add('http_password', $http_pass)}
+        if($http_user){ $body.loki_params.add('http_user', $http_user)}
     }
-    if($insecure_tls_skip_verify){ $body.elasticsearch_params.add('insecure_tls_skip_verify', $true)}
-    if($transport){ $body.elasticsearch_params.add('transport', $transport.ToString())}
+    if($insecure_tls_skip_verify){ $body.loki_params.add('insecure_tls_skip_verify', $true)}
+    if($transport){ $body.loki_params.add('transport', $transport.ToString())}
     if($metadata){
         $body.add('meta',@{})
         $meta_input = $metadata.split(",")
@@ -420,30 +419,30 @@ function New-CMElasticsearchConnection{
 }    
 
 
-#Connection Manager - Elasticsearch Connections
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}"
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}" - get
+#Connection Manager - Loki Connections
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}"
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}" - get
 
 <#
     .SYNOPSIS
-        Get full details on a CipherTrust Manager Elasticsearch Connection
+        Get full details on a CipherTrust Manager Loki Connection
     .DESCRIPTION
-        Retriving the full list of Elasticsearch Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of Loki Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-        The complete name of the Elasticsearch connection. Do not use wildcards.
+        The complete name of the Loki connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMElasticsearchConnections cmdlet to find the appropriate id value.
+        Use the Find-CMLokiConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Get-CMElasticsearchConnection -name "My Elasticsearch Connection"
+        PS> Get-CMLokiConnection -name "My Loki Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Get-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Get-CMLokiConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Get-CMElasticsearchConnection{
+function Get-CMLokiConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -455,14 +454,14 @@ function Get-CMElasticsearchConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Getting details on Elasticsearch Connection"
+    Write-Debug "Getting details on Loki Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
+        $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -495,19 +494,19 @@ function Get-CMElasticsearchConnection{
     return $response
 }    
 
-#Connection Manager - Elasticsearch Connections
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}"
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}" - patch
+#Connection Manager - Loki Connections
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}"
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}" - patch
 
 <#
     .SYNOPSIS
-        Update an existing a new CipherTrust Manager Elasticsearch Connection 
+        Update an existing a new CipherTrust Manager Loki Connection 
     .DESCRIPTION
         Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-        Name of the existing CipherTrust Manager Elasticsearch connection.
+        Name of the existing CipherTrust Manager Loki connection.
     .PARAMETER id
-        CipherTrust Manager "id" value of the existing Elasticsearch connection.
+        CipherTrust Manager "id" value of the existing Loki connection.
     .PARAMETER target
         IP for Hostname/FQDN of the log-forwarder server.
     .PARAMETER port
@@ -518,7 +517,7 @@ function Get-CMElasticsearchConnection{
         (Optional) CA certificate in PEM format.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Loki CA certificate. 
     .PARAMETER http_securecreds
         (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
     .PARAMETER http_pass
@@ -538,7 +537,7 @@ function Get-CMElasticsearchConnection{
 
         For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-        PS> Update-CMElasticsearchConnections -name MyElasticsearchConnection -metadata "red:stop,green:go,blue:ocean"
+        PS> Update-CMLokiConnections -name MyLokiConnection -metadata "red:stop,green:go,blue:ocean"
         This will update the metadata of the connection to include the key pairs shown.
 
         Resulting in:
@@ -552,7 +551,7 @@ function Get-CMElasticsearchConnection{
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Update-CMElasticsearchConnection{
+function Update-CMLokiConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -575,14 +574,14 @@ function Update-CMElasticsearchConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Updating details on Elasticsearch Connection"
+    Write-Debug "Updating details on Loki Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
+        $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -590,7 +589,7 @@ function Update-CMElasticsearchConnection{
     
     # Mandatory Parameters
     $body= [ordered] @{
-        "elasticsearch_params" = @{}
+        "loki_params" = @{}
     }
 
     # Optional Parameters
@@ -598,18 +597,18 @@ function Update-CMElasticsearchConnection{
     if($port){ $body.add('port',$port)}
     if($description){ $body.add('description', $description)}
     if($ca_certfile){ $ca_cert = (Get-Content $ca_certfile -raw)}
-    if($ca_cert){ $body.elasticsearch_params.add('ca_cert', $ca_cert)}
+    if($ca_cert){ $body.loki_params.add('ca_cert', $ca_cert)}
     if($http_securecreds){
         Write-Debug "What is my credential user? $($http_securecreds.username)" 
         Write-debug "What is my credential password? $($http_securecreds.password | ConvertFrom-SecureString)"
-        $body.elasticsearch_params.add('http_user', $http_securecreds.username)
-        $body.elasticsearch_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
+        $body.loki_params.add('http_user', $http_securecreds.username)
+        $body.loki_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
     }else{
-        if($http_pass){ $body.elasticsearch_params.add('http_password', $http_pass)}
-        if($http_user){ $body.elasticsearch_params.add('http_user', $http_user)}
+        if($http_pass){ $body.loki_params.add('http_password', $http_pass)}
+        if($http_user){ $body.loki_params.add('http_user', $http_user)}
     }
-    if($insecure_tls_skip_verify){ $body.elasticsearch_params.add('insecure_tls_skip_verify', $true)}
-    if($transport){ $body.elasticsearch_params.add('transport', $transport.ToString())}
+    if($insecure_tls_skip_verify){ $body.loki_params.add('insecure_tls_skip_verify', $true)}
+    if($transport){ $body.loki_params.add('transport', $transport.ToString())}
     if($metadata){
         $body.add('meta',@{})
         $meta_input = $metadata.split(",")
@@ -649,32 +648,32 @@ function Update-CMElasticsearchConnection{
 }    
 
 
-#Connection Manager - Elasticsearch Connections
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}"
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}" - delete
+#Connection Manager - Loki Connections
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}"
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}" - delete
 
 <#
     .SYNOPSIS
-        Delete a CipherTrust Manager Elasticsearch Connection
+        Delete a CipherTrust Manager Loki Connection
     .DESCRIPTION
-        Delete a CipherTrust Manager Elasticsearch Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager Loki Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-        The complete name of the Elasticsearch connection. This parameter is case-sensitive.
+        The complete name of the Loki connection. This parameter is case-sensitive.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMElasticsearchConnections cmdlet to find the appropriate id value.
+        Use the Find-CMLokiConnections cmdlet to find the appropriate id value.
     .PARAMETER force
         Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-        PS> Remove-CMElasticsearchConnection -name "My Elasticsearch Connection"
+        PS> Remove-CMLokiConnection -name "My Loki Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Remove-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Remove-CMLokiConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Remove-CMElasticsearchConnection{
+function Remove-CMLokiConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -688,14 +687,14 @@ function Remove-CMElasticsearchConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Preparing to remove Elasticsearch Connection"
+    Write-Debug "Preparing to remove Loki Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
+        $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -739,19 +738,19 @@ function Remove-CMElasticsearchConnection{
     return "Connection Deleted."
 }    
     
-#Connection Manager - Elasticsearch Connections
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}"
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}/test" - post
+#Connection Manager - Loki Connections
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}"
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}/test" - post
 
 <#
     .SYNOPSIS
         Test existing connection.
     .DESCRIPTION
-        Tests that an existing connection with the given name, ID, or URI Elasticsearch target. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI Loki target. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
     .PARAMETER name
-        Name of the existing CipherTrust Manager Elasticsearch connection.
+        Name of the existing CipherTrust Manager Loki connection.
     .PARAMETER id
-        CipherTrust Manager "id" value of the existing Elasticsearch connection.
+        CipherTrust Manager "id" value of the existing Loki connection.
     .PARAMETER target
         IP for Hostname/FQDN of the log-forwarder server.
     .PARAMETER port
@@ -760,7 +759,7 @@ function Remove-CMElasticsearchConnection{
         (Optional) CA certificate in PEM format.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Loki CA certificate. 
     .PARAMETER http_securecreds
         (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
     .PARAMETER http_pass
@@ -776,7 +775,7 @@ function Remove-CMElasticsearchConnection{
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMElasticsearchConnection{
+function Test-CMLokiConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -788,14 +787,14 @@ function Test-CMElasticsearchConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Testing Elasticsearch Connection"
+    Write-Debug "Testing Loki Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
-        $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
+        $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{
         return "Missing Connection Identifier."
@@ -829,14 +828,14 @@ function Test-CMElasticsearchConnection{
 }    
 
 
-#Connection Manager - Elasticsearch Connections
-#"#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connection-test - post"
+#Connection Manager - Loki Connections
+#"#/v1/connectionmgmt/services/log-forwarders/loki/connection-test - post"
 
 <#
     .SYNOPSIS
         Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-        Tests that the connection parameters can be used to reach the Elasticsearch log server. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the Loki log server. This does not create a persistent connection.
     .PARAMETER target
         IP for Hostname/FQDN of the log-forwarder server.
     .PARAMETER port
@@ -845,7 +844,7 @@ function Test-CMElasticsearchConnection{
         (Optional) CA certificate in PEM format.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER ca_certfile
-        (Optional) Specify the filename for a PEM certificate for Elasticsearch CA certificate. 
+        (Optional) Specify the filename for a PEM certificate for Loki CA certificate. 
     .PARAMETER http_securecreds
         (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
     .PARAMETER http_pass
@@ -861,7 +860,7 @@ function Test-CMElasticsearchConnection{
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMElasticsearchConnParameters{
+function Test-CMLokiConnParameters{
     param(
         [Parameter(Mandatory)] [string] $target, 
         [Parameter(Mandatory)] [int] $port, 
@@ -871,7 +870,7 @@ function Test-CMElasticsearchConnParameters{
         [Parameter()] [string] $http_pass, 
         [Parameter()] [string] $http_user, 
         [Parameter()] [switch] $insecure_tls_skip_verify, 
-        [Parameter()] [transportType] $transport
+        [Parameter(Mandatory)] [transportType] $transport
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -880,31 +879,32 @@ function Test-CMElasticsearchConnParameters{
         return "Please provide certificate or client_secret or set insecure_tls_skip_verify to true for testing."
     }
 
-    Write-Debug "Testing Elasticsearch Connection details."
+    Write-Debug "Testing Loki Connection details."
     $endpoint = $CM_Session.REST_URL + $target_uri_test
     Write-Debug "Endpoint: $($endpoint)"
 
     # Mandatory Parameters
     $body= [ordered] @{
-        "elasticsearch_params" = @{}
+        "loki_params" = @{}
     }
 
     # Optional Parameters
     if($target){ $body.add('host',$target)}
     if($port){ $body.add('port',$port)}
+    if($transport){ $body.loki_params.add('transport', $transport.ToString())}
     if($ca_certfile){ $ca_cert = (Get-Content $ca_certfile -raw)}
-    if($ca_cert){ $body.elasticsearch_params.add('ca_cert', $ca_cert)}
+    if($ca_cert){ $body.loki_params.add('ca_cert', $ca_cert)}
     if($http_securecreds){
         Write-Debug "What is my credentiasl user? $($http_securecreds.username)" 
         Write-debug "What is my credential password? $($http_securecreds.password | ConvertFrom-SecureString)"
-        $body.elasticsearch_params.add('http_user', $http_securecreds.username)
-        $body.elasticsearch_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
+        $body.loki_params.add('http_user', $http_securecreds.username)
+        $body.loki_params.add('http_password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($http_securecreds.password)))
     }else{
-        if($http_pass){ $body.elasticsearch_params.add('http_password', $http_pass)}
-        if($http_user){ $body.elasticsearch_params.add('http_user', $http_user)}
+        if($http_pass){ $body.loki_params.add('http_password', $http_pass)}
+        if($http_user){ $body.loki_params.add('http_user', $http_user)}
     }
-    if($insecure_tls_skip_verify){ $body.elasticsearch_params.add('insecure_tls_skip_verify', $true)}
-    if($transport){ $body.elasticsearch_params.add('transport', $transport.ToString())}
+    if($insecure_tls_skip_verify){ $body.loki_params.add('insecure_tls_skip_verify', $true)}
+
                 
     $jsonBody = $body | ConvertTo-JSON 
 
@@ -939,22 +939,22 @@ function Test-CMElasticsearchConnParameters{
 ####
 # Export Module Members
 ####
-#Connection Manager - Elasticsearch
-#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/"
+#Connection Manager - Loki
+#/v1/connectionmgmt/services/log-forwarders/loki/connections/"
 
-Export-ModuleMember -Function Find-CMElasticsearchConnections #/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections - get"
-Export-ModuleMember -Function New-CMElasticsearchConnection #/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections - post"
+Export-ModuleMember -Function Find-CMLokiConnections #/v1/connectionmgmt/services/log-forwarders/loki/connections - get"
+Export-ModuleMember -Function New-CMLokiConnection #/v1/connectionmgmt/services/log-forwarders/loki/connections - post"
 
-#Connection Manager - Elasticsearch
-#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}"
-Export-ModuleMember -Function Get-CMElasticsearchConnection #/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id} - get"
-Export-ModuleMember -Function Update-CMElasticsearchConnection #/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id} - patch"
-Export-ModuleMember -Function Remove-CMElasticsearchConnection #/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id} - delete"
+#Connection Manager - Loki
+#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}"
+Export-ModuleMember -Function Get-CMLokiConnection #/v1/connectionmgmt/services/log-forwarders/loki/connections/{id} - get"
+Export-ModuleMember -Function Update-CMLokiConnection #/v1/connectionmgmt/services/log-forwarders/loki/connections/{id} - patch"
+Export-ModuleMember -Function Remove-CMLokiConnection #/v1/connectionmgmt/services/log-forwarders/loki/connections/{id} - delete"
 
-#Connection Manager - Elasticsearch
-#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}/test"
-Export-ModuleMember -Function Test-CMElasticsearchConnection #/v1/connectionmgmt/services/log-forwarders/elasticsearch/connections/{id}/test - post"
+#Connection Manager - Loki
+#/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}/test"
+Export-ModuleMember -Function Test-CMLokiConnection #/v1/connectionmgmt/services/log-forwarders/loki/connections/{id}/test - post"
 
-#Connection Manager - Elasticsearch
-#/v1/connectionmgmt/services/log-forwarders/elasticsearch/connection-test"
-Export-ModuleMember -Function Test-CMElasticsearchConnParameters #/connectionmgmt/services/log-forwarders/elasticsearch/connection-test - post"
+#Connection Manager - Loki
+#/v1/connectionmgmt/services/log-forwarders/loki/connection-test"
+Export-ModuleMember -Function Test-CMLokiConnParameters #/connectionmgmt/services/log-forwarders/loki/connection-test - post"
