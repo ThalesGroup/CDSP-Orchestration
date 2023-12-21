@@ -382,3 +382,16 @@ Export-ModuleMember -Function Add-CMDSMConnectionNode
 Export-ModuleMember -Function Get-CMDSMConnectionNode
 Export-ModuleMember -Function Update-CMDSMConnectionNode
 Export-ModuleMember -Function Remove-CMDSMConnectionNode
+#Connection Manager - Hadoop
+Export-ModuleMember -Function Find-CMHadoopConnections
+Export-ModuleMember -Function New-CMHadoopConnection
+Export-ModuleMember -Function Get-CMHadoopConnection
+Export-ModuleMember -Function Update-CMHadoopConnection
+Export-ModuleMember -Function Remove-CMHadoopConnection
+Export-ModuleMember -Function Test-CMHadoopConnection
+Export-ModuleMember -Function Test-CMHadoopConnParameters
+Export-ModuleMember -Function Find-CMHadoopConnectionNodes
+Export-ModuleMember -Function Add-CMHadoopConnectionNode
+Export-ModuleMember -Function Get-CMHadoopConnectionNode
+Export-ModuleMember -Function Update-CMHadoopConnectionNode
+Export-ModuleMember -Function Remove-CMHadoopConnectionNode

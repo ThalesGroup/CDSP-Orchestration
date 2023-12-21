@@ -83,6 +83,7 @@
         "Connections/CipherTrustManager-ConnectionMgr-Elasticsearch",
         "Connections/CipherTrustManager-ConnectionMgr-Google",
         "Connections/CipherTrustManager-ConnectionMgr-DSM",
+        "Connections/CipherTrustManager-ConnectionMgr-Hadoop",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -224,8 +225,19 @@
         "Add-CMDSMConnectionNode",
         "Get-CMDSMConnectionNode",
         "Update-CMDSMConnectionNode",
-        "Remove-CMDSMConnectionNode"
-
+        "Remove-CMDSMConnectionNode",
+        "Find-CMHadoopConnections",
+        "New-CMHadoopConnection",
+        "Get-CMHadoopConnection",
+        "Update-CMHadoopConnection",
+        "Remove-CMHadoopConnection",
+        "Test-CMHadoopConnection",
+        "Test-CMHadoopConnParameters",
+        "Find-CMHadoopConnectionNodes",
+        "Add-CMHadoopConnectionNode",
+        "Get-CMHadoopConnectionNode",
+        "Update-CMHadoopConnectionNode",
+        "Remove-CMHadoopConnectionNode"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

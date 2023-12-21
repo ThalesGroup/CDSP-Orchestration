@@ -18,6 +18,12 @@ Add-Type -TypeDefinition @"
 }
 "@
 
+# Key Sizes
+[flags()] Enum KeySizeTable {
+    KeySize1024 = 1024 
+    KeySize2048 = 2048 
+    KeySize4096 = 4096
+}
 
 ####
 # Local Variables
@@ -489,7 +495,7 @@ param (
     [Parameter(Mandatory=$true)] [string] $name,
     [Parameter()] [string] $cn=$name,
     [Parameter()] [certAlgorithms] $algorithm="RSA",
-    [Parameter()] [ValidateSet(1024,2048,4096)] [int] $size=2048,
+    [Parameter()] [KeySizeTable] $size,
     [Parameter()] [string[]] $dnsNames,
     [Parameter()] [string[]] $ipAddresses,
     [Parameter()] [string[]] $emailAddresses,
@@ -514,7 +520,7 @@ param (
         "name"          = $name
         "cn"            = $cn
         "algorithm"     = $algorithm.ToString()
-        "size"          = $size
+        "size"          = [int]$size
     }
 
     #Optional Parameters

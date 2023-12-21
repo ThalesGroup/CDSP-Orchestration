@@ -1,5 +1,5 @@
-########################################################################################################products###############
-# File:             CipherTrustManager-ConnectionMgr-DSM.psm1                                                         #
+#######################################################################################################################
+# File:             CipherTrustManager-ConnectionMgr-Hadoop.psm1                                                      #
 # Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
@@ -10,8 +10,8 @@
 ####
 # Local Variables
 ####
-$target_uri = "/connectionmgmt/services/dsm/connections"
-$target_uri_test = "/connectionmgmt/services/dsm/connection-test"
+$target_uri = "/connectionmgmt/services/hadoop/connections"
+$target_uri_test = "/connectionmgmt/services/hadoop/connection-test"
 ####
 
 #Allow for backwards compatibility with PowerShell 5.1
@@ -19,13 +19,13 @@ $target_uri_test = "/connectionmgmt/services/dsm/connection-test"
 #For PS 5.x to use SSL handler bypass code.
 
 if($PSVersionTable.PSVersion.Major -ge 6){
-    Write-Debug "Setting PS6+ Defaults - Connections DSM Module"
+    Write-Debug "Setting PS6+ Defaults - Connections Hadoop Module"
     $PSDefaultParameterValues = @{
         "Invoke-RestMethod:SkipCertificateCheck"=$True
         "ConvertTo-JSON:Depth"=5
     }
 }else{
-    Write-Debug "Setting PS5.1 Defaults - Connections DSM Module"
+    Write-Debug "Setting PS5.1 Defaults - Connections Hadoop Module"
     $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
     # Allow the use of self signed certificates and set TLS
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -47,19 +47,19 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 }
 
 
-#This project mirrors the "Connection Manager - DSM Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/DSM Connections)
+#This project mirrors the "Connection Manager - Hadoop Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/Hadoop Connections)
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections"
-#"#/v1/connectionmgmt/services/dsm/connections - get"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections"
+#"#/v1/connectionmgmt/services/hadoop/connections - get"
 
 <#
     .SYNOPSIS
-        List all CipherTrust Manager DSM Connections
+        List all CipherTrust Manager Hadoop Connections
     .DESCRIPTION
         Returns a list of all connections. The results can be filtered using the query parameters.
         Results are returned in pages. Each page of results includes the total results found, and information for requesting the next page of results, using the skip and limit query parameters. 
-        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/DSM Connections).   
+        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/Hadoop Connections).   
     .PARAMETER name
         Filter by the Conection name
     .PARAMETER id
@@ -91,12 +91,12 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         Filters results to those connected to at or after the specified timestamp. 
         Timestamp should be in RFC3339Nano format, e.g. 2023-12-01T23:59:59.52Z, or a relative timestamp where valid units are 'Y','M','D' representing years, months, days respectively. Negative values are also permitted. e.g. "-1Y-2M-5D".
     .EXAMPLE
-        PS> Find-CMDSMConnections -name tar*
+        PS> Find-CMHadoopConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Find-CMDSMConnections {
+function Find-CMHadoopConnections {
     param
     (
         [Parameter(Mandatory = $false,
@@ -117,7 +117,7 @@ function Find-CMDSMConnections {
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-    Write-Debug "Getting a List of all DSM Connections in CM"
+    Write-Debug "Getting a List of all Hadoop Connections in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
     
@@ -251,100 +251,127 @@ function Find-CMDSMConnections {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "List of all CM Connections to DSM with supplied parameters."
+    Write-Debug "List of all CM Connections to Hadoop Cluster with supplied parameters."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
 }    
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections"
-#"#/v1/connectionmgmt/services/dsm/connections - post"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections"
+#"#/v1/connectionmgmt/services/hadoop/connections - post"
 
 <#
     .SYNOPSIS
-        Create a new CipherTrust Manager DSM Connection. 
+        Create a new CipherTrust Manager Hadoop Connection. 
     .DESCRIPTION
-        Creates a new DSM connection. 
+        Creates a new Hadoop connection. 
     .PARAMETER name
         Unique connection name.
     .PARAMETER nodename
-        Hostname of the FIRST DSM server in the DSM Cluster being conencted to. Use Add-CMDSMConnectionNode for EACH additional node.
-    .PARAMETER dsmcertificate
-        Enter the PEM-formatted certificate text for the DSM being connected to.
+        Hostname of the FIRST Hadoop server in the Hadoop Cluster being conencted to. Use Add-CMHadoopConnectionNode for EACH additional node.
+    .PARAMETER port
+        (Optional) Port for Hadoop Server. Possible values 1-65535..
+    .PARAMETER protocol
+        (Optional) http or https protocol to be used for communication with the Hadoop node (https required for hadoop-knox)
+    .PARAMETER path
+        (Optional) path for Hadoop Server
+    .PARAMETER hadoopcertificate
+        Enter the PEM-formatted certificate text for the Hadoop Server being connected to.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
-    .PARAMETER dsmcertfile
-        Specify a filename for the DSM certificate.
-    .PARAMETER dsmuser
-        Username for accessing DSM server. 
-    .PARAMETER dsmpass
-        Password of DSM server
-    .PARAMETER dsmsecurecredentials
-        Supply a PSCredential object with the DSM username and password
-    .PARAMETER domain_id
-        (Optional) If DSM user is restricted to a domain, provide domain id.
+    .PARAMETER hadoopcertfile
+        Specify a filename for the certificate.
+    .PARAMETER knoxuser
+        The Hadoop Knox username. 
+    .PARAMETER knoxpass
+        The Hadoop Knox passsword.
+    .PARAMETER knoxsecurecredentials
+        Supply a PSCredential object with the Knox username and password
+    .PARAMETER topology
+        (Optional) Topology deployment of the Knox gateway.
+    .PARAMETER products
+        (Optional) Array of the CipherTrust products associated with the connection. Valid values are:
+            "ddc" for:
+                GCP
+                Hadoop connections
+            "cte" for:
+                Hadoop connections
+                SMB
+                OIDC
+                LDAP connections
+            "data discovery" for Hadoop connections. - This is the default selection.
     .PARAMETER description
         (Optional) Description of the connection.
     .PARAMETER metadata
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
         e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> New-CMDSMConnection -name "MyDSMCluster" -description "This is an Powershell created External DSM Connection" -nodename "dsm1.mydomain.com" -dsmcertificate "<PEM-formatted-certificate>" -dsmuser alladmin -dsmpass Thales123! -metadata "red:stop,green:go"
+        PS> New-CMHadoopConnection -name "MyHadoopCluster" -description "This is an Powershell created Hadoop Connection" -nodename "node1" -hadoopcertificate "<PEM-formatted-certificate>" -knoxuser knox -knoxpass Thales123! -metadata "red:stop,green:go"
     .EXAMPLE
-        PS> New-CMDSMConnection -name "MyDSMCluster" -description "This is an Powershell created External DSM Connection" -nodename "dsm1.mydomain.com" -dsmcertfile .\dsmnode1cert.pem -dsmuser alladmin -dsmpass Thales123! -metadata "red:stop,green:go"
+        PS> New-CMHadoopConnection -name "MyHadoopCluster" -description "This is an Powershell created Hadoop Connection" -nodename "node1" -hadoopcertfile .\hadoopnode1cert.pem -knoxuser knox -knoxpass Thales123! -metadata "red:stop,green:go"
     .EXAMPLE
-        PS> New-CMDSMConnection -name "MyDSMCluster" -nodename "dsm1.mydomain.com" -dsmcertfile .\dsmnode1cert.pem -dsmsecurecredentials [PSCredential]$dsmcreds
+        PS> New-CMHadoopConnection -name "MyHadoopCluster" -nodename "node1" -hadoopcertfile .\knoxnode1cert.pem -knoxsecurecredentials [PSCredential]$knoxcreds
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CMDSMConnection{
+function New-CMHadoopConnection{
     param(
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
         [Parameter()] [string] $nodename, 
-        [Parameter()] [string] $dsmcertificate, 
-        [Parameter()] [string] $dsmcertfile, 
-        [Parameter()] [string] $dsmuser, 
-        [Parameter()] [string] $dsmpass, 
-        [Parameter()] [pscredential] $dsmsecurecredentials, 
-        [Parameter()] [string] $domain_id, 
+        [Parameter()] [int] $port, 
+        [Parameter()] [ValidateSet("https","http")] [string] $protocol = "https", 
+        [Parameter()] [string] $path, 
+        [Parameter()] [string] $hadoopcertificate, 
+        [Parameter()] [string] $hadoopcertfile, 
+        [Parameter()] [string] $knoxuser, 
+        [Parameter()] [string] $knoxpass,
+        [Parameter()] [ValidateSet("ddc","cte","data discovery")] [string[]] $products="data discovery",
+        [Parameter()] [pscredential] $knoxsecurecredentials, 
+        [Parameter()] [string] $topology = "default", 
         [Parameter()] [string] $description, 
         [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an DSM Connection in CM"
+    Write-Debug "Creating an Hadoop Connection in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    if (!$dsmcertificate -and !$dsmcertfile) { return "Missing DSM Certificate. Please try again."}
-    if ((!$dsmuser -or !$dsmpass) -and !$dsmsecurecredentials) { return "Missing DSM Credentials. Please try again."}
+    if (($protocol -eq "https") -and (!$hadoopcertificate -and !$hadoopcertfile)) { return "Missing Hadoop Node Certificate. Please try again."}
+    if ((!$knoxuser -or !$knoxpass) -and !$knoxsecurecredentials) { return "Missing Hadoop Credentials. Please try again."}
 
     # Mandatory Parameters
     $body = [ordered] @{
         "name"      = $name
-        "products"  = @( "cckm" )
+        "products"  = @( $products )
+        "service"   = "hadoop-knox"
         "nodes"     = @()
     }
     
-    if($dsmsecurecredentials){
-        Write-Debug "What is my credential user? $($dsmsecurecredentials.username)" 
-        Write-debug "What is my credential password? $($dsmsecurecredentials.password | ConvertFrom-SecureString)"
-        $body.add('username', $dsmsecurecredentials.username)
-        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($dsmsecurecredentials.password)))
+    if($knoxsecurecredentials){
+        Write-Debug "What is my credential user? $($knoxsecurecredentials.username)" 
+        Write-debug "What is my credential password? $($knoxsecurecredentials.password | ConvertFrom-SecureString)"
+        $body.add('username', $knoxsecurecredentials.username)
+        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($knoxsecurecredentials.password)))
     }else{
-        if($dsmpass){ $body.add('password', $dsmpass)}
-        if($dsmuser){ $body.add('username', $dsmuser)}
+        if($knoxpass){ $body.add('password', $knoxpass)}
+        if($knoxuser){ $body.add('username', $knoxuser)}
     }
 
     #Build Node dictionary object
     $node = [ordered] @{}
-    if($dsmcertfile){ $dsmcertificate = (Get-Content $dsmcertfile -raw) }
         $node.hostname = $nodename
-        $node.server_certificate = $dsmcertificate
+        $node.port = $port
+        $node.protocol = $protocol
+        if($hadoopcertfile){ $hadoopcertificate = (Get-Content $hadoopcertfile -raw) }
+            if($hadoopcertificate){ $node.server_certificate = $hadoopcertificate }
+        if($path){ $node.path = $path }
         $body.nodes += $node
-    
+
+    #Optional Parameters        
+    if($topology) { $body.add('topology', $topology)}
     if($description) { $body.add('description', $description)}
     if($metadata){
         $body.add('meta',@{})
@@ -390,30 +417,30 @@ function New-CMDSMConnection{
 }    
 
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}"
-#"#/v1/connectionmgmt/services/dsm/connections/{id} - get"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id} - get"
 
 <#
     .SYNOPSIS
-        Get full details on a CipherTrust Manager DSM Connection
+        Get full details on a CipherTrust Manager Hadoop Connection
     .DESCRIPTION
-        Retriving the full list of DSM Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of Hadoop Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-        The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the Hadoop connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Get-CMDSMConnection -name "My DSM Connection"
+        PS> Get-CMHadoopConnection -name "My Hadoop Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Get-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Get-CMHadoopConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Get-CMDSMConnection{
+function Get-CMHadoopConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -425,14 +452,14 @@ function Get-CMDSMConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Getting details on DSM Connection"
+    Write-Debug "Getting details on Hadoop Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        $id = (Find-CMDSMConnections -name $name).resources[0].id 
+        $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -465,42 +492,50 @@ function Get-CMDSMConnection{
     return $response
 }    
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}"
-#"#/v1/connectionmgmt/services/dsm/connections/{id} - patch"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id} - patch"
 
 
 <#
     .SYNOPSIS
-        Update an existing a new CipherTrust Manager DSM Connection. This is ONLY used to update the DSM Credentials. Use "Update-CMDSMConnectionNode -id {id} -nodeid {node_id}" to update node information.
+        Update an existing a new CipherTrust Manager Hadoop Connection. This is ONLY used to update the Hadoop Credentials. Use "Update-CMHadoopConnectionNode -id {id} -nodeid {node_id}" to update node information.
     .DESCRIPTION
         Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-        Name of the existing CipherTrust Manager DSM connection.
+        Name of the existing CipherTrust Manager Hadoop connection.
     .PARAMETER id
-        CipherTrust Manager "id" value of the existing DSM connection.
-    .PARAMETER dsmuser
-        Username for accessing DSM server. 
-    .PARAMETER dsmpass
-        Password of DSM server
-    .PARAMETER dsmsecurecredentials
-        Supply a PSCredential object with the DSM username and password
-    .PARAMETER domain_id
-        (Optional) If DSM user is restricted to a domain, provide domain id.
+        CipherTrust Manager "id" value of the existing Hadoop connection.
+    .PARAMETER knoxuser
+        The Hadoop Knox username. 
+    .PARAMETER knoxpass
+        The Hadoop Knox passsword.
+    .PARAMETER knoxsecurecredentials
+        Supply a PSCredential object with the Knox username and password
+    .PARAMETER topology
+        (Optional) Topology deployment of the Knox gateway.
+    .PARAMETER products
+        (Optional) Array of the CipherTrust products associated with the connection. Valid values are:
+            "ddc" for:
+                GCP
+                Hadoop connections
+            "cte" for:
+                Hadoop connections
+                SMB
+                OIDC
+                LDAP connections
+            "data discovery" for Hadoop connections. - This is the default selection.
     .PARAMETER description
         (Optional) Description of the connection.
     .PARAMETER metadata
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
-        Existing meta data can be changed but no keys can be deleted.
         e.g. -metadata "red:stop,green:go,blue:ocean"
-
-        For example: If metadata exists {"red":"stop"} it can be changed to {"red":"fire"), but it cannot be removed.
     .EXAMPLE
-        PS> Update-CMDSMConnection -name MyDSMConnection -dsmuser <newuser> -dsmpass <newpass>
+        PS> Update-CMHadoopConnection -name MyHadoopConnection -knoxuser <newuser> -knoxpass <newpass>
     .EXAMPLE
-        PS> Update-CMDSMConnection -name MyDSMConnection -dsmsecurecredentials $mycreds
+        PS> Update-CMHadoopConnection -name MyHadoopConnection -knoxsecurecredentials $mycreds
     .EXAMPLE
-        PS> Update-CMDSMConnections -name MyDSMConnection -metadata "red:stop,green:go,blue:ocean"
+        PS> Update-CMHadoopConnections -name MyHadoopConnection -metadata "red:stop,green:go,blue:ocean"
         This will update the metadata of the connection to include the key pairs shown.
 
         Resulting in:
@@ -514,7 +549,7 @@ function Get-CMDSMConnection{
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Update-CMDSMConnection{
+function Update-CMHadoopConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -522,42 +557,45 @@ function Update-CMDSMConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter()] [string] $dsmuser, 
-        [Parameter()] [string] $dsmpass, 
-        [Parameter()] [pscredential] $dsmsecurecredentials, 
-        [Parameter()] [string] $domain_id, 
+        [Parameter()] [string] $knoxuser, 
+        [Parameter()] [string] $knoxpass,
+        [Parameter()] [ValidateSet("ddc","cte","data discovery")] [string[]] $products,
+        [Parameter()] [pscredential] $knoxsecurecredentials, 
+        [Parameter()] [string] $topology = "default", 
         [Parameter()] [string] $description, 
         [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Updating details on DSM Connection"
+    Write-Debug "Updating details on Hadoop Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        $id = (Find-CMDSMConnections -name $name).resources[0].id 
+        $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
     }
     
-    # Mandatory Parameters
+    # Optional Parameters
     $body = [ordered] @{}
     
-    if($dsmsecurecredentials){
-        Write-Debug "What is my credential user? $($dsmsecurecredentials.username)" 
-        Write-debug "What is my credential password? $($dsmsecurecredentials.password | ConvertFrom-SecureString)"
-        $body.add('username', $dsmsecurecredentials.username)
-        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($dsmsecurecredentials.password)))
+    if($knoxsecurecredentials){
+        Write-Debug "What is my credential user? $($knoxsecurecredentials.username)" 
+        Write-debug "What is my credential password? $($knoxsecurecredentials.password | ConvertFrom-SecureString)"
+        $body.add('username', $knoxsecurecredentials.username)
+        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($knoxsecurecredentials.password)))
     }else{
-        if($dsmpass){ $body.add('password', $dsmpass)}
-        if($dsmuser){ $body.add('username', $dsmuser)}
+        if($knoxpass){ $body.add('password', $knoxpass)}
+        if($knoxuser){ $body.add('username', $knoxuser)}
     }
-    if($description){ $body.add('description', $description)}
+
+    if($topology) { $body.add('topology', $topology)}
+    if($description) { $body.add('description', $description)}
     if($metadata){
         $body.add('meta',@{})
         $meta_input = $metadata.split(",")
@@ -597,32 +635,32 @@ function Update-CMDSMConnection{
 }    
 
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}"
-#"#/v1/connectionmgmt/services/dsm/connections/{id} - delete"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id} - delete"
 
 <#
     .SYNOPSIS
-        Delete a CipherTrust Manager DSM Connection
+        Delete a CipherTrust Manager Hadoop Connection
     .DESCRIPTION
-        Delete a CipherTrust Manager DSM Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager Hadoop Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-        The complete name of the DSM connection. This parameter is case-sensitive.
+        The complete name of the Hadoop connection. This parameter is case-sensitive.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnections cmdlet to find the appropriate id value.
     .PARAMETER force
         Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-        PS> Remove-CMDSMConnection -name "My DSM Connection"
+        PS> Remove-CMHadoopConnection -name "My Hadoop Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Remove-CMHadoopConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Remove-CMDSMConnection{
+function Remove-CMHadoopConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -636,14 +674,14 @@ function Remove-CMDSMConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Preparing to remove DSM Connection"
+    Write-Debug "Preparing to remove Hadoop Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        $id = (Find-CMDSMConnections -name $name).resources[0].id 
+        $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -687,23 +725,23 @@ function Remove-CMDSMConnection{
     return "Connection Deleted."
 }    
     
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}"
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/test - post"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/test - post"
 
 <#
     .SYNOPSIS
         Test existing connection.
     .DESCRIPTION
-        Tests that an existing connection with the given name, ID, or URI reaches the DSM Cluster. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
+        Tests that an existing connection with the given name, ID, or URI reaches the Hadoop Cluster. If no connection parameters are provided in request, the existing parameters will be used. This does not modify a persistent connection.
     .PARAMETER name
-        Name of the existing CipherTrust Manager DSM connection.
+        Name of the existing CipherTrust Manager Hadoop connection.
     .PARAMETER id
-        CipherTrust Manager "id" value of the existing DSM connection.
+        CipherTrust Manager "id" value of the existing Hadoop connection.
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMDSMConnection{
+function Test-CMHadoopConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -715,14 +753,14 @@ function Test-CMDSMConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Testing DSM Connection"
+    Write-Debug "Testing Hadoop Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
-        $id = (Find-CMDSMConnections -name $name).resources[0].id 
+        $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{
         return "Missing Connection Identifier."
@@ -756,73 +794,77 @@ function Test-CMDSMConnection{
 }    
 
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connection-test - post"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connection-test - post"
 
 <#
     .SYNOPSIS
         Test connection parameters for a non-existent connection. 
     .DESCRIPTION
-        Tests that the connection parameters can be used to reach the DSM account. This does not create a persistent connection.
+        Tests that the connection parameters can be used to reach the Hadoop Cluster. This does not create a persistent connection.
     .PARAMETER nodename
-        Hostname of the DSM server in the DSM Cluster being tested.
-    .PARAMETER dsmcertificate
-        Enter the PEM-formatted certificate text for the DSM being connected to.
+        Hostname of the Hadoop Node in the cluster being tested.
+    .PARAMETER hadoopcertificate
+        Enter the PEM-formatted certificate text for the Hadoop being connected to.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
-    .PARAMETER dsmcertfile
-        Specify a filename for the DSM certificate.
-    .PARAMETER dsmuser
-        Username for accessing DSM server. 
-    .PARAMETER dsmpass
-        Password of DSM server
-    .PARAMETER dsmsecurecredentials
-        Supply a PSCredential object with the DSM username and password
-    .PARAMETER domain_id
-        (Optional) If DSM user is restricted to a domain, provide domain id.
+    .PARAMETER hadoopcertfile
+        Specify a filename for the Hadoop certificate.
+    .PARAMETER knoxuser
+        Username for accessing Knox server. 
+    .PARAMETER knoxpass
+        Password of Knox server
+    .PARAMETER knoxsecurecredentials
+        Supply a PSCredential object with the Knox username and password
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMDSMConnParameters{
+function Test-CMHadoopConnParameters{
     param(
         [Parameter()] [string] $nodename, 
-        [Parameter()] [string] $dsmcertificate, 
-        [Parameter()] [string] $dsmcertfile, 
-        [Parameter()] [string] $dsmuser, 
-        [Parameter()] [string] $dsmpass, 
-        [Parameter()] [pscredential] $dsmsecurecredentials, 
-        [Parameter()] [string] $domain_id 
+        [Parameter()] [string] $hadoopcertificate, 
+        [Parameter()] [string] $hadoopcertfile, 
+        [Parameter()] [string] $knoxuser, 
+        [Parameter()] [string] $knoxpass, 
+        [Parameter()] [pscredential] $knoxsecurecredentials
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Testing DSM Connection details."
+    Write-Debug "Testing Hadoop Connection details."
     $endpoint = $CM_Session.REST_URL + $target_uri_test
     Write-Debug "Endpoint: $($endpoint)"
 
-    if (!$dsmcertificate -and !$dsmcertfile) { return "Missing DSM Certificate. Please try again."}
-    if ((!$dsmuser -or !$dsmpass) -and !$dsmsecurecredentials) { return "Missing DSM Credentials. Please try again."}
+    if (($protocol -eq "https") -and (!$hadoopcertificate -and !$hadoopcertfile)) { return "Missing Hadoop Node Certificate. Please try again."}
+    if ((!$knoxuser -or !$knoxpass) -and !$knoxsecurecredentials) { return "Missing Hadoop Credentials. Please try again."}
 
     # Mandatory Parameters
     $body = [ordered] @{
         "nodes"     = @()
+        "service"   = "hadoop-knox"
     }
     
-    if($dsmsecurecredentials){
-        Write-Debug "What is my credential user? $($dsmsecurecredentials.username)" 
-        Write-debug "What is my credential password? $($dsmsecurecredentials.password | ConvertFrom-SecureString)"
-        $body.add('username', $dsmsecurecredentials.username)
-        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($dsmsecurecredentials.password)))
+    if($knoxsecurecredentials){
+        Write-Debug "What is my credential user? $($knoxsecurecredentials.username)" 
+        Write-debug "What is my credential password? $($knoxsecurecredentials.password | ConvertFrom-SecureString)"
+        $body.add('username', $knoxsecurecredentials.username)
+        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($knoxsecurecredentials.password)))
     }else{
-        if($dsmpass){ $body.add('password', $dsmpass)}
-        if($dsmuser){ $body.add('username', $dsmuser)}
+        if($knoxpass){ $body.add('password', $knoxpass)}
+        if($knoxuser){ $body.add('username', $knoxuser)}
     }
 
     #Build Node dictionary object
     $node = [ordered] @{}
-    if($dsmcertfile){ $dsmcertificate = (Get-Content $dsmcertfile -raw) }
         $node.hostname = $nodename
-        $node.server_certificate = $dsmcertificate
+        $node.port = $port
+        $node.protocol = $protocol
+        if($hadoopcertfile){ $hadoopcertificate = (Get-Content $hadoopcertfile -raw) }
+            if($hadoopcertificate){ $node.server_certificate = $hadoopcertificate }
+        if($path){ $node.path = $path }
         $body.nodes += $node
+
+    #Optional Parameters        
+    if($topology) { $body.add('topology', $topology)}
         
     $jsonBody = $body | ConvertTo-JSON 
 
@@ -854,30 +896,30 @@ function Test-CMDSMConnParameters{
     return $response
 }  
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes"
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes - get"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes - get"
 
 <#
     .SYNOPSIS
-        Get list of nodes attached to a CipherTrust Manager DSM Connection
+        Get list of nodes attached to a CipherTrust Manager Hadoop Connection
     .DESCRIPTION
-        Get list of nodes attached to a CipherTrust Manager DSM Connection
+        Get list of nodes attached to a CipherTrust Manager Hadoop Connection
     .PARAMETER name
-        The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the Hadoop connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Find-CMDSMConnectionNodes -name "My DSM Connection"
+        PS> Find-CMHadoopConnectionNodes -name "My Hadoop Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Find-CMDSMConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Find-CMHadoopConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-    function Find-CMDSMConnectionNodes{
+    function Find-CMHadoopConnectionNodes{
         param(
             [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -889,14 +931,14 @@ function Test-CMDSMConnParameters{
     
         Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-        Write-Debug "Getting details on DSM Connection Nodes"
+        Write-Debug "Getting details on Hadoop Connection Nodes"
         $endpoint = $CM_Session.REST_URL + $target_uri
         Write-Debug "Endpoint: $($endpoint)"
     
         if($id){
             $endpoint += "/" + $id + "/nodes"
         }elseif($name){ 
-            $id = (Find-CMDSMConnections -name $name).resources[0].id 
+            $id = (Find-CMHadoopConnections -name $name).resources[0].id 
             $endpoint += "/" + $id + "/nodes"
         }else{
             return "Missing Connection Identifier."
@@ -929,37 +971,43 @@ function Test-CMDSMConnParameters{
         return $response
 }    
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes"
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes - post"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes - post"
 
 <#
     .SYNOPSIS
-        Add a nodes to a CipherTrust Manager DSM Connection
+        Add a nodes to a CipherTrust Manager Hadoop Connection
     .DESCRIPTION
-        Add a nodes to a CipherTrust Manager DSM Connection
+        Add a nodes to a CipherTrust Manager Hadoop Connection
     .PARAMETER name
-        The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the Hadoop connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnections cmdlet to find the appropriate id value.
     .PARAMETER nodename
-        Hostname of the DSM server in the DSM Cluster being added.
-    .PARAMETER dsmcertificate
-        Enter the PEM-formatted certificate text for the DSM being connected to.
+        Hostname of the Hadoop node in the cluster being added.
+    .PARAMETER hadoopcertificate
+        Enter the PEM-formatted certificate text for the Hadoop being connected to.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
-    .PARAMETER dsmcertfile
-        Specify a filename for the DSM certificate.
+    .PARAMETER hadoopcertfile
+        Specify a filename for the Hadoop certificate.
+    .PARAMETER port
+        (Optional) Port for Hadoop Server. Possible values 1-65535..
+    .PARAMETER protocol
+        (Optional) http or https protocol to be used for communication with the Hadoop node (https required for hadoop-knox)
+    .PARAMETER path
+        (Optional) path for Hadoop Server
     .EXAMPLE
-        PS> Add-CMDSMConnectionNode -name "My DSM Connection" -nodename "dsm2.mydomain.local" -dsmcertificate <PEM-formatted-certificate-text>
+        PS> Add-CMHadoopConnectionNode -name "My Hadoop Connection" -nodename "node2" -hadoopcertificate <PEM-formatted-certificate-text>
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Add-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodename "dsm2.mydomain.local" -dsmcertfile .\dsm2_cert.pem
+        PS> Add-CMHadoopConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodename "node2" -hadoopcertfile .\hadoop2_cert.pem
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-    function Add-CMDSMConnectionNode{
+    function Add-CMHadoopConnectionNode{
         param(
             [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -968,39 +1016,47 @@ function Test-CMDSMConnParameters{
             ValueFromPipelineByPropertyName = $true)]
             [string] $id,
             [Parameter()] [string] $nodename, 
-            [Parameter()] [string] $dsmcertificate, 
-            [Parameter()] [string] $dsmcertfile
-    
+            [Parameter()] [int] $port, 
+            [Parameter()] [ValidateSet("https","http")] [string] $protocol = "https", 
+            [Parameter()] [string] $path, 
+            [Parameter()] [string] $hadoopcertificate, 
+            [Parameter()] [string] $hadoopcertfile
+        
         )
     
         Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-        Write-Debug "Adding new DSM Connection Node"
+        Write-Debug "Adding new Hadoop Connection Node"
         $endpoint = $CM_Session.REST_URL + $target_uri
         Write-Debug "Endpoint: $($endpoint)"
     
         if($id){
             $endpoint += "/" + $id + "/nodes"
         }elseif($name){ 
-            $id = (Find-CMDSMConnections -name $name).resources[0].id 
+            $id = (Find-CMHadoopConnections -name $name).resources[0].id 
             $endpoint += "/" + $id + "/nodes"
         }else{
             return "Missing Connection Identifier."
         }
 
         Write-Debug "Endpoint w Target: $($endpoint)"
+        
+        if(($protocol -eq "https") -and (!$hadoopcertificate -and !$hadoopcertfile)){ return "Missing Node Certificate."}
+        if(!$nodename -or !$protocol -or !$port){ return "Missing Node Parameters."}
 
         # Mandatory Parameters
         $body = [ordered] @{}
-        
-        #Build Node dictionary object
-        if($dsmcertfile){ $dsmcertificate = (Get-Content $dsmcertfile -raw) }
-            $body.add('hostname',$nodename)
-            $body.add('server_certificate',$dsmcertificate)
 
+        # Add Node Details to body
+        if($nodename){ $body.add("hostname",$nodename) }
+        if($port){ $body.add("port", $port) }
+        if($protocol){ $body.add("protocol", $protocol) }
+        if($path){ $node.path = $path }
+        if($hadoopcertfile){ $hadoopcertificate = (Get-Content $hadoopcertfile -raw) }
+            if($hadoopcertificate){ $body.add("server_certificate", $hadoopcertificate) }
             
         $jsonBody = $body | ConvertTo-JSON 
-        # Optional Parameters Complete
+
         Write-Debug "JSON Body: $($jsonBody)"
 
         Try {
@@ -1024,36 +1080,36 @@ function Test-CMDSMConnParameters{
         }
         Write-Debug "Node added"
         Write-Debug "End: $($MyInvocation.MyCommand.Name)"
-    
+
         return $response
 }    
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes"
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes - get"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes - get"
 
 <#
     .SYNOPSIS
-        Get detail on an individual node of a CipherTrust Manager DSM Connection
+        Get detail on an individual node of a CipherTrust Manager Hadoop Connection
     .DESCRIPTION
-        Get detail on an individual node of a CipherTrust Manager DSM Connection
+        Get detail on an individual node of a CipherTrust Manager Hadoop Connection
     .PARAMETER name
-        The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the Hadoop connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnections cmdlet to find the appropriate id value.
     .PARAMETER nodeid
         The Node "id" value for the connection.
-        Use the Find-CMDSMConnectionNodes cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnectionNodes cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Get-CMDSMConnectionNode -name "My DSM Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab"
+        PS> Get-CMHadoopConnectionNode -name "My Hadoop Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Get-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" 
+        PS> Get-CMHadoopConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-    function Get-CMDSMConnectionNodes{
+    function Get-CMHadoopConnectionNodes{
         param(
             [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -1068,14 +1124,14 @@ function Test-CMDSMConnParameters{
     
         Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-        Write-Debug "Getting details on DSM Connection Node"
+        Write-Debug "Getting details on Hadoop Connection Node"
         $endpoint = $CM_Session.REST_URL + $target_uri
         Write-Debug "Endpoint: $($endpoint)"
     
         if($id){
             $endpoint += "/" + $id + "/nodes/" + $nodeid
         }elseif($name){ 
-            $id = (Find-CMDSMConnections -name $name).resources[0].id 
+            $id = (Find-CMHadoopConnections -name $name).resources[0].id 
             $endpoint += "/" + $id + "/nodes/" + $nodeid
         }else{
             return "Missing Connection Identifier."
@@ -1109,34 +1165,34 @@ function Test-CMDSMConnParameters{
 }    
 
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes/{nodeid}"
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes/{nodeid} - delete"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes/{nodeid}"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes/{nodeid} - delete"
 
 <#
     .SYNOPSIS
-        Delete a node from a CipherTrust Manager DSM Connection.
+        Delete a node from a CipherTrust Manager Hadoop Connection.
     .DESCRIPTION
-        Delete a node from a CipherTrust Manager DSM Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a node from a CipherTrust Manager Hadoop Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-        The complete name of the DSM connection. This parameter is case-sensitive.
+        The complete name of the Hadoop connection. This parameter is case-sensitive.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnections cmdlet to find the appropriate id value.
     .PARAMETER nodeid
-        Node ID of the node in the DSM Cluster being removed.
+        Node ID of the node in the Hadoop Cluster being removed.
     .PARAMETER force
         Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-        PS> Remove-CMDSMConnection -name "My DSM Connection"
+        PS> Remove-CMHadoopConnection -name "My Hadoop Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Remove-CMHadoopConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-    function Remove-CMDSMConnectionNode{
+    function Remove-CMHadoopConnectionNode{
         param(
             [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -1151,17 +1207,17 @@ function Test-CMDSMConnParameters{
     
         Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-        Write-Debug "Preparing to remove DSM Connection"
+        Write-Debug "Preparing to remove Hadoop Node"
         $endpoint = $CM_Session.REST_URL + $target_uri
         Write-Debug "Endpoint: $($endpoint)"
     
         if($id){
             $endpoint += "/" + $id + "/nodes/" + $nodeid      
         }elseif($name){ 
-            $id = (Find-CMDSMConnections -name $name).resources[0].id 
+            $id = (Find-CMHadoopConnections -name $name).resources[0].id 
             $endpoint += "/" + $id + "/nodes/" + $nodeid
         }else{
-            return "Missing Connection Identifier."
+            return "Missing Node Identifier."
         }
     
         Write-Debug "Endpoint w Target: $($endpoint)"
@@ -1196,42 +1252,50 @@ function Test-CMDSMConnParameters{
                 Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
             }
         }
-        Write-Debug "Connection deleted"
+        Write-Debug "Node deleted"
         Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     
-        return "Connection Deleted."
+        return "Node Deleted."
     }    
 
-#Connection Manager - DSM Connections
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes"
-#"#/v1/connectionmgmt/services/dsm/connections/{id}/nodes - post"
+#Connection Manager - Hadoop Connections
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes"
+#"#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes - post"
 
 <#
     .SYNOPSIS
-        Update an existing node of a CipherTrust Manager DSM Connection
+        Update an existing node of a CipherTrust Manager Hadoop Connection
     .DESCRIPTION
-        Update an existing node of a CipherTrust Manager DSM Connection
+        Update an existing node of a CipherTrust Manager Hadoop Connection
     .PARAMETER name
-        The complete name of the DSM connection. Do not use wildcards.
+        The complete name of the Hadoop connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMDSMConnections cmdlet to find the appropriate id value.
+        Use the Find-CMHadoopConnections cmdlet to find the appropriate id value.
     .PARAMETER nodeid
-        Node ID of the node in the DSM Cluster being updated.
-    .PARAMETER dsmcertificate
-        Enter the PEM-formatted certificate text for the DSM being connected to.
+        Node ID of the node in the Hadoop Cluster being updated.
+    .PARAMETER nodename
+        Hostname of the Hadoop node in the cluster being added.
+    .PARAMETER hadoopcertificate
+        Enter the PEM-formatted certificate text for the Hadoop being connected to.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
-    .PARAMETER dsmcertfile
-        Specify a filename for the DSM certificate.
+    .PARAMETER hadoopcertfile
+        Specify a filename for the Hadoop certificate.
+    .PARAMETER port
+        (Optional) Port for Hadoop Server. Possible values 1-65535..
+    .PARAMETER protocol
+        (Optional) http or https protocol to be used for communication with the Hadoop node (https required for hadoop-knox)
+    .PARAMETER path
+        (Optional) path for Hadoop Server
     .EXAMPLE
-        PS> Update-CMDSMConnectionNode -name "My DSM Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -dsmcertificate <PEM-formatted-certificate-text>
+        PS> Update-CMHadoopConnectionNode -name "My Hadoop Connection" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -hadoopcertificate <PEM-formatted-certificate-text>
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Update-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -dsmcertfile .\dsm2_cert.pem
+        PS> Update-CMHadoopConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -hadoopcertfile .\node2_cert.pem
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-    function Update-CMDSMConnectionNode{
+    function Update-CMHadoopConnectionNode{
         param(
             [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
@@ -1241,21 +1305,23 @@ function Test-CMDSMConnParameters{
             [string] $id,
             [Parameter()] [string] $nodeid, 
             [Parameter()] [string] $nodename, 
-            [Parameter()] [string] $dsmcertificate, 
-            [Parameter()] [string] $dsmcertfile
-    
+            [Parameter()] [int] $port, 
+            [Parameter()] [ValidateSet("https","http")] [string] $protocol = "https", 
+            [Parameter()] [string] $path, 
+            [Parameter()] [string] $hadoopcertificate, 
+            [Parameter()] [string] $hadoopcertfile
         )
     
         Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-        Write-Debug "Updating a DSM Connection Node"
+        Write-Debug "Updating a Hadoop Connection Node"
         $endpoint = $CM_Session.REST_URL + $target_uri
         Write-Debug "Endpoint: $($endpoint)"
     
         if($id){
             $endpoint += "/" + $id + "/nodes/" + $nodeid
         }elseif($name){ 
-            $id = (Find-CMDSMConnections -name $name).resources[0].id 
+            $id = (Find-CMHadoopConnections -name $name).resources[0].id 
             $endpoint += "/" + $id + "/nodes/" + $nodeid
         }else{
             return "Missing Connection Identifier."
@@ -1266,14 +1332,16 @@ function Test-CMDSMConnParameters{
         # Optional Parameters
         $body = [ordered] @{}
         
-        #Build Node dictionary object
-        if($dsmcertfile){ $dsmcertificate = (Get-Content $dsmcertfile -raw) }
-        if($nodename){ ($body.add('hostname',$nodename)) }
-        if($dsmcertificate){ $body.add('server_certificate',$dsmcertificate) }
-
+        #Node details
+        if($nodename){ $body.add("hostname",$nodename) }
+        if($port){ $body.add("port", $port) }
+        if($protocol){ $body.add("protocol", $protocol) }
+        if($path){ $node.path = $path }
+        if($hadoopcertfile){ $hadoopcertificate = (Get-Content $hadoopcertfile -raw) }
+            if($hadoopcertificate){ $body.add("server_certificate", $hadoopcertificate) }
             
         $jsonBody = $body | ConvertTo-JSON 
-        # Optional Parameters Complete
+
         Write-Debug "JSON Body: $($jsonBody)"
 
         Try {
@@ -1305,30 +1373,30 @@ function Test-CMDSMConnParameters{
 ####
 # Export Module Members
 ####
-#Connection Manager - DSM
-#/v1/connectionmgmt/services/dsm/connections"
+#Connection Manager - Hadoop
+#/v1/connectionmgmt/services/hadoop/connections"
 
-Export-ModuleMember -Function Find-CMDSMConnections #/v1/connectionmgmt/services/dsm/connections - get"
-Export-ModuleMember -Function New-CMDSMConnection #/v1/connectionmgmt/services/dsm/connections - post"
+Export-ModuleMember -Function Find-CMHadoopConnections #/v1/connectionmgmt/services/hadoop/connections - get"
+Export-ModuleMember -Function New-CMHadoopConnection #/v1/connectionmgmt/services/hadoop/connections - post"
 
-#Connection Manager - DSM
-#/v1/connectionmgmt/services/dsm/connections/{id}"
-Export-ModuleMember -Function Get-CMDSMConnection #/v1/connectionmgmt/services/dsm/connections/{id} - get"
-Export-ModuleMember -Function Update-CMDSMConnection #/v1/connectionmgmt/services/dsm/connections/{id} - patch"
-Export-ModuleMember -Function Remove-CMDSMConnection #/v1/connectionmgmt/services/dsm/connections/{id} - delete"
+#Connection Manager - Hadoop
+#/v1/connectionmgmt/services/hadoop/connections/{id}"
+Export-ModuleMember -Function Get-CMHadoopConnection #/v1/connectionmgmt/services/hadoop/connections/{id} - get"
+Export-ModuleMember -Function Update-CMHadoopConnection #/v1/connectionmgmt/services/hadoop/connections/{id} - patch"
+Export-ModuleMember -Function Remove-CMHadoopConnection #/v1/connectionmgmt/services/hadoop/connections/{id} - delete"
 
-#Connection Manager - DSM
-#/v1/connectionmgmt/services/dsm/connections/{id}/test"
-Export-ModuleMember -Function Test-CMDSMConnection #/v1/connectionmgmt/services/dsm/connections/{id}/test - post"
+#Connection Manager - Hadoop
+#/v1/connectionmgmt/services/hadoop/connections/{id}/test"
+Export-ModuleMember -Function Test-CMHadoopConnection #/v1/connectionmgmt/services/hadoop/connections/{id}/test - post"
 
-#Connection Manager - DSM
-#/v1/connectionmgmt/services/dsm/connection-test"
-Export-ModuleMember -Function Test-CMDSMConnParameters #/v1/connectionmgmt/services/dsm/connection-test - post"
+#Connection Manager - Hadoop
+#/v1/connectionmgmt/services/hadoop/connection-test"
+Export-ModuleMember -Function Test-CMHadoopConnParameters #/v1/connectionmgmt/services/hadoop/connection-test - post"
 
-#Connection Manager - DSM
-#/v1/connectionmgmt/services/dsm/connections/{id}/nodes"
-Export-ModuleMember -Function Find-CMDSMConnectionNodes #/v1/connectionmgmt/services/dsm/connections/{id}/nodes - get"
-Export-ModuleMember -Function Add-CMDSMConnectionNode #/v1/connectionmgmt/services/dsm/connections/{id}/nodes - post"
-Export-ModuleMember -Function Get-CMDSMConnectionNode #/v1/connectionmgmt/services/dsm/connections/{id}/nodes/{node_id} - get"
-Export-ModuleMember -Function Update-CMDSMConnectionNode #/v1/connectionmgmt/services/dsm/connections/{id}/nodes/{node_id} - patch"
-Export-ModuleMember -Function Remove-CMDSMConnectionNode #/v1/connectionmgmt/services/dsm/connections/{id}/nodes/{node_id} - delete"
+#Connection Manager - Hadoop
+#/v1/connectionmgmt/services/hadoop/connections/{id}/nodes"
+Export-ModuleMember -Function Find-CMHadoopConnectionNodes #/v1/connectionmgmt/services/hadoop/connections/{id}/nodes - get"
+Export-ModuleMember -Function Add-CMHadoopConnectionNode #/v1/connectionmgmt/services/hadoop/connections/{id}/nodes - post"
+Export-ModuleMember -Function Get-CMHadoopConnectionNode #/v1/connectionmgmt/services/hadoop/connections/{id}/nodes/{node_id} - get"
+Export-ModuleMember -Function Update-CMHadoopConnectionNode #/v1/connectionmgmt/services/hadoop/connections/{id}/nodes/{node_id} - patch"
+Export-ModuleMember -Function Remove-CMHadoopConnectionNode #/v1/connectionmgmt/services/hadoop/connections/{id}/nodes/{node_id} - delete"
