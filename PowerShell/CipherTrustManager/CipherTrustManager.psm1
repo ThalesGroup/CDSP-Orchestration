@@ -308,6 +308,7 @@ Export-ModuleMember -Function Get-CMSelfDomains
 Export-ModuleMember -Function Set-CMAuthKeyRotate
 Export-ModuleMember -Function Get-CMAuthKey
 Export-ModuleMember -Function New-CMAkeylessToken
+Export-ModuleMember -Function Clear-CMRefreshTokens
 #Alarms
 Export-ModuleMember -Function Find-CMAlarms
 Export-ModuleMember -Function Clear-CMAlarm

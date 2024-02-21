@@ -159,6 +159,7 @@
         "Get-CMToken",
         "Remove-CMToken",
         "Revoke-CMToken",
+        "Clear-CMRefreshTokens",
         "Get-CMSelfDomains",
         "Set-CMAuthKeyRotate",
         "Get-CMAuthKey",

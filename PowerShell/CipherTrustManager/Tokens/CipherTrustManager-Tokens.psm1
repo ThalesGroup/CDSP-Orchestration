@@ -27,8 +27,8 @@ public enum CM_TokensGrantTypes {
 $target_uri = "/auth/tokens"
 $target_revoke_uri = "/auth/revoke"
 $target_selfdomain_uri = "/auth/self/domains"
-$target_authkey_uri = "/auth/auth-key"
-$target_authkey_rotation_uri = "/auth/rotate-auth-key"
+#$target_authkey_uri = "/auth/auth-key"
+#$target_authkey_rotation_uri = "/auth/rotate-auth-key"
 $target_akeyless_uri = "/auth/akeyless/tokens"
 ####
 
@@ -85,18 +85,20 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         Filter by the expiry state of the token. Defaults to 'false' which will hide expired tokens.
     .PARAMETER revoked 
         Filter by the token revocation flag. Defaults to 'false' which will hide revoked tokens.
+    .PARAMETER refreshed_before
+        Filters those to those refrshed at or before the specified timestamp. Timestamp should be in RFC3339Nano format e.g. 1985-04-12T23:20:50.52Z, or a relative timestamp where valid units are 'Y', 'M', 'D' representing years, months, days respectively. Negative values are permitted. e.g. "-1Y-2M-5D".
     .PARAMETER skip
         The index of the first resource to return. Equivalent to `offset` in SQL.
     .PARAMETER limit
         The max number of resources to return. Equivalent to `limit` in SQL.
     .EXAMPLE
-        PS> Find-CMSyslogs 
+        PS> Find-CMTokenss 
 
-        Returns a list of all syslog connections 
+        Returns a list of all CM Login Tokens
     .EXAMPLE
-        PS> Find-CMSyslogs -transport "tls"
+        PS> Find-CMTokens -user_id 'local|7fd1b8c9-dda6-46ea-a016-094e2f518356' -refreshed_before '-30D'
 
-        Returns a list of all syslog connections that are using TLS for transport 
+        Returns a list of all CM Tokens owned by user (local|7fd1b8c9-dda6-46ea-a016-094e2f518356) and that were created before 30 Days ago.
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
@@ -117,6 +119,9 @@ function Find-CMTokens {
         [bool] $revoked, 
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
+        [string] $refreshed_before,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true )]
         [int] $skip,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
@@ -127,21 +132,74 @@ function Find-CMTokens {
     Write-Debug "Getting a Authentication Tokens in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
-    
-    # Mandatory Parameters
-    $body = @{
-        'name' = $name
-    }    
-    # Optional Parameters
-    if ($user_id) { $body.add('user_id', $user_id) }
-    if ($labels) { $body.add('labels', $labels) }
-    if ($expired) { $body.add('expired', $true) }
-    if ($revoked) { $body.add('revoked', $true) }
-    if ($skip) { $body.add('skip', $skip) }
-    if ($limit) { $body.add('limit', $limit) }
 
-    $jsonBody = $body | ConvertTo-Json -Depth 5
-    Write-Debug "JSON Body: $($jsonBody)"
+    #Set query
+    $firstset = $false
+    if ($user_id) {
+        $endpoint += "?user_id="
+        $firstset = $true
+        $endpoint += $user_id
+    }
+    if ($labels) {
+        if ($firstset) {
+            $endpoint += "&labels="
+        }
+        else {
+            $endpoint += "?labels="
+            $firstset = $true
+        }
+        $endpoint += $labels
+    }
+    if ($expired) {
+        if ($firstset) {
+            $endpoint += "&expired="
+        }
+        else {
+            $endpoint += "?expired="
+            $firstset = $true
+        }
+        $endpoint += $expired
+    }
+    if ($revoked) {
+        if ($firstset) {
+            $endpoint += "&revoked="
+        }
+        else {
+            $endpoint += "?revoked="
+            $firstset = $true
+        }
+        $endpoint += $revoked
+    }
+    if ($refreshed_before) {
+        if ($firstset) {
+            $endpoint += "&refreshed_before="
+        }
+        else {
+            $endpoint += "?refreshed_before="
+            $firstset = $true
+        }
+        $endpoint += $refreshed_before
+    }
+    if ($skip) {
+        if ($firstset) {
+            $endpoint += "&skip="
+        }
+        else {
+            $endpoint += "?skip="
+            $firstset = $true
+        }
+        $endpoint += $skip
+    }
+    if ($limit) {
+        if ($firstset) {
+            $endpoint += "&limit="
+        }
+        else {
+            $endpoint += "?limit="
+            $firstset = $true
+        }
+        $endpoint += $limit
+    }
 
     Write-Debug "Endpoint w Query: $($endpoint)"
     
@@ -165,7 +223,7 @@ function Find-CMTokens {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "List of users created"
+    Write-Debug "List of Refresh Tokens for specified user"
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
 }    
@@ -500,11 +558,7 @@ function Remove-CMToken {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -896,6 +950,100 @@ function New-CMAkeylessToken {
     return $response
 }
 
+<#
+    .SYNOPSIS
+        Delete all refresh_tokens associated with a particular user. Use CAUTION.
+    .DESCRIPTION
+        Sample script to demonstrate script based deletion\purge of refresh_tokens in currently authenticated domain. Use CAUTION.
+    .PARAMETER username
+        CM username whose refresh_tokens needs to be purged.
+    .PARAMETER user_id
+        CM user_id whose refresh_tokens needs to be purged.
+    .PARAMETER refreshed_before
+        Filters those to those refrshed at or before the specified timestamp. Timestamp should be in RFC3339Nano format e.g. 1985-04-12T23:20:50.52Z, or a relative timestamp where valid units are 'Y', 'M', 'D' representing years, months, days respectively. Negative values are permitted. e.g. "-1Y-2M-5D".
+    .PARAMETER limit
+        The number of token that are to be deleted. By by default the refresh tokens will be deleted 10 at a time.
+    .PARAMETER all
+        If the -all switch is specified all tokens will be deleted.
+    .PARAMETER force
+        No confirmations. USE EXTREME CAUTION.
+    .EXAMPLE
+        PS> Clear-RefreshTokens -username 'admin'
+#>
+function Clear-CMRefreshTokens {
+    param (
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
+            [string]$username,
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
+            [string]$user_id = $NULL,
+        [Parameter()] [string] $refreshed_before = $NULL,
+        [Parameter()] [int] $limit = $NULL,
+        [Parameter()] [switch] $all,
+        [Parameter()] [switch] $force
+    )
+
+    Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
+        
+    Write-Debug "Deleting CM Refresh Tokens."
+    $endpoint = $CM_Session.REST_URL + $target_uri
+    Write-Debug "Endpoint: $($endpoint)"
+        
+ 
+    if(!$force){
+        if(($null -eq $user_id) -and !$username){
+            $clearall = Read-Host "No User specified. Do you wish to clear tokens for ALL USERS? (y/n)"
+            if($clearall -eq "n"){
+                return "No user specified. Please try again."
+            }
+        }elseif($username){
+            $user_id = (Find-CMusers -name $username).resources[0].user_id
+        }
+    }else{
+        Write-Host "No usercheck being performed. All tokens being deleted for any or all users specified."
+    }
+
+    $tokenlist = Find-CMTokens -user_id $user_id -refreshed_before $refreshed_before -limit $limit
+
+    if($all){
+        $tokenlist = Find-CMTokens -user_id $user_id -refreshed_before $refreshed_before -limit $($tokenlist.total)
+    }
+
+    $tokenlist.resources = $tokenlist.resources | Sort-Object -Property CreatedAt
+
+    $tokencount=0
+    foreach($token in $tokenlist.resources){
+        #Change endpoint
+        $tokenendpoint = $endpoint + "/" + $token.id
+        Write-Debug "Token ID: $($token.id) Created at: $($token.createdAt)"
+        $tokencount++
+        try{
+            Test-CMJWT #Make sure we have an up-to-date jwt
+            $headers = @{
+                Authorization = "Bearer $($CM_Session.AuthToken)"
+            }
+            Write-Debug $tokenendpoint
+            Write-Debug "Headers: "
+            Write-HashtableArray $($headers)      
+            $response = Invoke-RestMethod  -Method 'DELETE' -Uri $tokenendpoint -Headers $headers -ContentType 'application/json'
+            Write-Debug "Response: $($response)"  
+        }catch{
+            $StatusCode = $_.Exception.Response.StatusCode
+            if ([int]$StatusCode -EQ 0) {
+                Write-Error "Error $([int]$StatusCode): Not connected to a CipherTrust Manager. Run 'Connect-CipherTrustManager' first" -ErrorAction Stop
+                return
+            }elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+                Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
+                return
+            }else{
+                Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
+            }
+        }
+    }
+
+    $newtokenlist = Find-CMTokens -user_id $user_id -limit $limit
+    return "$($tokencount) Tokens Removed. $($newtokenlist.total - 1) Remaining."
+}
+
 ####
 # Export Module Members
 ####
@@ -907,6 +1055,7 @@ Export-ModuleMember -Function New-CMToken           #Create (post)
 #"#/v1/auth/tokens/{id}"
 Export-ModuleMember -Function Get-CMToken           #Get (get)
 Export-ModuleMember -Function Remove-CMToken        #Delete (delete)
+Export-ModuleMember -Function Clear-CMRefreshTokens        #Delete (delete)
 
 #"#/v1/auth/revoke"
 Export-ModuleMember -Function Revoke-CMToken        #Delete (delete)
