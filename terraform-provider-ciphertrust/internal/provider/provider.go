@@ -4,53 +4,15 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"regexp"
 
-	// "crypto/tls"
-	// "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	// "io/ioutil"
-	// "net/http"
-	// "os"
-	// "path/filepath"
-	// "strconv"
-	// "strings"
-	// "time"
-
-	// "github.com/gemalto/requester"
 	"github.com/anugram/ciphertrust-client-go"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-)
-
-const (
-	apiAndVersion       = "api/v1/"
-	configFilename      = "~/.ciphertrust/config"
-	waitForStackMinutes = 15
-)
-
-type CipherTrustProviderModel struct {
-	Username             types.String `tfsdk:"username"`
-	Password             types.String `tfsdk:"password"`
-	Domain               types.String `tfsdk:"domain"`
-	AuthDomain           types.String `tfsdk:"auth_domain"`
-	InsecureSkipVerify   types.Bool   `tfsdk:"no_ssl_verify"`
-	Log                  hclog.Logger
-	RestOperationTimeout types.Int64  `tfsdk:"rest_api_timeout"`
-	Address              types.String `tfsdk:"address"`
-}
-
-const (
-	providerDescWithDefault         = "%s can be set in the provider block or in ~/.ciphertrust/config. Default is %s."
-	providerDescNoDefaultWithEnvVar = "%s can be set in the provider block, via the %s environment variable or in ~/.ciphertrust/config"
-	defaultRestAPITimeout           = "60"
-	//providerDescWithDefaultAndEnvVar = "%s can be set in the provider block, via the %s environment variable or in ~/.ciphertrust/config. Default is %s."
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -75,6 +37,23 @@ type ciphertrustProvider struct {
 	version string
 }
 
+type ciphertrustProviderModel struct {
+	Username             types.String `tfsdk:"username"`
+	Password             types.String `tfsdk:"password"`
+	Domain               types.String `tfsdk:"domain"`
+	AuthDomain           types.String `tfsdk:"auth_domain"`
+	InsecureSkipVerify   types.Bool   `tfsdk:"no_ssl_verify"`
+	RestOperationTimeout types.Int64  `tfsdk:"rest_api_timeout"`
+	Address              types.String `tfsdk:"address"`
+}
+
+const (
+	providerDescWithDefault         = "%s can be set in the provider block or in ~/.ciphertrust/config. Default is %s."
+	providerDescNoDefaultWithEnvVar = "%s can be set in the provider block, via the %s environment variable or in ~/.ciphertrust/config"
+	defaultRestAPITimeout           = "60"
+	//providerDescWithDefaultAndEnvVar = "%s can be set in the provider block, via the %s environment variable or in ~/.ciphertrust/config. Default is %s."
+)
+
 // Metadata returns the provider type name.
 func (p *ciphertrustProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "ciphertrust"
@@ -88,21 +67,13 @@ func (p *ciphertrustProvider) Schema(_ context.Context, _ provider.SchemaRequest
 			"address": schema.StringAttribute{
 				Optional:    true,
 				Description: "HTTPS URL of the CipherTrust instance. An address need not be provided when creating a cluster of CipherTrust instances. " + fmt.Sprintf(providerDescNoDefaultWithEnvVar, "address", "CM_ADDRESS"),
-				Validators: []validator.String{
-					// These are example validators from terraform-plugin-framework-validators
-					stringvalidator.LengthBetween(10, 256),
-					stringvalidator.RegexMatches(
-						regexp.MustCompile(`^[a-z0-9]+$`),
-						"must contain only lowercase alphanumeric characters",
-					),
-				},
 			},
 			"username": schema.StringAttribute{
-				Optional:    false,
+				Optional:    true,
 				Description: "Username of a CipherTrust user. " + fmt.Sprintf(providerDescNoDefaultWithEnvVar, "username", "CM_USERNAME"),
 			},
 			"password": schema.StringAttribute{
-				Optional:    false,
+				Optional:    true,
 				Sensitive:   true,
 				Description: "Password of a CipherTrust user. " + fmt.Sprintf(providerDescNoDefaultWithEnvVar, "password", "CM_PASSWORD"),
 			},
@@ -113,14 +84,6 @@ func (p *ciphertrustProvider) Schema(_ context.Context, _ provider.SchemaRequest
 			"domain": schema.StringAttribute{
 				Optional:    true,
 				Description: "CipherTrust domain to log in to. " + fmt.Sprintf(providerDescNoDefaultWithEnvVar+". Default is the empty string (root domain).", "domain", "CM_DOMAIN"),
-			},
-			"log_file": schema.StringAttribute{
-				Optional:    true,
-				Description: "Log file name. " + fmt.Sprintf(providerDescWithDefault, "log_file", "ctp.log"),
-			},
-			"log_level": &schema.StringAttribute{
-				Optional:    true,
-				Description: "Logging level. " + fmt.Sprintf(providerDescWithDefault, "log_level", "info") + " Options: debug, info, warning or error. ",
 			},
 			"no_ssl_verify": &schema.BoolAttribute{
 				Optional:    true,
@@ -136,8 +99,10 @@ func (p *ciphertrustProvider) Schema(_ context.Context, _ provider.SchemaRequest
 
 // Configure prepares a HashiCups API client for data sources and resources.
 func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+	tflog.Info(ctx, "Configuring CM client")
+
 	// Retrieve provider data from configuration
-	var config CipherTrustProviderModel
+	var config ciphertrustProviderModel
 	diags := req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -244,6 +209,13 @@ func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.Config
 		return
 	}
 
+	ctx = tflog.SetField(ctx, "cm_host", address)
+	ctx = tflog.SetField(ctx, "cm_username", username)
+	ctx = tflog.SetField(ctx, "cm_password", password)
+	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "cm_password")
+
+	tflog.Debug(ctx, "Creating CM client")
+
 	// Create a new HashiCups client using the configuration values
 	client, err := ciphertrust.NewClient(&address, &auth_domain, &domain, &username, &password)
 	if err != nil {
@@ -264,7 +236,9 @@ func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.Config
 
 // DataSources defines the data sources implemented in the provider.
 func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return nil
+	return []func() datasource.DataSource{
+		NewUsersDataSource,
+	}
 }
 
 // Resources defines the resources implemented in the provider.

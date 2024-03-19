@@ -6,6 +6,10 @@ terraform {
   }
 }
 
-provider "ciphertrust" {}
+provider "ciphertrust" {
+  address = "http://10.10.10.10"
+  username = "admin"
+  password = "pwd"
+}
 
-data "ciphertrust_init" "example" {}
+data "ciphertrust_users" "example" {}
