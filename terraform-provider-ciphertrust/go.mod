@@ -3,10 +3,10 @@ module terraform-provider-ciphertrust
 go 1.19
 
 require (
-	github.com/anugram/ciphertrust-client-go v0.0.0-20240321205124-e9eb73a93311
 	github.com/hashicorp/terraform-plugin-docs v0.18.0
 	github.com/hashicorp/terraform-plugin-framework v1.6.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
+	github.com/tidwall/gjson v1.17.1
 )
 
 require (
@@ -51,6 +51,8 @@ require (
 	github.com/russross/blackfriday v1.6.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yuin/goldmark v1.6.0 // indirect

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/anugram/ciphertrust-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -20,24 +19,22 @@ func NewUsersDataSource() datasource.DataSource {
 }
 
 type usersDataSource struct {
-	client *ciphertrust.Client
+	client *Client
 }
 
 type usersDataSourceModel struct {
-	Coffees []userModel `tfsdk:"users"`
+	User []userModel `tfsdk:"users"`
 }
 
-// coffeesModel maps coffees schema data.
 type userModel struct {
 	UserID   types.String `tfsdk:"user_id"`
-	Name     types.String `tfsdk:"username"`
-	UserName types.String `tfsdk:"nickname"`
-	Nickname types.String `tfsdk:"email"`
-	Email    types.String `tfsdk:"name"`
+	Name     types.String `tfsdk:"name"`
+	UserName types.String `tfsdk:"username"`
+	Nickname types.String `tfsdk:"nickname"`
+	Email    types.String `tfsdk:"email"`
 	//Ingredients []coffeesIngredientsModel `tfsdk:"ingredients"`
 }
 
-// coffeesIngredientsModel maps coffee ingredients data
 type usersFilterModel struct {
 	ID types.String `tfsdk:"user_id"`
 }
@@ -88,25 +85,25 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state usersDataSourceModel
 
-	users, err := d.client.GetAll("")
+	users, err := d.client.GetAll("api/v1/usermgmt/users")
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Read HashiCups Coffees",
+			"Unable to Read Users L1",
 			err.Error(),
 		)
 		return
 	}
 
 	for _, user := range users {
-		coffeeState := userModel{
+		userState := userModel{
 			UserID:   types.StringValue(user.UserID),
 			Name:     types.StringValue(user.Name),
 			Email:    types.StringValue(user.Email),
-			Nickname: types.StringValue(user.Description),
+			Nickname: types.StringValue(user.Nickname),
 			UserName: types.StringValue(user.UserName),
 		}
 
-		state.Coffees = append(state.Coffees, coffeeState)
+		state.User = append(state.User, userState)
 	}
 
 	diags := resp.State.Set(ctx, &state)
@@ -116,12 +113,14 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 }
 
-func (d *usersDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *usersDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
 
-	client, ok := req.ProviderData.(*ciphertrust.Client)
+	//tflog.Debug(ctx, fmt.Sprintf("Client is: %T", req.ProviderData.(*Client)))
+
+	client, ok := req.ProviderData.(*Client)
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
