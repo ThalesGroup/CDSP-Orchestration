@@ -10,8 +10,8 @@ github.com/Masterminds/sprig/v3 v3.2.3/go.mod h1:rXcFaZ2zZbLRJv/xSysmlgIM1u11eBa
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/ProtonMail/go-crypto v0.0.0-20230828082145-3c4c8a2d2371 h1:kkhsdkhsCvIsutKu5zLMgWtgh9YxGCNAw8Ad8hjwfYg=
 github.com/ProtonMail/go-crypto v0.0.0-20230828082145-3c4c8a2d2371/go.mod h1:EjAoLdwvbIOoOQr3ihjnSoLZRtE8azugULFRteWMNc0=
-github.com/anugram/ciphertrust-client-go v0.0.0-20240318191541-00fa1feba483 h1:XViZ8JVrU94YzM1aEmdDvv//esf7O2qqXQi9C8btcmE=
-github.com/anugram/ciphertrust-client-go v0.0.0-20240318191541-00fa1feba483/go.mod h1:GCbwQ6xRatCse1ivnWkcaD1ppIr/7MJmyD8AdXugOW8=
+github.com/anugram/ciphertrust-client-go v0.0.0-20240321205124-e9eb73a93311 h1:X6MDQqTBtBb5tFcAstlIHZICB6qD+TSVMtlqZb+zszw=
+github.com/anugram/ciphertrust-client-go v0.0.0-20240321205124-e9eb73a93311/go.mod h1:1Zh5lalUSA8tZN6CVlgsYuPXDcvusNrTvD2WrZYoKsY=
 github.com/apparentlymart/go-textseg/v15 v15.0.0 h1:uYvfpb3DyLSCGWnctWKGj857c6ew1u1fNQOlOtuGxQY=
 github.com/apparentlymart/go-textseg/v15 v15.0.0/go.mod h1:K8XmNZdhEBkdlyDdvbmmsvpAG721bKi0joRfFdHIWJ4=
 github.com/armon/go-radix v1.0.0 h1:F4z6KzEeeQIMeLFa97iZU6vupzoecKdU5TX24SNppXI=
