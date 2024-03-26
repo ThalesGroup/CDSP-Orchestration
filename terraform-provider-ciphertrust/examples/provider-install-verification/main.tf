@@ -7,9 +7,25 @@ terraform {
 }
 
 provider "ciphertrust" {
-  address = "http://10.10.10.10"
+  address = "https://10.10.10.10"
   username = "admin"
-  password = "pwd"
+  password = "ChangeIt01!"
 }
 
-data "ciphertrust_users" "example" {}
+data "ciphertrust_users" "cm_users" {}
+
+resource "ciphertrust_cm_user" "new_user" {
+  email = "sample@local.com"
+  name = "Sample User"
+  nickname = "sample"
+  username = "user"
+  password = ChangeIt01!
+}
+
+output "list" {
+  value = data.ciphertrust_users.cm_users
+}
+
+output "create" {
+  value = ciphertrust_cm_user.new_user
+}
