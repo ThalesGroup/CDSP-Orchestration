@@ -32,7 +32,7 @@ type userModel struct {
 	UserName types.String `tfsdk:"username"`
 	Nickname types.String `tfsdk:"nickname"`
 	Email    types.String `tfsdk:"email"`
-	//Ingredients []coffeesIngredientsModel `tfsdk:"ingredients"`
+	Password types.String `tfsdk:"password"`
 }
 
 type usersFilterModel struct {
@@ -65,16 +65,9 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 						"name": schema.StringAttribute{
 							Computed: true,
 						},
-						// "ingredients": schema.ListNestedAttribute{
-						// 	Computed: true,
-						// 	NestedObject: schema.NestedAttributeObject{
-						// 		Attributes: map[string]schema.Attribute{
-						// 			"id": schema.Int64Attribute{
-						// 				Computed: true,
-						// 			},
-						// 		},
-						// 	},
-						// },
+						"password": schema.StringAttribute{
+							Computed: true,
+						},
 					},
 				},
 			},
@@ -101,6 +94,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			Email:    types.StringValue(user.Email),
 			Nickname: types.StringValue(user.Nickname),
 			UserName: types.StringValue(user.UserName),
+			Password: types.StringValue(user.Password),
 		}
 
 		state.User = append(state.User, userState)
