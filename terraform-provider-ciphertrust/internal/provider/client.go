@@ -95,9 +95,9 @@ func (c *Client) doRequest(req *http.Request, jwt *string) ([]byte, error) {
 		return nil, err
 	}
 
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode == http.StatusOK || res.StatusCode == http.StatusCreated {
+		return body, err
+	} else {
 		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
 	}
-
-	return body, err
 }

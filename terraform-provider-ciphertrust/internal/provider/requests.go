@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/tidwall/gjson"
 )
 
@@ -32,13 +33,13 @@ func (c *Client) GetAll(endpoint string) ([]User, error) {
 	return resp, nil
 }
 
-func (c *Client) SaveUser(ctx context.Context, endpoint string, data User) (User, error) {
+func (c *Client) SaveUser(ctx context.Context, endpoint string, data User) (string, error) {
 	payload, err := json.Marshal(data)
 	reader := bytes.NewBuffer(payload)
 
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
-		return User{}, err
+		return "", err
 	}
 
 	req, err := http.NewRequest(
@@ -46,21 +47,16 @@ func (c *Client) SaveUser(ctx context.Context, endpoint string, data User) (User
 		fmt.Sprintf("%s/%s", c.CipherTrustURL, endpoint),
 		reader)
 	if err != nil {
-		return User{}, err
+		return "", err
 	}
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {
-		return User{}, err
+		return "", err
 	}
 
-	usersJson := gjson.Get(string(body), "resources").String()
+	userId := gjson.Get(string(body), "user_id").String()
+	tflog.Info(ctx, "*****JSON*****"+userId)
 
-	resp := User{}
-	err = json.Unmarshal([]byte(usersJson), &resp)
-	if err != nil {
-		return User{}, err
-	}
-
-	return resp, nil
+	return userId, nil
 }
