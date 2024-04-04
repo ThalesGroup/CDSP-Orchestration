@@ -19,7 +19,6 @@ func Function(ctx context.Context, fw function.Definition) *tfprotov5.Function {
 		Parameters:         make([]*tfprotov5.FunctionParameter, 0, len(fw.Parameters)),
 		Return:             FunctionReturn(ctx, fw.Return),
 		Summary:            fw.Summary,
-		VariadicParameter:  FunctionParameter(ctx, fw.VariadicParameter),
 	}
 
 	if fw.MarkdownDescription != "" {
@@ -31,7 +30,13 @@ func Function(ctx context.Context, fw function.Definition) *tfprotov5.Function {
 	}
 
 	for _, fwParameter := range fw.Parameters {
-		proto.Parameters = append(proto.Parameters, FunctionParameter(ctx, fwParameter))
+		protoParam := FunctionParameter(ctx, fwParameter)
+		proto.Parameters = append(proto.Parameters, protoParam)
+	}
+
+	if fw.VariadicParameter != nil {
+		protoParam := FunctionParameter(ctx, fw.VariadicParameter)
+		proto.VariadicParameter = protoParam
 	}
 
 	return proto

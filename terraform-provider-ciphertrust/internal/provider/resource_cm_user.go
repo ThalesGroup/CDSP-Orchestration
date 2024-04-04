@@ -2,10 +2,12 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -61,13 +63,16 @@ func (r *resourceCMUser) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Required: true,
 			},
 			"is_domain_user": schema.BoolAttribute{
-				Optional: true,
+				Computed: true,
+				Default:  booldefault.StaticBool(false),
 			},
 			"prevent_ui_login": schema.BoolAttribute{
-				Optional: true,
+				Computed: true,
+				Default:  booldefault.StaticBool(false),
 			},
 			"password_change_required": schema.BoolAttribute{
-				Optional: true,
+				Computed: true,
+				Default:  booldefault.StaticBool(false),
 			},
 		},
 	}
@@ -97,7 +102,16 @@ func (r *resourceCMUser) Create(ctx context.Context, req resource.CreateRequest,
 	payload.LoginFlags = loginFlags
 	payload.PasswordChangeRequired = plan.PasswordChangeRequired.ValueBool()
 
-	response, err := r.client.SaveUser(ctx, URL_USER_MANAGEMENT, payload)
+	payloadJSON, err := json.Marshal(payload)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Invalid data input: User Creation",
+			err.Error(),
+		)
+		return
+	}
+
+	response, err := r.client.PostData(ctx, URL_USER_MANAGEMENT, payloadJSON, "user_id")
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating user on CipherTrust Manager: ",

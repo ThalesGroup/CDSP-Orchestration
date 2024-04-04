@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -74,7 +75,26 @@ func (d *dataSourceUsers) Schema(_ context.Context, _ datasource.SchemaRequest, 
 func (d *dataSourceUsers) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state usersDataSourceModel
 
-	users, err := d.client.GetAll(URL_USER_MANAGEMENT)
+	jsonStr, err := d.client.GetAll(URL_USER_MANAGEMENT)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to read users from CM",
+			err.Error(),
+		)
+		return
+	}
+
+	users := []User{}
+
+	err = json.Unmarshal([]byte(jsonStr), &resp)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to read users from CM",
+			err.Error(),
+		)
+		return
+	}
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to read users from CM",
