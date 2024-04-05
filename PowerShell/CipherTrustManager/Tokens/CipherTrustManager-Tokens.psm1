@@ -1013,6 +1013,7 @@ function Clear-CMRefreshTokens {
     $tokencount=0
     foreach($token in $tokenlist.resources){
         #Change endpoint
+        if($token.labels -Contains "web-ui"){continue}
         $tokenendpoint = $endpoint + "/" + $token.id
         Write-Debug "Token ID: $($token.id) Created at: $($token.createdAt)"
         $tokencount++
@@ -1041,7 +1042,7 @@ function Clear-CMRefreshTokens {
     }
 
     $newtokenlist = Find-CMTokens -user_id $user_id -limit $limit
-    return "$($tokencount) Tokens Removed. $($newtokenlist.total - 1) Remaining."
+    return "$($tokencount) Tokens Removed. $($newtokenlist.total) Remaining."
 }
 
 ####

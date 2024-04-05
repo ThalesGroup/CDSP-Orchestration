@@ -26,7 +26,7 @@
     GUID              = '26a7684c-a2f4-4a44-814b-23fa6871d0e7'
 
     # Author of this module
-    Author            = 'Anurag Jain & Marc Seguin, Developer Advocates'
+    Author            = 'Anurag Jain & Marc Seguin, Developer Advocates`nRick Leon, Professional Services'
 
     # Company or vendor of this module
     CompanyName       = 'Thales Group'
@@ -85,6 +85,7 @@
         "Connections/CipherTrustManager-ConnectionMgr-DSM",
         "Connections/CipherTrustManager-ConnectionMgr-Hadoop",
         "Connections/CipherTrustManager-ConnectionMgr-Loki",
+        "Connections/CipherTrustManager-ConnectionMgr-LunaHSMServer",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -246,7 +247,14 @@
         "Update-CMLokiConnection",
         "Remove-CMLokiConnection",
         "Test-CMLokiConnection",
-        "Test-CMLokiConnParameters"
+        "Test-CMLokiConnParameters",
+        "Find-CMLunaHSMServer",
+        "New-CMLunaHSMServer",
+        "Get-CMLunaHSMServer",
+        "Remove-CMLunaHSMServer",
+        "Remove-CMLunaHSMServerInUse",
+        "Set-CMLunaHSMServerSTCMode",
+        "Get-CMLunaClientInfo"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

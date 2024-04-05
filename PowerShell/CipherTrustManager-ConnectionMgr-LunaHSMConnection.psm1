@@ -1,8 +1,8 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ConnectionMgr-Loki.psm1                                               #
+# File:             CipherTrustManager-ConnectionMgr-LunaHSMConnection.psm1                                           #
 # Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
-# Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
+# Copyright:        (c) 2024 Thales Group. All rights reserved.                                                       #
 # Notes:            This module is loaded by the master module, CipherTrustManager                                    #
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
@@ -21,8 +21,8 @@ Add-Type -TypeDefinition @"
 ####
 # Local Variables
 ####
-$target_uri = "/connectionmgmt/services/log-forwarders/loki/connections"
-$target_uri_test = "/connectionmgmt/services/log-forwarders/loki/connection-test"
+$target_uri = "/connectionmgmt/services/luna-network/connections"
+$target_uri_test = "/connectionmgmt/services/luna-network/connections-test"
 ####
 
 #Allow for backwards compatibility with PowerShell 5.1
@@ -58,17 +58,17 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 }
 
 
-#This project mirrors the "Connection Manager - Loki Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/Loki Connections)
+#This project mirrors the "Connection Manager - Luna HSM Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/Loki Connections)
 
-#Connection Manager - CM Connections
-#"#/v1/connectionmgmt/services/log-forwarders/loki/connections"
-#"#/v1/connectionmgmt/services/log-forwarders/loki/connections - get"
+#Connection Manager - Luna HSM Connections
+#"#/v1/connectionmgmt/services/luna-network/connections"
+#"#/v1/connectionmgmt/services/luna-network/connections - get"
 
 <#
     .SYNOPSIS
-        List all CipherTrust Manager Loki Forwarder Connections
+        Returns a list of Luna Network HSM connections.
     .DESCRIPTION
-        Returns a list of all connections. The results can be filtered using the query parameters.
+        Returns a list of Luna Network HSM connections to partitions. The results can be filtered using the query parameters.
         Results are returned in pages. Each page of results includes the total results found, and information for requesting the next page of results, using the skip and limit query parameters. 
         For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/Loki Connections
         #/v1/connectionmgmt/services/log-forwarders/loki/connections-get).   
@@ -102,13 +102,15 @@ if($PSVersionTable.PSVersion.Major -ge 6){
     .PARAMETER last_connection_after
         Filters results to those connected to at or after the specified timestamp. 
         Timestamp should be in RFC3339Nano format, e.g. 2023-12-01T23:59:59.52Z, or a relative timestamp where valid units are 'Y','M','D' representing years, months, days respectively. Negative values are also permitted. e.g. "-1Y-2M-5D".
+    .PARAMETER operation_status
+        Filter the result based on operational sttaus result..
     .EXAMPLE
-        PS> Find-CMLokiConnections -name tar*
+        PS> Find-CMLunaHSMConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Find-CMLokiConnections {
+function Find-CMLunaHSMConnections {
     param
     (
         [Parameter(Mandatory = $false,
@@ -125,11 +127,12 @@ function Find-CMLokiConnections {
         [Parameter()] [string] $createdAfter, 
         [Parameter()] [string] $last_connection_ok, 
         [Parameter()] [string] $last_connection_before, 
-        [Parameter()] [string] $last_connection_after 
+        [Parameter()] [string] $last_connection_after,
+        [Parameter()] [string] $operation_status
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-    Write-Debug "Getting a List of all Loki Connections in CM"
+    Write-Debug "Getting a List of all Luna Network HSM Connections in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
     
@@ -240,12 +243,12 @@ function Find-CMLokiConnections {
         }
         $endpoint += $last_connection_ok
     }
-    if ($external_certificate_used) {
+    if ($operation_status) {
         if ($firstset) {
-            $endpoint += "&external_certificate_used=true"
+            $endpoint += "&operation_status=true"
         }
         else {
-            $endpoint += "?external_certificate_used=true"
+            $endpoint += "?operation_status=true"
             $firstset = $true
         }
     }
@@ -272,33 +275,35 @@ function Find-CMLokiConnections {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "List of all CM Connections to Loki with supplied parameters."
+    Write-Debug "List of all CM Connections to Luna Network HSMs with supplied parameters."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
 }    
 
-#Connection Manager - Loki Connections
-#"#/v1/connectionmgmt/services/log-forwarders/loki/connections"
-#"#/v1/connectionmgmt/services/log-forwarders/loki/connections - post"
+#Connection Manager - Luna HSM Connections
+#"#/v1/connectionmgmt/services/luna-network/connections"
+#"#/v1/connectionmgmt/services/luna-network/connectionss - post"
 
 <#
     .SYNOPSIS
-        Create a new CipherTrust Manager Loki Connection 
+        Create a new CipherTrust Manager Luna Network HSM Connection to be used in conjustion with a Luna HSM Server. 
     .DESCRIPTION
-        Creates a new Loki connection. 
+        Creates a new Luna HSM connection. 
     .PARAMETER name
         Unique connection name.
-    .PARAMETER target
-        IP for Hostname/FQDN of the log-forwarder server.
-    .PARAMETER port
-        Port of the log-forwarder server.
-    .PARAMETER description
-        (Optional) Description about the connection.
+    .PARAMETER hostname
+        IP for Hostname/FQDN of the Luna Network HSM server.
+    .PARAMETER serial
+        Serial Number for the target partition.
+    .PARAMETER label
+        Label for the target partition.
+    .PARAMETER copass
+        Crypto Officer password for the target partition.
     .PARAMETER ca_cert
         (Optional) CA certificate in PEM format.
         While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
-    .PARAMETER ca_certfile
-        (Optional) Specify the filename for a PEM certificate for Loki CA certificate. 
+    .PARAMETER description
+        (Optional) Connection description.
     .PARAMETER http_pass
         (Optional) HTTP basic auth password.
     .PARAMETER http_user

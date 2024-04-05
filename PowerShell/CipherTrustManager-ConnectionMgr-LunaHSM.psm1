@@ -66,7 +66,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 
 <#
     .SYNOPSIS
-        List all CipherTrust Manager Loki Forwarder Connections
+        List all CipherTrust Manager Elastice Search Connections
     .DESCRIPTION
         Returns a list of all connections. The results can be filtered using the query parameters.
         Results are returned in pages. Each page of results includes the total results found, and information for requesting the next page of results, using the skip and limit query parameters. 
@@ -102,8 +102,10 @@ if($PSVersionTable.PSVersion.Major -ge 6){
     .PARAMETER last_connection_after
         Filters results to those connected to at or after the specified timestamp. 
         Timestamp should be in RFC3339Nano format, e.g. 2023-12-01T23:59:59.52Z, or a relative timestamp where valid units are 'Y','M','D' representing years, months, days respectively. Negative values are also permitted. e.g. "-1Y-2M-5D".
+    .PARAMETER external_certificate_used
+        Filter the result based on if an external certificate is used for the connection.
     .EXAMPLE
-        PS> Find-CMLokiConnections -name tar*
+        PS> Find-CMElastisearchConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager

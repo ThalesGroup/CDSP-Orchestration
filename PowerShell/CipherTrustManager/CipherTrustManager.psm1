@@ -404,3 +404,11 @@ Export-ModuleMember -Function Update-CMLokiConnection
 Export-ModuleMember -Function Remove-CMLokiConnection
 Export-ModuleMember -Function Test-CMLokiConnection
 Export-ModuleMember -Function Test-CMLokiConnParameters
+#Connection Manager - Luna HSM Servers
+Export-ModuleMember -Function Find-CMLunaHSMServer
+Export-ModuleMember -Function New-CMLunaHSMServer
+Export-ModuleMember -Function Get-CMLunaHSMServer
+Export-ModuleMember -Function Remove-CMLunaHSMServer
+Export-ModuleMember -Function Remove-CMLunaHSMServerInUse
+Export-ModuleMember -Function Set-CMLunaHSMServerSTCMode
+Export-ModuleMember -Function Get-CMLunaClientInfo
