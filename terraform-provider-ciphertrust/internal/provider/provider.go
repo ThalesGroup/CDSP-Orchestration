@@ -239,6 +239,7 @@ func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.Config
 func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewDataSourceUsers,
+		NewDataSourceKeys,
 	}
 }
 

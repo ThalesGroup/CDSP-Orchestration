@@ -86,7 +86,7 @@ func (d *dataSourceUsers) Read(ctx context.Context, req datasource.ReadRequest, 
 
 	users := []User{}
 
-	err = json.Unmarshal([]byte(jsonStr), &resp)
+	err = json.Unmarshal([]byte(jsonStr), &users)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to read users from CM",
