@@ -444,7 +444,7 @@ func (r *resourceCMKey) Schema(_ context.Context, _ resource.SchemaRequest, resp
 func (r *resourceCMKey) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	// Retrieve values from plan
 	var plan tfsdkCMKeyModel
-	var payload Key
+	payload := map[string]interface{}{}
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -452,10 +452,10 @@ func (r *resourceCMKey) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	payload.Name = trimString(plan.Name.String())
-	payload.Algorithm = trimString(plan.Algorithm.String())
-	payload.Size = plan.Size.ValueInt64()
-	payload.UsageMask = plan.UsageMask.ValueInt64()
+	payload["name"] = trimString(plan.Name.String())
+	payload["algorithm"] = trimString(plan.Algorithm.String())
+	payload["size"] = plan.Size.ValueInt64()
+	payload["usageMask"] = plan.UsageMask.ValueInt64()
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {

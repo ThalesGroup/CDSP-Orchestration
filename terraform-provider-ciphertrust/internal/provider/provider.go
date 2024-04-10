@@ -247,5 +247,6 @@ func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource
 func (p *ciphertrustProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewResourceCMUser,
+		NewResourceCMKey,
 	}
 }

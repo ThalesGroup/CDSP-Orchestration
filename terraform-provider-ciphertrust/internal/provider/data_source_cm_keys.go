@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -343,7 +342,6 @@ func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, r
 	var state keysDataSourceModel
 
 	jsonStr, err := d.client.GetAll(URL_KEY_MANAGEMENT)
-	tflog.Info(ctx, "*****JAIN*****"+jsonStr)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to read Keys from CM",

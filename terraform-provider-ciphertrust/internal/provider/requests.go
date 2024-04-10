@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/tidwall/gjson"
 )
 
@@ -27,6 +28,12 @@ func (c *Client) GetAll(
 
 func (c *Client) PostData(ctx context.Context, endpoint string, data []byte, id string) (string, error) {
 	reader := bytes.NewBuffer(data)
+	tflog.Info(ctx,
+		"*****POST data for*****"+
+			endpoint+
+			"*****"+
+			reader.String()+
+			"*****")
 
 	req, err := http.NewRequest(
 		"POST",
