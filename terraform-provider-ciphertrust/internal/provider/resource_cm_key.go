@@ -146,17 +146,295 @@ func (r *resourceCMKey) Schema(_ context.Context, _ resource.SchemaRequest, resp
 			"id": schema.StringAttribute{
 				Computed: true,
 			},
+			"activation_date": schema.StringAttribute{
+				Optional: true,
+			},
 			"algorithm": schema.StringAttribute{
-				Required: true,
+				Optional: true,
+			},
+			"archive_date": schema.StringAttribute{
+				Optional: true,
+			},
+			"assign_self_as_owner": schema.BoolAttribute{
+				Optional: true,
+			},
+			"cert_type": schema.StringAttribute{
+				Optional: true,
+			},
+			"compromise_date": schema.StringAttribute{
+				Optional: true,
+			},
+			"compromise_occurrence_date": schema.StringAttribute{
+				Optional: true,
+			},
+			"curveid": schema.StringAttribute{
+				Optional: true,
+			},
+			"deactivation_date": schema.StringAttribute{
+				Optional: true,
+			},
+			"default_iv": schema.StringAttribute{
+				Optional: true,
+			},
+			"description": schema.StringAttribute{
+				Optional: true,
+			},
+			"destroy_date": schema.StringAttribute{
+				Optional: true,
+			},
+			"empty_material": schema.BoolAttribute{
+				Optional: true,
+			},
+			"encoding": schema.StringAttribute{
+				Optional: true,
+			},
+			"format": schema.StringAttribute{
+				Optional: true,
+			},
+			"generate_key_id": schema.BoolAttribute{
+				Optional: true,
+			},
+			"hkdf_create_parameters": schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"hash_algorithm": schema.StringAttribute{
+						Optional: true,
+					},
+					"ikm_key_name": schema.StringAttribute{
+						Optional: true,
+					},
+					"info": schema.StringAttribute{
+						Optional: true,
+					},
+					"salt": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"id_size": schema.Int64Attribute{
+				Optional: true,
+			},
+			"key_id": schema.StringAttribute{
+				Optional: true,
+			},
+			"mac_sign_bytes": schema.StringAttribute{
+				Optional: true,
+			},
+			"mac_sign_key_identifier": schema.StringAttribute{
+				Optional: true,
+			},
+			"mac_sign_key_identifier_type": schema.StringAttribute{
+				Optional: true,
+			},
+			"material": schema.StringAttribute{
+				Optional: true,
+			},
+			"muid": schema.StringAttribute{
+				Optional: true,
+			},
+			"object_type": schema.StringAttribute{
+				Optional: true,
 			},
 			"name": schema.StringAttribute{
-				Required: true,
+				Optional: true,
+			},
+			"meta": schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"owner_id": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"padded": schema.BoolAttribute{
+				Optional: true,
+			},
+			"password": schema.StringAttribute{
+				Optional: true,
+			},
+			"process_start_date": schema.StringAttribute{
+				Optional: true,
+			},
+			"protect_stop_date": schema.StringAttribute{
+				Optional: true,
+			},
+			"revocation_reason": schema.StringAttribute{
+				Optional: true,
+			},
+			"revocation_message": schema.StringAttribute{
+				Optional: true,
+			},
+			"rotation_frequency_days": schema.StringAttribute{
+				Optional: true,
+			},
+			"secret_data_encoding": schema.StringAttribute{
+				Optional: true,
+			},
+			"secret_data_link": schema.StringAttribute{
+				Optional: true,
+			},
+			"signing_algo": schema.StringAttribute{
+				Optional: true,
 			},
 			"size": schema.Int64Attribute{
-				Required: true,
+				Optional: true,
 			},
-			"usageMask": schema.Int64Attribute{
-				Required: true,
+			"unexportable": schema.BoolAttribute{
+				Optional: true,
+			},
+			"undeletable": schema.BoolAttribute{
+				Optional: true,
+			},
+			"state": schema.StringAttribute{
+				Optional: true,
+			},
+			"usage_mask": schema.Int64Attribute{
+				Optional: true,
+			},
+			"uuid": schema.StringAttribute{
+				Optional: true,
+			},
+			"wrap_key_id_type": schema.StringAttribute{
+				Optional: true,
+			},
+			"wrap_key_name": schema.StringAttribute{
+				Optional: true,
+			},
+			"wrap_public_key": schema.StringAttribute{
+				Optional: true,
+			},
+			"wrap_public_key_padding": schema.StringAttribute{
+				Optional: true,
+			},
+			"wrapping_encryption_algo": schema.StringAttribute{
+				Optional: true,
+			},
+			"wrapping_hash_algo": schema.StringAttribute{
+				Optional: true,
+			},
+			"wrapping_method": schema.StringAttribute{
+				Optional: true,
+			},
+			"xts": schema.BoolAttribute{
+				Optional: true,
+			},
+			"aliases": schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"alias": schema.StringAttribute{
+							Required: true,
+						},
+						"index": schema.Int64Attribute{
+							Required: true,
+						},
+						"type": schema.StringAttribute{
+							Required: true,
+						},
+					},
+				},
+			},
+			"public_key_parameters": schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"activation_date": schema.StringAttribute{
+						Optional: true,
+					},
+					"archive_date": schema.StringAttribute{
+						Optional: true,
+					},
+					"deactivation_date": schema.StringAttribute{
+						Optional: true,
+					},
+					"name": schema.StringAttribute{
+						Optional: true,
+					},
+					"state": schema.StringAttribute{
+						Optional: true,
+					},
+					"undeletable": schema.BoolAttribute{
+						Optional: true,
+					},
+					"unexportable": schema.BoolAttribute{
+						Optional: true,
+					},
+					"usage_mask": schema.Int64Attribute{
+						Optional: true,
+					},
+					"aliases": schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"alias": schema.StringAttribute{
+									Required: true,
+								},
+								"index": schema.Int64Attribute{
+									Required: true,
+								},
+								"type": schema.StringAttribute{
+									Required: true,
+								},
+							},
+						},
+					},
+				},
+			},
+			"wrap_hkdf": schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"hash_algorithm": schema.StringAttribute{
+						Optional: true,
+					},
+					"okm_len": schema.Int64Attribute{
+						Optional: true,
+					},
+					"info": schema.StringAttribute{
+						Optional: true,
+					},
+					"salt": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"wrap_pbe": schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"dklen": schema.Int64Attribute{
+						Optional: true,
+					},
+					"hash_algorithm": schema.StringAttribute{
+						Optional: true,
+					},
+					"salt": schema.StringAttribute{
+						Optional: true,
+					},
+					"iteration": schema.Int64Attribute{
+						Optional: true,
+					},
+					"password": schema.StringAttribute{
+						Optional: true,
+					},
+					"password_identifier": schema.StringAttribute{
+						Optional: true,
+					},
+					"password_identifier_type": schema.StringAttribute{
+						Optional: true,
+					},
+					"purpose": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"wrap_rsaaes": schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"aes_key_size": schema.Int64Attribute{
+						Optional: true,
+					},
+					"padding": schema.StringAttribute{
+						Optional: true,
+					},
+				},
 			},
 		},
 	}
@@ -188,7 +466,7 @@ func (r *resourceCMKey) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	response, err := r.client.PostData(ctx, URL_USER_MANAGEMENT, payloadJSON, "id")
+	response, err := r.client.PostData(ctx, URL_KEY_MANAGEMENT, payloadJSON, "id")
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating key on CipherTrust Manager: ",

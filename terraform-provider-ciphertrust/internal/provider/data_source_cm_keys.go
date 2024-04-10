@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -342,6 +343,7 @@ func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, r
 	var state keysDataSourceModel
 
 	jsonStr, err := d.client.GetAll(URL_KEY_MANAGEMENT)
+	tflog.Info(ctx, "*****JAIN*****"+jsonStr)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to read Keys from CM",
@@ -372,15 +374,30 @@ func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	for _, key := range data {
 		keyState := tfsdkCMKeyModel{}
-		keyState.Name = types.StringValue(key["name"].(string))
-		keyState.ID = types.StringValue(key["id"].(string))
-		keyState.UUID = types.StringValue(key["uuid"].(string))
-		keyState.UsageMask = types.Int64Value(int64(key["usageMask"].(float64)))
-		keyState.Size = types.Int64Value(int64(key["size"].(float64)))
-		keyState.Algorithm = types.StringValue(key["algorithm"].(string))
-		keyState.Exportable = types.BoolValue(key["unexportable"].(bool))
-		keyState.Deletable = types.BoolValue(key["undeletable"].(bool))
-
+		if key["name"] != nil {
+			keyState.Name = types.StringValue(key["name"].(string))
+		}
+		if key["id"] != nil {
+			keyState.ID = types.StringValue(key["id"].(string))
+		}
+		if key["uuid"] != nil {
+			keyState.UUID = types.StringValue(key["uuid"].(string))
+		}
+		if key["usageMask"] != nil {
+			keyState.UsageMask = types.Int64Value(int64(key["usageMask"].(float64)))
+		}
+		if key["size"] != nil {
+			keyState.Size = types.Int64Value(int64(key["size"].(float64)))
+		}
+		if key["algorithm"] != nil {
+			keyState.Algorithm = types.StringValue(key["algorithm"].(string))
+		}
+		if key["unexportable"] != nil {
+			keyState.Exportable = types.BoolValue(key["unexportable"].(bool))
+		}
+		if key["undeletable"] != nil {
+			keyState.Deletable = types.BoolValue(key["undeletable"].(bool))
+		}
 		state.Keys = append(state.Keys, keyState)
 	}
 
