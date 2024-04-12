@@ -11,20 +11,7 @@
 # ENUM
 ###
 # Communication Type to be associated with Luna.
-Add-Type -TypeDefinition @"
-   public enum hsmProductType {
-    cckm,
-    hsm_anchored_domain
-}
-"@
 
-# Communication Type to be associated with Luna.
-Add-Type -TypeDefinition @"
-   public enum hsmChannel {
-    NTLS,
-    STC
-}
-"@
 
 ####
 # Local Variables
@@ -90,6 +77,9 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         For example, "name,-createdAt" .. will sort the results first by 'name', ascending, then by 'createdAt', descending.
     .PARAMETER hostname
         Filter results based on the IP or hostname of the Luna HSM.
+    .PARAMETER products
+            - cckm
+            - hsm_anchored_domain
     .PARAMETER channel
         Filter the results based on the channel of communication. 
         Options: (CASE-SENSITIVE)
@@ -112,12 +102,15 @@ function Find-CMLunaHSMServer {
     (
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $id, 
+            [string] $id, 
         [Parameter()] [int] $skip,
         [Parameter()] [int] $limit,
         [Parameter()] [string] $sort,
         [Parameter()] [string] $hostname, 
-        [Parameter()] [string] $channel,
+        [Parameter()] [ValidateSet('cckm','hsm_anchored_domain')] 
+            [string[]] $products,
+        [Parameter()] [ValidateSet('NTLS','STC')] 
+            [string] $channel,
         [Parameter()] [string] $createdBefore, 
         [Parameter()] [string] $createdAfter 
     )
@@ -168,6 +161,16 @@ function Find-CMLunaHSMServer {
             $firstset = $true
         }
         $endpoint += $sort
+    }
+    if ($products) {
+        if ($firstset) {
+            $endpoint += "&products="
+        }
+        else {
+            $endpoint += "?products="
+            $firstset = $true
+        }
+        $endpoint += $products
     }
     if ($hostname) {
         if ($firstset) {
@@ -272,7 +275,8 @@ function New-CMLunaHSMServer{
         [Parameter()] [string] $description, 
         [Parameter()] [string] $hsm_cert, 
         [Parameter()] [string] $hsm_certfile, 
-        [Parameter()] [hsmProductType[]] $products,
+        [Parameter()] [ValidateSet('cckm','hsm_anchored_domain')] 
+            [string[]] $products,
         [Parameter()] [string[]] $metadata
     )
 
@@ -310,11 +314,7 @@ function New-CMLunaHSMServer{
         }
     }
 
-    foreach($item in $products){
-        [string[]]$productJSON += $item.ToString()
-    }
-    if($productJSON){ $body.add('products', $productJSON) }
-    
+    if($productJSON){ $body.add('products', $products) }
     if($metadata){
         $body.add('meta',@{})
         $meta_input = $metadata.split(",")
@@ -368,7 +368,7 @@ function New-CMLunaHSMServer{
         Get full details on a CipherTrust Manager Luna HSM Connection
     .DESCRIPTION
         Retriving the full list of Luna HSM Connections omits certain values. Use this tool to get the complete details.
-    .PARAMETER name
+    .PARAMETER hostname
         The complete name of the Luna HSM connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
@@ -401,7 +401,8 @@ function Get-CMLunaHSMServer{
     if($id){
         $endpoint += "/" + $id        
     }elseif($hostname){ 
-        $id = (Find-CMLunaHSMServer -hostname $name).resources[0].id 
+        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -481,6 +482,7 @@ function Remove-CMLunaHSMServer{
     if($id){
         $endpoint += "/" + $id        
     }elseif($hostname){ 
+        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -571,6 +573,7 @@ function Remove-CMLunaHSMServerInUse{
     if($id){
         $endpoint += "/" + $id + "/delete"        
     }elseif($hostname){ 
+        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id + "/delete"
     }else{
@@ -675,6 +678,7 @@ function Set-CMLunaHSMServerSTCMode{
     if($id){
         $endpoint += "/" + $id
     }elseif($hostname){ 
+        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id
     }else{

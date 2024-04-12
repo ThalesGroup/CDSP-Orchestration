@@ -407,9 +407,10 @@ function Get-CMAkeylessConnection{
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    if($id){
+     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAkeylessConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAkeylessConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -509,9 +510,10 @@ function Update-CMAkeylessConnection{
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    if($id){
+     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAkeylessConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAkeylessConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -609,6 +611,7 @@ function Remove-CMAkeylessConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAkeylessConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAkeylessConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -687,7 +690,8 @@ function Test-CMAkeylessConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
-        $id = (Find-CMAKeylessConnections -name $name).resources[0].id 
+        if((Find-CMAkeylessConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMAkeylessConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{
         return "Missing Connection Identifier."

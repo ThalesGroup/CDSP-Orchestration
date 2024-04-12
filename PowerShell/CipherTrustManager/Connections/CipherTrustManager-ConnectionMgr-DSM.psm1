@@ -432,6 +432,7 @@ function Get-CMDSMConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMDSMConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMDSMConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -539,6 +540,7 @@ function Update-CMDSMConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMDSMConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMDSMConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -643,6 +645,7 @@ function Remove-CMDSMConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMDSMConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMDSMConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -722,6 +725,7 @@ function Test-CMDSMConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
+        if((Find-CMDSMConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMDSMConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{

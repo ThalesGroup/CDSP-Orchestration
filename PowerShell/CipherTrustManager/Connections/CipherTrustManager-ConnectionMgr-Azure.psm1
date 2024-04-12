@@ -525,6 +525,7 @@ function Get-CMAzureConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAzureConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAzureConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -682,6 +683,7 @@ function Update-CMAzureConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAzureConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAzureConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -795,6 +797,7 @@ function Remove-CMAzureConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAzureConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAzureConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -922,6 +925,7 @@ function Test-CMAzureConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
+        if((Find-CMAzureConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAzureConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{

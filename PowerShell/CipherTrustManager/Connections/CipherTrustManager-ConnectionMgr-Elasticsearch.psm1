@@ -462,6 +462,7 @@ function Get-CMElasticsearchConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMElasticsearchConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -582,6 +583,7 @@ function Update-CMElasticsearchConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMElasticsearchConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -695,6 +697,7 @@ function Remove-CMElasticsearchConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMElasticsearchConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -795,6 +798,7 @@ function Test-CMElasticsearchConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
+        if((Find-CMElasticsearchConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMElasticsearchConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{

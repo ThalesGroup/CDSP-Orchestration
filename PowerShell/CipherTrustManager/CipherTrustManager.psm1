@@ -412,3 +412,14 @@ Export-ModuleMember -Function Remove-CMLunaHSMServer
 Export-ModuleMember -Function Remove-CMLunaHSMServerInUse
 Export-ModuleMember -Function Set-CMLunaHSMServerSTCMode
 Export-ModuleMember -Function Get-CMLunaClientInfo
+#Connection Manager - Luna HSM Servers
+Export-ModuleMember -Function Find-CMLunaHSMConnections
+Export-ModuleMember -Function New-CMLunaHSMConnection
+Export-ModuleMember -Function Get-CMLunaHSMConnection
+Export-ModuleMember -Function Update-CMLunaHSMConnection
+Export-ModuleMember -Function Remove-CMLunaHSMConnection
+Export-ModuleMember -Function Add-CMLunaHSMConnectionPartition
+Export-ModuleMember -Function Remove-CMLunaHSMConnectionPartition
+Export-ModuleMember -Function Test-CMLunaHSMConnection
+Export-ModuleMember -Function Get-CMLunaHSMConnectionStatus
+Export-ModuleMember -Function Test-CMLunaHSMConnectionParameters

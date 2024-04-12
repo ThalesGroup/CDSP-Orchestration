@@ -459,6 +459,7 @@ function Get-CMHadoopConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMHadoopConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -575,6 +576,7 @@ function Update-CMHadoopConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMHadoopConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -681,6 +683,7 @@ function Remove-CMHadoopConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMHadoopConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -760,6 +763,7 @@ function Test-CMHadoopConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
+        if((Find-CMHadoopConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMHadoopConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{

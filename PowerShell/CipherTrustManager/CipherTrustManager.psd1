@@ -86,6 +86,7 @@
         "Connections/CipherTrustManager-ConnectionMgr-Hadoop",
         "Connections/CipherTrustManager-ConnectionMgr-Loki",
         "Connections/CipherTrustManager-ConnectionMgr-LunaHSMServer",
+        "Connections/CipherTrustManager-ConnectionMgr-LunaHSMConnection",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -254,7 +255,17 @@
         "Remove-CMLunaHSMServer",
         "Remove-CMLunaHSMServerInUse",
         "Set-CMLunaHSMServerSTCMode",
-        "Get-CMLunaClientInfo"
+        "Get-CMLunaClientInfo",
+        "Find-CMLunaHSMConnections",
+        "New-CMLunaHSMConnection",
+        "Get-CMLunaHSMConnection",
+        "Update-CMLunaHSMConnection",
+        "Remove-CMLunaHSMConnection",
+        "Add-CMLunaHSMConnectionPartition",
+        "Remove-CMLunaHSMConnectionPartition",
+        "Test-CMLunaHSMConnection",
+        "Get-CMLunaHSMConnectionStatus",
+        "Test-CMLunaHSMConnectionParameters"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

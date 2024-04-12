@@ -436,6 +436,7 @@ function Get-CMGCPConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMGCPConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMGCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -539,6 +540,7 @@ function Update-CMGCPConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMGCPConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMGCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -638,6 +640,7 @@ function Remove-CMGCPConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMGCPConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMGCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -729,6 +732,7 @@ function Test-CMGCPConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
+        if((Find-CMGCPConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMGCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{

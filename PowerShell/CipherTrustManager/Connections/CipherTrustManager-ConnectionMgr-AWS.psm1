@@ -529,6 +529,7 @@ function Get-CMAWSConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAWSConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAWSConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -686,6 +687,7 @@ function Update-CMAWSConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAWSConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAWSConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -808,6 +810,7 @@ function Remove-CMAWSConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMAWSConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAWSConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -953,6 +956,7 @@ function Test-CMAWSConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
+        if((Find-CMAWSConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMAWSConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{

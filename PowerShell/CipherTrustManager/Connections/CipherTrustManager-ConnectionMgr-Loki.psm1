@@ -459,6 +459,7 @@ function Get-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -579,6 +580,7 @@ function Update-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -692,6 +694,7 @@ function Remove-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
+        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -792,6 +795,7 @@ function Test-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
+        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{
