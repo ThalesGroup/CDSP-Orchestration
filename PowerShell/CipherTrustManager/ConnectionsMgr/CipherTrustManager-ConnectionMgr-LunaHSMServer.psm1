@@ -7,11 +7,6 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
-###
-# ENUM
-###
-# Communication Type to be associated with Luna.
-
 
 ####
 # Local Variables
@@ -401,7 +396,7 @@ function Get-CMLunaHSMServer{
     if($id){
         $endpoint += "/" + $id        
     }elseif($hostname){ 
-        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
+        if((Find-CMLunaHSMServer -hostname $hostname).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -482,7 +477,7 @@ function Remove-CMLunaHSMServer{
     if($id){
         $endpoint += "/" + $id        
     }elseif($hostname){ 
-        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
+        if((Find-CMLunaHSMServer -hostname $hostname).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -573,7 +568,7 @@ function Remove-CMLunaHSMServerInUse{
     if($id){
         $endpoint += "/" + $id + "/delete"        
     }elseif($hostname){ 
-        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
+        if((Find-CMLunaHSMServer -hostname $hostname).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id + "/delete"
     }else{
@@ -678,7 +673,7 @@ function Set-CMLunaHSMServerSTCMode{
     if($id){
         $endpoint += "/" + $id
     }elseif($hostname){ 
-        if((Find-CMLunaHSMServer -name $hostname).total -eq 0){ return "Connection not found."}
+        if((Find-CMLunaHSMServer -hostname $hostname).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLunaHSMServer -hostname $hostname).resources[0].id 
         $endpoint += "/" + $id
     }else{

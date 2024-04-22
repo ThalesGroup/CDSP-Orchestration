@@ -664,9 +664,9 @@ function Remove-CMLunaHSMConnection{
 
     if($id){
         $endpoint += "/" + $id        
-    }elseif($hostname){ 
+    }elseif($name){ 
         if((Find-CMLunaHSMConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMLunaHSMConnections -hostname $hostname).resources[0].id 
+        $id = (Find-CMLunaHSMConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."

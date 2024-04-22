@@ -423,3 +423,22 @@ Export-ModuleMember -Function Remove-CMLunaHSMConnectionPartition
 Export-ModuleMember -Function Test-CMLunaHSMConnection
 Export-ModuleMember -Function Get-CMLunaHSMConnectionStatus
 Export-ModuleMember -Function Test-CMLunaHSMConnectionParameters
+#Connection Manager - Luna HSM STC Partitions
+Export-ModuleMember -Function Find-CMLunaHSMSTCPartitions
+Export-ModuleMember -Function Register-CMLunaHSMSTCPartition
+Export-ModuleMember -Function Get-CMLunaHSMSTCPartition
+Export-ModuleMember -Function Remove-CMLunaHSMSTCPartition
+#Connection Manager - LDAP Connections
+Export-ModuleMember -Function Find-CMLDAPConnections
+Export-ModuleMember -Function New-CMLDAPConnection
+Export-ModuleMember -Function Get-CMLDAPConnection
+Export-ModuleMember -Function Update-CMLDAPConnection
+Export-ModuleMember -Function Remove-CMLDAPConnection
+Export-ModuleMember -Function Test-CMLDAPConnection
+Export-ModuleMember -Function Test-CMLDAPConnParameters
+#Connection Manager - OIDC Connections
+Export-ModuleMember -Function Find-CMOIDCConnections
+Export-ModuleMember -Function New-CMOIDCConnection
+Export-ModuleMember -Function Get-CMOIDCConnection
+Export-ModuleMember -Function Update-CMOIDCConnection
+Export-ModuleMember -Function Remove-CMOIDCConnection
