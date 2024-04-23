@@ -1,11 +1,14 @@
 package provider
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 // Default CipherTrust Manager URL
@@ -32,8 +35,9 @@ type AuthResponse struct {
 	Token string `json:"jwt"`
 }
 
-// Create New Client for CM
-func NewClient(address, auth_domain, domain, username, password *string) (*Client, error) {
+// Create New Client for CipherTrust Manager
+func NewClient(ctx context.Context, uuid string, address, auth_domain, domain, username, password *string) (*Client, error) {
+	tflog.Trace(ctx, MSG_METHOD_START+"[client.go -> NewClient]["+uuid+"]")
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
@@ -63,17 +67,20 @@ func NewClient(address, auth_domain, domain, username, password *string) (*Clien
 		Domain:     *domain,
 	}
 
-	ar, err := c.SignIn()
+	ar, err := c.SignIn(ctx, uuid)
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [client.go -> NewClient]["+uuid+"]")
 		return nil, err
 	}
 
 	c.Token = ar.Token
 
+	tflog.Trace(ctx, MSG_METHOD_END+" [client.go -> NewClient]["+uuid+"]")
 	return &c, nil
 }
 
-func (c *Client) doRequest(req *http.Request, jwt *string) ([]byte, error) {
+func (c *Client) doRequest(ctx context.Context, uuid string, req *http.Request, jwt *string) ([]byte, error) {
+	tflog.Trace(ctx, MSG_METHOD_START+"[client.go -> doRequest]["+uuid+"]")
 	token := c.Token
 
 	if jwt != nil {
@@ -86,18 +93,22 @@ func (c *Client) doRequest(req *http.Request, jwt *string) ([]byte, error) {
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [client.go -> doRequest]["+uuid+"]")
 		return nil, err
 	}
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [client.go -> doRequest]["+uuid+"]")
 		return nil, err
 	}
 
 	if res.StatusCode == http.StatusOK || res.StatusCode == http.StatusCreated {
+		tflog.Trace(ctx, MSG_METHOD_END+"[client.go -> doRequest]["+uuid+"]")
 		return body, err
 	} else {
+		tflog.Trace(ctx, MSG_METHOD_END+"[client.go -> doRequest]["+uuid+"]")
 		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
 	}
 }

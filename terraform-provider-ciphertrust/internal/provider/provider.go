@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/google/uuid"
+
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -98,7 +100,8 @@ func (p *ciphertrustProvider) Schema(_ context.Context, _ provider.SchemaRequest
 
 // Configure prepares a HashiCups API client for data sources and resources.
 func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
-	tflog.Info(ctx, "Configuring CM client")
+	id := uuid.New().String()
+	tflog.Trace(ctx, MSG_METHOD_START+"[provider.go -> Configure]["+id+"]")
 
 	// Retrieve provider data from configuration
 	var config ciphertrustProviderModel
@@ -216,7 +219,7 @@ func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.Config
 	tflog.Debug(ctx, "Creating CM client")
 
 	// Create a new HashiCups client using the configuration values
-	client, err := NewClient(&address, &auth_domain, &domain, &username, &password)
+	client, err := NewClient(ctx, id, &address, &auth_domain, &domain, &username, &password)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create CipherTrust API Client",

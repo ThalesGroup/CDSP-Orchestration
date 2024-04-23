@@ -5,10 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -80,6 +83,9 @@ func (r *resourceCMUser) Schema(_ context.Context, _ resource.SchemaRequest, res
 
 // Create creates the resource and sets the initial Terraform state.
 func (r *resourceCMUser) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	id := uuid.New().String()
+	tflog.Trace(ctx, MSG_METHOD_START+"[resource_cm_user.go -> Create]["+id+"]")
+
 	// Retrieve values from plan
 	var plan tfsdkCMUserModel
 	var loginFlags UserLoginFlags
@@ -104,6 +110,7 @@ func (r *resourceCMUser) Create(ctx context.Context, req resource.CreateRequest,
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Create]["+id+"]")
 		resp.Diagnostics.AddError(
 			"Invalid data input: User Creation",
 			err.Error(),
@@ -111,8 +118,9 @@ func (r *resourceCMUser) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
-	response, err := r.client.PostData(ctx, URL_USER_MANAGEMENT, payloadJSON, "user_id")
+	response, err := r.client.PostData(ctx, id, URL_USER_MANAGEMENT, payloadJSON, "user_id")
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Create]["+id+"]")
 		resp.Diagnostics.AddError(
 			"Error creating user on CipherTrust Manager: ",
 			"Could not create user, unexpected error: "+err.Error(),
@@ -122,6 +130,7 @@ func (r *resourceCMUser) Create(ctx context.Context, req resource.CreateRequest,
 
 	plan.UserID = types.StringValue(response)
 
+	tflog.Trace(ctx, MSG_METHOD_END+"[resource_cm_user.go -> Create]["+id+"]")
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {

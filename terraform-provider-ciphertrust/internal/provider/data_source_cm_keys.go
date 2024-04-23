@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -339,10 +342,13 @@ func (d *dataSourceKeys) Schema(_ context.Context, _ datasource.SchemaRequest, r
 }
 
 func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	id := uuid.New().String()
+	tflog.Trace(ctx, MSG_METHOD_START+"[data_source_cm_users.go -> Read]["+id+"]")
 	var state keysDataSourceModel
 
-	jsonStr, err := d.client.GetAll(URL_KEY_MANAGEMENT)
+	jsonStr, err := d.client.GetAll(ctx, id, URL_KEY_MANAGEMENT)
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [data_source_cm_keys.go -> Read]["+id+"]")
 		resp.Diagnostics.AddError(
 			"Unable to read Keys from CM",
 			err.Error(),
@@ -355,6 +361,7 @@ func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, r
 	err = json.Unmarshal([]byte(jsonStr), &data)
 
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [data_source_cm_keys.go -> Read]["+id+"]")
 		resp.Diagnostics.AddError(
 			"Unable to read keys from CM",
 			err.Error(),
@@ -363,6 +370,7 @@ func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [data_source_cm_keys.go -> Read]["+id+"]")
 		resp.Diagnostics.AddError(
 			"Unable to read keys from CM",
 			err.Error(),
@@ -399,6 +407,7 @@ func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, r
 		state.Keys = append(state.Keys, keyState)
 	}
 
+	tflog.Trace(ctx, MSG_METHOD_END+"[data_source_cm_keys.go -> Read]["+id+"]")
 	diags := resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -415,7 +424,7 @@ func (d *dataSourceKeys) Configure(ctx context.Context, req datasource.Configure
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *hashicups.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *CipherTrust.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
 		return
