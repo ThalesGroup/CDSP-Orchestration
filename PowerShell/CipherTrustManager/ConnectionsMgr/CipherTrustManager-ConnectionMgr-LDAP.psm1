@@ -338,7 +338,7 @@ function Find-CMLDAPConnections {
         Attribute inside the user object which contains the username used to login with.
     .PARAMETER bind_dn
         Object which has permission to search under the root DN for users.
-    .PARAMETER bind_password
+    .PARAMETER bind_pass
         Password for the Bind DN object of the LDAP connection.
     .PARAMETER bindsecurecredentials
         PS Credential object containing the BIND User and Password for the LDAP connection.
@@ -360,6 +360,11 @@ function Find-CMLDAPConnections {
         Optional flag to disable verifying the server's certficate. It ignores both the operating system's CAs and root_cas if provided. Only applies if the server_url scheme is ldaps.
 
         Default: false
+    .PARAMETER root_cas
+        (Optional) CA certificate in PEM format.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+    .PARAMETER root_ca_file
+        (Optional) Specify the filename for a PEM certificate for LDAPS CA certificate. 
     .PARAMETER search_filter
         LDAP search filter which can further restrict the set of users who will be allowed to log in.
     .PARAMETER user_dn_attribute
@@ -628,6 +633,11 @@ function Get-CMLDAPConnection{
         Optional flag to disable verifying the server's certficate. It ignores both the operating system's CAs and root_cas if provided. Only applies if the server_url scheme is ldaps.
 
         Default: false
+    .PARAMETER root_cas
+        (Optional) CA certificate in PEM format.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+    .PARAMETER root_ca_file
+        (Optional) Specify the filename for a PEM certificate for LDAPS CA certificate. 
     .PARAMETER search_filter
         LDAP search filter which can further restrict the set of users who will be allowed to log in.
     .PARAMETER user_dn_attribute
@@ -993,6 +1003,11 @@ function Test-CMLDAPConnection{
         Optional flag to disable verifying the server's certficate. It ignores both the operating system's CAs and root_cas if provided. Only applies if the server_url scheme is ldaps.
 
         Default: false
+    .PARAMETER root_cas
+        (Optional) CA certificate in PEM format.
+        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
+    .PARAMETER root_ca_file
+        (Optional) Specify the filename for a PEM certificate for LDAPS CA certificate. 
     .PARAMETER search_filter
         LDAP search filter which can further restrict the set of users who will be allowed to log in.
     .PARAMETER user_dn_attribute

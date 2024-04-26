@@ -442,3 +442,15 @@ Export-ModuleMember -Function New-CMOIDCConnection
 Export-ModuleMember -Function Get-CMOIDCConnection
 Export-ModuleMember -Function Update-CMOIDCConnection
 Export-ModuleMember -Function Remove-CMOIDCConnection
+
+#Connection Manager - Connections (IdP)
+Export-ModuleMember -Function Find-CMIdPConnections
+Export-ModuleMember -Function New-CMIdPConnectionLDAP
+Export-ModuleMember -Function New-CMIdPConnectionOIDC
+Export-ModuleMember -Function Get-CMIdPConnection
+Export-ModuleMember -Function Update-CMIdPConnectionLDAP
+Export-ModuleMember -Function Update-CMIdPConnectionOIDC
+Export-ModuleMember -Function Remove-CMIdPConnection
+Export-ModuleMember -Function Remove-CMIdPConnectionLDAPInUse
+Export-ModuleMember -Function Test-CMIdPLDAPConnParameters
+Export-ModuleMember -Function Get-CMIdPConnectionUsers

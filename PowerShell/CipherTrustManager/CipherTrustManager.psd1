@@ -76,6 +76,7 @@
         "JWTDetails",
         "Utils/CipherTrustManager-Utils",
         "CertificateAuthority/CipherTrustManager-CAs",
+        "Connections/CipherTrustManager-Connections-IdP",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-Main",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-AWS",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-Akeyless",
@@ -284,8 +285,17 @@
         "New-CMOIDCConnection",
         "Get-CMOIDCConnection",
         "Update-CMOIDCConnection",
-        "Remove-CMOIDCConnection"
-
+        "Remove-CMOIDCConnection",
+        "Find-CMIdPConnections",
+        "New-CMIdPConnectionLDAP",
+        "New-CMIdPConnectionOIDC",
+        "Get-CMIdPConnection",
+        "Update-CMIdPConnectionLDAP",
+        "Update-CMIdPConnectionOIDC",
+        "Remove-CMIdPConnection",
+        "Remove-CMIdPConnectionLDAPInUse",
+        "Test-CMIdPLDAPConnParameters",
+        "Get-CMIdPConnectionUsers"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
