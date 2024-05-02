@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ConnectionMgr-SAP.psm1                                                         #
+# File:             CipherTrustManager-ConnectionMgr-SMB.psm1                                                         #
 # Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
@@ -7,11 +7,12 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
+
 ####
 # Local Variables
 ####
-$target_uri = "/connectionmgmt/services/sap-dc/connections"
-$target_uri_test = "/connectionmgmt/services/sap-dc/connection-test"
+$target_uri = "/connectionmgmt/services/smb/connections"
+$target_uri_test = "/connectionmgmt/services/smb/connection-test"
 ####
 
 #Allow for backwards compatibility with PowerShell 5.1
@@ -19,13 +20,13 @@ $target_uri_test = "/connectionmgmt/services/sap-dc/connection-test"
 #For PS 5.x to use SSL handler bypass code.
 
 if($PSVersionTable.PSVersion.Major -ge 6){
-    Write-Debug "Setting PS6+ Defaults - Connections SAP Data Custodian Module"
+    Write-Debug "Setting PS6+ Defaults - Connections SMB Module"
     $PSDefaultParameterValues = @{
         "Invoke-RestMethod:SkipCertificateCheck"=$True
         "ConvertTo-JSON:Depth"=5
     }
 }else{
-    Write-Debug "Setting PS5.1 Defaults - Connections SAP Data Custodian Module"
+    Write-Debug "Setting PS5.1 Defaults - Connections SMB Module"
     $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
     # Allow the use of self signed certificates and set TLS
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -47,19 +48,19 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 }
 
 
-#This project mirrors the "Connection Manager - Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/SAP Data Custodian Connections)
+#This project mirrors the "Connection Manager - SMB Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/SMB Connections)
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections"
-#"#/v1/connectionmgmt/services/sap-dc/connections - get"
+#Connection Manager - SMB Connections
+#"#/v1/connectionmgmt/services/smb/connections"
+#"#/v1/connectionmgmt/services/smb/connections - get"
 
 <#
     .SYNOPSIS
-        List all CipherTrust Manager SAP Data Custodian Connections
+        List all CipherTrust Manager SMB Connections
     .DESCRIPTION
         Returns a list of all connections. The results can be filtered using the query parameters.
         Results are returned in pages. Each page of results includes the total results found, and information for requesting the next page of results, using the skip and limit query parameters. 
-        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/SAP Data Custodian Connections).   
+        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/SMB Connections).   
     .PARAMETER name
         Filter by the Conection name
     .PARAMETER id
@@ -73,7 +74,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         For example, "name,-createdAt" .. will sort the results first by 'name', ascending, then by 'createdAt', descending.
     .PARAMETER products
         Filter the results based on the CipherTrust Manager products associated with the connection. 
-        Valid values are "cckm" for AWS, GCP, Azure, and Luna Connections, "ddc", "data discovery" for Hadoop connections, and "cte" for SMB connections.
+        Valid values are "backup/restore" for AWS, GCP, Azure, and Luna Connections, "ddc", "data discovery" for Hadoop connections, and "cte" for SMB connections.
     .PARAMETER meta_contains
         A valid JSON value. Only resources whose 'meta' attribute contains the JSON value will be returned.
     .PARAMETER createdBefore
@@ -91,12 +92,12 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         Filters results to those connected to at or after the specified timestamp. 
         Timestamp should be in RFC3339Nano format, e.g. 2023-12-01T23:59:59.52Z, or a relative timestamp where valid units are 'Y','M','D' representing years, months, days respectively. Negative values are also permitted. e.g. "-1Y-2M-5D".
     .EXAMPLE
-        PS> Find-CMSAPConnections -name tar*
+        PS> Find-CMSMBConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Find-CMSAPConnections {
+function Find-CMSMBConnections {
     param
     (
         [Parameter(Mandatory = $false,
@@ -118,7 +119,7 @@ function Find-CMSAPConnections {
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-    Write-Debug "Getting a List of all SAP Data Custodian Connections in CM"
+    Write-Debug "Getting a List of all SMB Connections in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
     
@@ -262,109 +263,89 @@ function Find-CMSAPConnections {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "List of all CM SAP Data Custodian Connections with supplied parameters."
+    Write-Debug "List of all CM SMB Connections with supplied parameters."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
 }    
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections"
-#"#/v1/connectionmgmt/services/sap-dc/connections - post"
+#Connection Manager - SMB Connections
+#"#/v1/connectionmgmt/services/smb/connections"
+#"#/v1/connectionmgmt/services/smb/connections - post"
 
 <#
     .SYNOPSIS
-        Create a new CipherTrust Manager SAP Data Custodian Connection. 
+        Create a new CipherTrust Manager SMB Connection. 
     .DESCRIPTION
-        Creates a new SAP Data Custodian connection. 
+        Creates a new SMB connection. 
     .PARAMETER name
         Unique connection name. This will be used in the future during login to speficy the remote connection. 
-    .PARAMETER api_endpoint
-        KMS API endpoint of the SAP Data Custodian. Provide HTTP URL with the API version in it. Only v2 version of KMS API is supported. 
-        Example - https://kms-api-demo.datacustodian.cloud.sap/kms/v2.
+    .PARAMETER target
+        Hostname or FQDN of SMB Target.
+    .PARAMETER port
+        Port where SMB service runs on host. If not specified, system will default to port 445.
     .PARAMETER username
-        SAP User
-    .PARAMETER user_secret
-        Secret/Password of the user.
+        Username for accessing SMB. If using a Domain Account for accessing the SMB share, do not add the domain to the user. Use the "-domain" switch to add the authentication domain.
+    .PARAMETER pass
+        Password for accessing SMB.
     .PARAMETER user_credentials
-        Pass a PowerShell Credential Object for the Private Key Passphrase when using an encrypted private key. 
-    .PARAMETER user_tenant
-        Tenant of the user
-    .PARAMETER technical_user_api_key
-        (Optional) API key of the technical user.
-    .PARAMETER technical_user_secret
-        (Optional) Secret/Password of the technical user.
-    .PARAMETER technical_user_credentials
-        (Optional) Pass a PowerShell Credential Object for the Technical User Credentials.
+        Pass a PowerShell Credential Object for the SMB User and Password when using the password authentication method.. 
+    .PARAMETER domain
+        User domain for SMB.
     .PARAMETER description
         (Optional) Description of the connection.
     .PARAMETER metadata
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
         e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> New-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username user -user_secret mysecret -user_tenant mytenant
+        PS> New-CMSMBConnection -name "My SMB Target" -target 192.168.1.18 -user_credentials $tempcreds -domain contoso
     .EXAMPLE
-        PS> New-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -user_credentials $SAPUserObject -user_tenant mytenant
+        PS> New-CMSMBConnection -name "My SMB Target" -target 192.168.1.18 -username smbuser -pass smbpassword 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CMSAPConnection{
+function New-CMSMBConnection{
     param(
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name,
-        [Parameter(Mandatory)] [string] $api_endpoint,
+        [Parameter(Mandatory)] [string] $target,
+        [Parameter()] [string] $port=445,
         [Parameter()] [string] $username,
-        [Parameter()] [string] $user_secret,
+        [Parameter()] [string] $pass,
         [Parameter()] [pscredential] $user_credentials,
-        [Parameter()] [string] $user_tenant,
-        [Parameter()] [string] $technical_user_api_key,
-        [Parameter()] [string] $technical_user_secret,
-        [Parameter()] [pscredential] $technical_user_credentials,
+        [Parameter()] [string] $domain,
         [Parameter()] [string] $description,
         [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an SAP Data Custodian Connection in CM"
+    Write-Debug "Creating an SMB Connection in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     # Mandatory Parameters
     $body = [ordered] @{
         "name"          = $name
-        "products"      = @("cckm")
-        "api_endpoint"  = $api_endpoint
-        "user_credentials"  = @{}
-        "technical_user_credentials"    = @{}
+        "host"          = $target
+        "port"          = $port
+        "products"      = @("cte")
     }
 
-    if((!$username -and !$user_secret) -and !$user_credentials){ 
-        return "Missing SAP Data Custodian credentials. Please try again."
+    if((!$username -and !$pass) -and !$user_credentials){ 
+        return "Missing SMB credentials. Please try again."
     }
-    if(!$user_tenant){
-        return "Missing SAP Data Custodian tenant. Please try again."
-    }
+
     if($user_credentials){
         Write-Debug "What is my credential Username? $($user_credentials.username)" 
         Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
-        $body.user_credentials.add('user', $user_credentials.username)
-        $body.user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
-        $body.user_credentials.add('tenant', $user_tenant)
+        $body.add('username', $user_credentials.username)
+        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
+        if($domain){ $body.add('domain',$domain)}
     }else{
-        if($username){ $body.user_credentials.add('user', $username) }
-        if($user_secret){ $body.user_credentials.add('secret', $user_secret) }
-        if($user_tenant){ $body.user_credentials.add('tenant', $user_tenant) }
-    }
-
-    if($technical_user_credentials){
-        Write-Debug "What is my credential Tenant API Key? $($technical_user_credentials.username)" 
-        Write-debug "What is my credential Tenant Secret? $($technical_user_credentials.password | ConvertFrom-SecureString)"
-        $body.technical_user_credentials.add('api_key', $technical_user_credentials.username)
-        $body.technical_user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($technical_user_credentials.password)))
-    }else{
-        $body.technical_user_credentials.add('api_key', $technical_user_api_key)
-        $body.technical_user_credentials.add('secret', $technical_user_secret)
+        if($username){ $body.add('username', $username) }
+        if($pass){ $body.add('password', $pass) }
+        if($domain){ $body.add('domain',$domain) }
     }
 
     if($description) { $body.add('description', $description)}
@@ -415,30 +396,30 @@ function New-CMSAPConnection{
 }    
 
 
-#Connection Manager -  SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id} - get"
+#Connection Manager -  SMB Connections
+#"#/v1/connectionmgmt/services/smb/connections/{id}"
+#"#/v1/connectionmgmt/services/smb/connections/{id} - get"
 
 <#
     .SYNOPSIS
-        Get full details on a CipherTrust Manager SAP Data Custodian Connection
+        Get full details on a CipherTrust Manager SMB Connection
     .DESCRIPTION
-        Retriving the full list of SAP Data Custodian Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of SMB Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-        The complete name of the SAP Data Custodian connection. Do not use wildcards.
+        The complete name of the SMB connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMSAPConnections cmdlet to find the appropriate id value.
+        Use the Find-CMSMBConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Get-CMSAPConnection -name "My SAP Connection"
+        PS> Get-CMSMBConnection -name "My SMB Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Get-CMSAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Get-CMSMBConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Get-CMSAPConnection{
+function Get-CMSMBConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -450,15 +431,15 @@ function Get-CMSAPConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Getting details on SAP Data Custodian Cloud Connection"
+    Write-Debug "Getting details on SMB Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSMBConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSMBConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -491,48 +472,49 @@ function Get-CMSAPConnection{
     return $response
 }    
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id} - patch"
+#Connection Manager - SMB Connections
+#"#/v1/connectionmgmt/services/smb/connections/{id}"
+#"#/v1/connectionmgmt/services/smb/connections/{id} - patch"
 
 
 <#
     .SYNOPSIS
-        Update an existing a new CipherTrust Manager SAP Data Custodian Connection.
+        Update an existing a new CipherTrust Manager SMB Connection.
     .DESCRIPTION
         Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-        Name of the existing CipherTrust Manager SAP Data Custodian connection.
+        Name of the existing CipherTrust Manager SMB connection.
     .PARAMETER id
         CipherTrust Manager "id" value of the existing DSM connection.
-    .PARAMETER api_endpoint
-        KMS API endpoint of the SAP Data Custodian. Provide HTTP URL with the API version in it. Only v2 version of KMS API is supported. 
-        Example - https://kms-api-demo.datacustodian.cloud.sap/kms/v2.
+    .PARAMETER target
+        Hostname or FQDN of SMB.
+    .PARAMETER port
+        Port where SMB service runs on host. If not specified, system will default to port 22.
+    .PARAMETER auth_method
+        Authentication type for SMB. Accepted values are "key" or "password".
     .PARAMETER username
-        SAP User
-    .PARAMETER user_secret
-        Secret/Password of the user.
+        Username for accessing SMB.
+    .PARAMETER pass
+        Password for accessing SMB.
     .PARAMETER user_credentials
-        Pass a PowerShell Credential Object for the Private Key Passphrase when using an encrypted private key. 
-    .PARAMETER user_tenant
-        Tenant of the user
-    .PARAMETER technical_user_api_key
-        (Optional) API key of the technical user.
-    .PARAMETER technical_user_secret
-        (Optional) Secret/Password of the technical user.
-    .PARAMETER technical_user_credentials
-        (Optional) Pass a PowerShell Credential Object for the Technical User Credentials.
+        Pass a PowerShell Credential Object for the SMB User and Password when using the password authentication method.. 
+    .PARAMETER public_key
+        Public key of destination host machine. It will be used to verify the host's identity by verifying key fingerprint. You can find it in /etc/ssh/ at host machine.
+    .PARAMETER target_path
+        A path where the file to be copied via SMB. 
+        Note: Use complete paths, not relative to user's home folder. 
+        Example "/home/ubuntu/datafolder" or "/opt/cm_backups"
     .PARAMETER description
         (Optional) Description of the connection.
     .PARAMETER metadata
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
         e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> Update-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
+        PS> Update-CMSMBConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Update-CMSAPConnection{
+function Update-CMSMBConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -540,29 +522,27 @@ function Update-CMSAPConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter()] [string] $api_endpoint,
+        [Parameter()] [string] $target,
+        [Parameter()] [string] $port=445,
         [Parameter()] [string] $username,
-        [Parameter()] [string] $user_secret,
+        [Parameter()] [string] $pass,
         [Parameter()] [pscredential] $user_credentials,
-        [Parameter()] [string] $user_tenant,
-        [Parameter()] [string] $technical_user_api_key,
-        [Parameter()] [string] $technical_user_secret,
-        [Parameter()] [pscredential] $technical_user_credentials,
+        [Parameter()] [string] $domain,
         [Parameter()] [string] $description,
         [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an SAP Data Custodian Connection in CM"
+    Write-Debug "Updating an SMB Connection in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSMBConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSMBConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -572,31 +552,22 @@ function Update-CMSAPConnection{
 
     # Optional Parameters
     $body = [ordered] @{
-        "user_credentials"  = @{}
-        "technical_user_credentials"    = @{}
     }
 
     if($user_credentials){
         Write-Debug "What is my credential Username? $($user_credentials.username)" 
         Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
-        $body.user_credentials.add('user', $user_credentials.username)
-        $body.user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
-        $body.user_credentials.add('tenant', $user_tenant)
+        $body.add('username', $user_credentials.username)
+        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
+        if($domain){ $body.add('domain',$domain)}
     }else{
-        if($username){ $body.user_credentials.add('user', $username) }
-        if($user_secret){ $body.user_credentials.add('secret', $user_secret) }
-        if($user_tenant){ $body.user_credentials.add('tenant', $user_tenant) }
+        if($username){ $body.add('username', $username) }
+        if($pass){ $body.add('password', $pass) }
+        if($domain){ $body.add('domain',$domain) }
     }
 
-    if($technical_user_credentials){
-        Write-Debug "What is my credential Tenant API Key? $($technical_user_credentials.username)" 
-        Write-debug "What is my credential Tenant Secret? $($technical_user_credentials.password | ConvertFrom-SecureString)"
-        $body.technical_user_credentials.add('api_key', $technical_user_credentials.username)
-        $body.technical_user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($technical_user_credentials.password)))
-    }else{
-        if($technical_user_api_key){ $body.technical_user_credentials.add('api_key', $technical_user_api_key) }
-        if($technical_user_secret){ $body.technical_user_credentials.add('secret', $technical_user_secret) }
-    }
+    if($target){ $body.add('host', $target)}
+    if($port){ $body.add('port', $port)}
     
     if($description){ $body.add('description', $description)}
     if($metadata){
@@ -641,32 +612,32 @@ function Update-CMSAPConnection{
 }    
 
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id} - delete"
+#Connection Manager - SMB Connections
+#"#/v1/connectionmgmt/services/smb/connections/{id}"
+#"#/v1/connectionmgmt/services/smb/connections/{id} - delete"
 
 <#
     .SYNOPSIS
-        Delete a CipherTrust Manager SAP Data Custodian Connection
+        Delete a CipherTrust Manager SMB  Connection
     .DESCRIPTION
-        Delete a CipherTrust Manager SAP Data Custodian Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager SMB  Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-        The complete name of the SAP Data Custodian Connection. This parameter is case-sensitive.
+        The complete name of the SMB  connection. This parameter is case-sensitive.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMSAPConnections cmdlet to find the appropriate id value.
+        Use the Find-CMSMBConnections cmdlet to find the appropriate id value.
     .PARAMETER force
         Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-        PS> Remove-CMSAPConnection -name "My SAP Connection"
+        PS> Remove-CMSMBConnection -name "My SMB Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Remove-CMSAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Remove-CMSMBConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Remove-CMSAPConnection{
+function Remove-CMSMBConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -680,15 +651,15 @@ function Remove-CMSAPConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Preparing to remove SAP Data Custodian Connection"
+    Write-Debug "Preparing to remove SMB Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSMBConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSMBConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -732,49 +703,59 @@ function Remove-CMSAPConnection{
     return "Connection Deleted."
 }    
     
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}/test - post"
+#Connection Manager - SMB Connections
+#"#/v1/connectionmgmt/services/smb/connections/{id}"
+#"#/v1/connectionmgmt/services/smb/connections/{id}/test - post"
 
 <#
     .SYNOPSIS
         Test existing connection.
     .DESCRIPTION
-        Tests that an existing connection with the given name, ID, or URI reaches the SAP Data Custodian Cloud Connection. 
+        Tests that an existing connection with the given name, ID, or URI reaches the SMB Connection. 
     .PARAMETER name
-        Name of the existing CipherTrust Manager SAP Data Custodian Cloud connection.
+        Name of the existing CipherTrust Manager SMB connection.
     .PARAMETER id
-        CipherTrust Manager "id" value of the existing SAP Data Custodian connection.
+        CipherTrust Manager "id" value of the existing SMB connection.
+    .PARAMETER path
+        Path of SMB share on the host
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMSAPConnection{
+function Test-CMSMBConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $id, 
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
-        [string] $name 
+        [string] $name,
+        [Parameter(Mandatory)] [string] $path
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Testing SAP Data Custodian Cloud Connection"
+    Write-Debug "Testing SMB Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSMBConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSMBConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{
         return "Missing Connection Identifier."
     }
 
     Write-Debug "Endpoint w Target: $($endpoint)"
+
+    #Mandatroy Parameter
+    $body = @{
+        "path"  =   $path
+    }
+
+    $jsonBody = $body | ConvertTo-Json
 
     Try {
         Test-CMJWT #Make sure we have an up-to-date jwt
@@ -784,7 +765,7 @@ function Test-CMSAPConnection{
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
         $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
-        Write-Debug "Response: $($response)"  
+        Write-Debug "Response: $($response)"
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
@@ -802,8 +783,8 @@ function Test-CMSAPConnection{
 }    
 
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connection-test - post"
+#Connection Manager - SMB Connections
+#"#/v1/connectionmgmt/services/smb/connection-test - post"
 
 <#
     .SYNOPSIS
@@ -811,7 +792,7 @@ function Test-CMSAPConnection{
     .DESCRIPTION
         Tests that the connection parameters can be used to reach the DSM account. This does not create a persistent connection.
     .PARAMETER api_endpoint
-        KMS API endpoint of the SAP Data Custodian. Provide HTTP URL with the API version in it. Only v2 version of KMS API is supported. 
+        KMS API endpoint of the SMB. Provide HTTP URL with the API version in it. Only v2 version of KMS API is supported. 
         Example - https://kms-api-demo.datacustodian.cloud.sap/kms/v2.
     .PARAMETER username
         SAP User
@@ -830,60 +811,54 @@ function Test-CMSAPConnection{
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMSAPConnParameters{
+function Test-CMSMBConnParameters{
     param(
-        [Parameter(Mandatory)] [string] $api_endpoint,
+        [Parameter(Mandatory)] [string] $target,
+        [Parameter()] [string] $port="445",
         [Parameter()] [string] $username,
-        [Parameter()] [string] $user_secret,
+        [Parameter()] [string] $pass,
         [Parameter()] [pscredential] $user_credentials,
-        [Parameter()] [string] $user_tenant,
-        [Parameter()] [string] $technical_user_api_key,
-        [Parameter()] [string] $technical_user_secret,
-        [Parameter()] [pscredential] $technical_user_credentials
+        [Parameter()] [string] $domain,
+        [Parameter()] [string] $path
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an SAP Data Custodian Connection in CM"
+    Write-Debug "Testing SMB Connection Parameter from CM"
     $endpoint = $CM_Session.REST_URL + $target_uri_test
     Write-Debug "Endpoint: $($endpoint)"
 
+
+    # Mandatory Parameters
     # Mandatory Parameters
     $body = [ordered] @{
         "name"          = $name
-        "products"      = @("cckm")
-        "api_endpoint"  = $api_endpoint
-        "user_credentials"  = @{}
-        "technical_user_credentials"    = @{}
+        "host"          = $target
+        "port"          = $port
     }
 
-    if((!$username -and !$user_secret) -and !$user_credentials){ 
-        return "Missing SAP Data Custodian credentials. Please try again."
+    if(!$path){
+        return "Missing path to test. Please try again."
+    }else{
+        $body.add('path',$path)
     }
-    if(!$user_tenant){
-        return "Missing SAP Data Custodian tenant. Please try again."
+    
+    if((!$username -and !$pass) -and !$user_credentials){ 
+        return "Missing SMB credentials. Please try again."
     }
+
     if($user_credentials){
         Write-Debug "What is my credential Username? $($user_credentials.username)" 
         Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
-        $body.user_credentials.add('user', $user_credentials.username)
-        $body.user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
-        $body.user_credentials.add('tenant', $user_tenant)
+        $body.add('username', $user_credentials.username)
+        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
+        if($domain){ $body.add('domain',$domain)}
     }else{
-        if($username){ $body.user_credentials.add('user', $username) }
-        if($user_secret){ $body.user_credentials.add('secret', $user_secret) }
-        if($user_tenant){ $body.user_credentials.add('tenant', $user_tenant) }
+        if($username){ $body.add('username', $username) }
+        if($pass){ $body.add('password', $pass) }
+        if($domain){ $body.add('domain',$domain) }
     }
 
-    if($technical_user_credentials){
-        Write-Debug "What is my credential Tenant API Key? $($technical_user_credentials.username)" 
-        Write-debug "What is my credential Tenant Secret? $($technical_user_credentials.password | ConvertFrom-SecureString)"
-        $body.technical_user_credentials.add('api_key', $technical_user_credentials.username)
-        $body.technical_user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($technical_user_credentials.password)))
-    }else{
-        $body.technical_user_credentials.add('api_key', $technical_user_api_key)
-        $body.technical_user_credentials.add('secret', $technical_user_secret)
-    }
 
     $jsonBody = $body | ConvertTo-JSON 
 
@@ -915,9 +890,9 @@ function Test-CMSAPConnParameters{
     return $response
 }  
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}/nodes"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}/nodes - get"
+#Connection Manager - SMB Connections
+#"#/v1/connectionmgmt/services/smb/connections/{id}/nodes"
+#"#/v1/connectionmgmt/services/smb/connections/{id}/nodes - get"
 
 <#
     .SYNOPSIS
@@ -928,12 +903,12 @@ function Test-CMSAPConnParameters{
         The complete name of the DSM connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMSAPConnections cmdlet to find the appropriate id value.
+        Use the Find-CMSMBConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Find-CMSAPConnectionNodes -name "My DSM Connection"
+        PS> Find-CMSMBConnectionNodes -name "My DSM Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Find-CMSAPConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Find-CMSMBConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
@@ -943,23 +918,23 @@ function Test-CMSAPConnParameters{
 ####
 # Export Module Members
 ####
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connections"
+#Connection Manager - SMB
+#/v1/connectionmgmt/services/smb/connections"
 
-Export-ModuleMember -Function Find-CMSAPConnections #/v1/connectionmgmt/services/sap-dc/connections - get"
-Export-ModuleMember -Function New-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections - post"
+Export-ModuleMember -Function Find-CMSMBConnections #/v1/connectionmgmt/services/smb/connections - get"
+Export-ModuleMember -Function New-CMSMBConnection #/v1/connectionmgmt/services/smb/connections - post"
 
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-Export-ModuleMember -Function Get-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id} - get"
-Export-ModuleMember -Function Update-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id} - patch"
-Export-ModuleMember -Function Remove-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id} - delete"
+#Connection Manager - SMB
+#/v1/connectionmgmt/services/smb/connections/{id}"
+Export-ModuleMember -Function Get-CMSMBConnection #/v1/connectionmgmt/services/smb/connections/{id} - get"
+Export-ModuleMember -Function Update-CMSMBConnection #/v1/connectionmgmt/services/smb/connections/{id} - patch"
+Export-ModuleMember -Function Remove-CMSMBConnection #/v1/connectionmgmt/services/smb/connections/{id} - delete"
 
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connections/{id}/test"
-Export-ModuleMember -Function Test-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id}/test - post"
+#Connection Manager - SMB
+#/v1/connectionmgmt/services/smb/connections/{id}/test"
+Export-ModuleMember -Function Test-CMSMBConnection #/v1/connectionmgmt/services/smb/connections/{id}/test - post"
 
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connection-test"
-Export-ModuleMember -Function Test-CMSAPConnParameters #/v1/connectionmgmt/services/sap-dc/connection-test - post"
+#Connection Manager - SMB
+#/v1/connectionmgmt/services/smb/connection-test"
+Export-ModuleMember -Function Test-CMSMBConnParameters #/v1/connectionmgmt/services/smb/connection-test - post"
 

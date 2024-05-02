@@ -458,6 +458,22 @@ Export-ModuleMember -Function Update-CMSAPConnection
 Export-ModuleMember -Function Remove-CMSAPConnection
 Export-ModuleMember -Function Test-CMSAPConnection
 Export-ModuleMember -Function Test-CMSAPConnParameters
+#Connection Manager - SCP Connections
+Export-ModuleMember -Function Find-CMSCPConnections
+Export-ModuleMember -Function New-CMSCPConnection
+Export-ModuleMember -Function Get-CMSCPConnection
+Export-ModuleMember -Function Update-CMSCPConnection
+Export-ModuleMember -Function Remove-CMSCPConnection
+Export-ModuleMember -Function Test-CMSCPConnection
+Export-ModuleMember -Function Test-CMSCPConnParameters
+#Connection Manager - SMB Connections
+Export-ModuleMember -Function Find-CMSMBConnections
+Export-ModuleMember -Function New-CMSMBConnection
+Export-ModuleMember -Function Get-CMSMBConnection
+Export-ModuleMember -Function Update-CMSMBConnection
+Export-ModuleMember -Function Remove-CMSMBConnection
+Export-ModuleMember -Function Test-CMSMBConnection
+Export-ModuleMember -Function Test-CMSMBConnParameters
 #Connection Manager - Connections (IdP)
 Export-ModuleMember -Function Find-CMIdPConnections
 Export-ModuleMember -Function New-CMIdPConnectionLDAP

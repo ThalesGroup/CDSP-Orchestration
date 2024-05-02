@@ -93,6 +93,8 @@
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-OIDC",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-Oracle",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SAP",
+        "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SCP",
+        "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SMB",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -311,7 +313,21 @@
         "Update-CMSAPConnection",
         "Remove-CMSAPConnection",
         "Test-CMSAPConnection",
-        "Test-CMSAPConnParameters"
+        "Test-CMSAPConnParameters",
+        "Find-CMSCPConnections",
+        "New-CMSCPConnection",
+        "Get-CMSCPConnection",
+        "Update-CMSCPConnection",
+        "Remove-CMSCPConnection",
+        "Test-CMSCPConnection",
+        "Test-CMSCPConnParameters",
+        "Find-CMSMBConnections",
+        "New-CMSMBConnection",
+        "Get-CMSMBConnection",
+        "Update-CMSMBConnection",
+        "Remove-CMSMBConnection",
+        "Test-CMSMBConnection",
+        "Test-CMSMBConnParameters"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

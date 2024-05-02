@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ConnectionMgr-SAP.psm1                                                         #
+# File:             CipherTrustManager-ConnectionMgr-SCP.psm1                                                         #
 # Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
@@ -7,11 +7,24 @@
 #                   Do not load this directly                                                                         #
 #######################################################################################################################
 
+#######
+# ENUM
+#######
+# Authentication Methods
+Add-Type -TypeDefinition @"
+   public enum scpAuthMethod {
+    key,
+    password
+}
+"@
+
+
 ####
 # Local Variables
 ####
-$target_uri = "/connectionmgmt/services/sap-dc/connections"
-$target_uri_test = "/connectionmgmt/services/sap-dc/connection-test"
+$target_uri = "/connectionmgmt/services/scp/connections"
+$target_uri_test = "/connectionmgmt/services/scp/connection-test"
+$target_scp_key = "/scp/public-key"
 ####
 
 #Allow for backwards compatibility with PowerShell 5.1
@@ -19,13 +32,13 @@ $target_uri_test = "/connectionmgmt/services/sap-dc/connection-test"
 #For PS 5.x to use SSL handler bypass code.
 
 if($PSVersionTable.PSVersion.Major -ge 6){
-    Write-Debug "Setting PS6+ Defaults - Connections SAP Data Custodian Module"
+    Write-Debug "Setting PS6+ Defaults - Connections SCP Module"
     $PSDefaultParameterValues = @{
         "Invoke-RestMethod:SkipCertificateCheck"=$True
         "ConvertTo-JSON:Depth"=5
     }
 }else{
-    Write-Debug "Setting PS5.1 Defaults - Connections SAP Data Custodian Module"
+    Write-Debug "Setting PS5.1 Defaults - Connections SCP Module"
     $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
     # Allow the use of self signed certificates and set TLS
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -47,19 +60,19 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 }
 
 
-#This project mirrors the "Connection Manager - Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/SAP Data Custodian Connections)
+#This project mirrors the "Connection Manager - SCP Connections" section of the API Playground of CM (/playground_v2/api/Connection Manager/SCP Connections)
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections"
-#"#/v1/connectionmgmt/services/sap-dc/connections - get"
+#Connection Manager - SCP Connections
+#"#/v1/connectionmgmt/services/scp/connections"
+#"#/v1/connectionmgmt/services/scp/connections - get"
 
 <#
     .SYNOPSIS
-        List all CipherTrust Manager SAP Data Custodian Connections
+        List all CipherTrust Manager SCP Connections
     .DESCRIPTION
         Returns a list of all connections. The results can be filtered using the query parameters.
         Results are returned in pages. Each page of results includes the total results found, and information for requesting the next page of results, using the skip and limit query parameters. 
-        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/SAP Data Custodian Connections).   
+        For additional information on query parameters consult the API Playground (https://<CM_Appliance>/playground_v2/api/Connection Manager/SCP Connections).   
     .PARAMETER name
         Filter by the Conection name
     .PARAMETER id
@@ -73,7 +86,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         For example, "name,-createdAt" .. will sort the results first by 'name', ascending, then by 'createdAt', descending.
     .PARAMETER products
         Filter the results based on the CipherTrust Manager products associated with the connection. 
-        Valid values are "cckm" for AWS, GCP, Azure, and Luna Connections, "ddc", "data discovery" for Hadoop connections, and "cte" for SMB connections.
+        Valid values are "backup/restore" for AWS, GCP, Azure, and Luna Connections, "ddc", "data discovery" for Hadoop connections, and "cte" for SMB connections.
     .PARAMETER meta_contains
         A valid JSON value. Only resources whose 'meta' attribute contains the JSON value will be returned.
     .PARAMETER createdBefore
@@ -91,12 +104,12 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         Filters results to those connected to at or after the specified timestamp. 
         Timestamp should be in RFC3339Nano format, e.g. 2023-12-01T23:59:59.52Z, or a relative timestamp where valid units are 'Y','M','D' representing years, months, days respectively. Negative values are also permitted. e.g. "-1Y-2M-5D".
     .EXAMPLE
-        PS> Find-CMSAPConnections -name tar*
+        PS> Find-CMSCPConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Find-CMSAPConnections {
+function Find-CMSCPConnections {
     param
     (
         [Parameter(Mandatory = $false,
@@ -118,7 +131,7 @@ function Find-CMSAPConnections {
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
-    Write-Debug "Getting a List of all SAP Data Custodian Connections in CM"
+    Write-Debug "Getting a List of all SCP Connections in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
     
@@ -262,109 +275,104 @@ function Find-CMSAPConnections {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop
         }
     }
-    Write-Debug "List of all CM SAP Data Custodian Connections with supplied parameters."
+    Write-Debug "List of all CM SCP Connections with supplied parameters."
     Write-Debug "End: $($MyInvocation.MyCommand.Name)"
     return $response
 }    
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections"
-#"#/v1/connectionmgmt/services/sap-dc/connections - post"
+#Connection Manager - SCP Connections
+#"#/v1/connectionmgmt/services/scp/connections"
+#"#/v1/connectionmgmt/services/scp/connections - post"
 
 <#
     .SYNOPSIS
-        Create a new CipherTrust Manager SAP Data Custodian Connection. 
+        Create a new CipherTrust Manager SCP Connection. 
     .DESCRIPTION
-        Creates a new SAP Data Custodian connection. 
+        Creates a new SCP connection. 
     .PARAMETER name
         Unique connection name. This will be used in the future during login to speficy the remote connection. 
-    .PARAMETER api_endpoint
-        KMS API endpoint of the SAP Data Custodian. Provide HTTP URL with the API version in it. Only v2 version of KMS API is supported. 
-        Example - https://kms-api-demo.datacustodian.cloud.sap/kms/v2.
+    .PARAMETER target
+        Hostname or FQDN of SCP.
+    .PARAMETER port
+        Port where SCP service runs on host. If not specified, system will default to port 22.
+    .PARAMETER auth_method
+        Authentication type for SCP. Accepted values are "key" or "password".
     .PARAMETER username
-        SAP User
-    .PARAMETER user_secret
-        Secret/Password of the user.
+        Username for accessing SCP.
+    .PARAMETER pass
+        Password for accessing SCP.
     .PARAMETER user_credentials
-        Pass a PowerShell Credential Object for the Private Key Passphrase when using an encrypted private key. 
-    .PARAMETER user_tenant
-        Tenant of the user
-    .PARAMETER technical_user_api_key
-        (Optional) API key of the technical user.
-    .PARAMETER technical_user_secret
-        (Optional) Secret/Password of the technical user.
-    .PARAMETER technical_user_credentials
-        (Optional) Pass a PowerShell Credential Object for the Technical User Credentials.
+        Pass a PowerShell Credential Object for the SCP User and Password when using the password authentication method.. 
+    .PARAMETER public_key
+        Public key of destination host machine. It will be used to verify the host's identity by verifying key fingerprint. You can find it in /etc/ssh/ at host machine.
+    .PARAMETER target_path
+        A path where the file to be copied via SCP. 
+        Note: Use complete paths, not relative to user's home folder. 
+        Example "/home/ubuntu/datafolder" or "/opt/cm_backups"
     .PARAMETER description
         (Optional) Description of the connection.
     .PARAMETER metadata
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
         e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> New-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username user -user_secret mysecret -user_tenant mytenant
+        PS> New-CMSCPConnection -name "My Backup Target" -target 192.168.1.19 -auth_method password -user_credentials $tempcreds -target_path "/opt/ciphertrust_backup" -public_key "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLMaZxKfKeEsEOrONz5gaIac+J9XA+JGTSDMWeA7dDl56EQcyv6nTKsEm2hO5iILGKJH1TBw+fiZOU+qWM8wZu4="
     .EXAMPLE
-        PS> New-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -user_credentials $SAPUserObject -user_tenant mytenant
+        PS> New-CMSCPConnection -name "My Backup Target" -target 192.168.1.19 -auth_method password -username backupuser -pass backuppassword -target_path "/opt/ciphertrust_backup" -public_key "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLMaZxKfKeEsEOrONz5gaIac+J9XA+JGTSDMWeA7dDl56EQcyv6nTKsEm2hO5iILGKJH1TBw+fiZOU+qWM8wZu4="
+    .EXAMPLE
+        PS> New-CMSCPConnection -name "My Backup Target" -target 192.168.1.19 -auth_method key -username backupuser -target_path "/opt/ciphertrust_backup" -public_key "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLMaZxKfKeEsEOrONz5gaIac+J9XA+JGTSDMWeA7dDl56EQcyv6nTKsEm2hO5iILGKJH1TBw+fiZOU+qWM8wZu4="
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function New-CMSAPConnection{
+function New-CMSCPConnection{
     param(
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name,
-        [Parameter(Mandatory)] [string] $api_endpoint,
+        [Parameter(Mandatory)] [string] $target,
+        [Parameter()] [int] $port=22,
+        [Parameter(Mandatory)] [scpAuthMethod] $auth_method,
         [Parameter()] [string] $username,
-        [Parameter()] [string] $user_secret,
+        [Parameter()] [string] $pass,
         [Parameter()] [pscredential] $user_credentials,
-        [Parameter()] [string] $user_tenant,
-        [Parameter()] [string] $technical_user_api_key,
-        [Parameter()] [string] $technical_user_secret,
-        [Parameter()] [pscredential] $technical_user_credentials,
+        [Parameter(Mandatory)] [string] $public_key,
+        [Parameter(Mandatory)] [string] $target_path,
         [Parameter()] [string] $description,
         [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an SAP Data Custodian Connection in CM"
+    Write-Debug "Creating an SCP Connection in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     # Mandatory Parameters
     $body = [ordered] @{
         "name"          = $name
-        "products"      = @("cckm")
-        "api_endpoint"  = $api_endpoint
-        "user_credentials"  = @{}
-        "technical_user_credentials"    = @{}
+        "host"          = $target
+        "port"          = $port
+        "auth_method"   = $auth_method.ToString()
+        "public_key"    = $public_key
+        "path_to"       = $target_path
+        "products"      = @("backup/restore")
     }
 
-    if((!$username -and !$user_secret) -and !$user_credentials){ 
-        return "Missing SAP Data Custodian credentials. Please try again."
-    }
-    if(!$user_tenant){
-        return "Missing SAP Data Custodian tenant. Please try again."
-    }
-    if($user_credentials){
-        Write-Debug "What is my credential Username? $($user_credentials.username)" 
-        Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
-        $body.user_credentials.add('user', $user_credentials.username)
-        $body.user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
-        $body.user_credentials.add('tenant', $user_tenant)
-    }else{
-        if($username){ $body.user_credentials.add('user', $username) }
-        if($user_secret){ $body.user_credentials.add('secret', $user_secret) }
-        if($user_tenant){ $body.user_credentials.add('tenant', $user_tenant) }
-    }
+    if($auth_method -eq "key"){
+        $body.add('username',$username)
+    }elseif ($auth_method -eq "password") {
+        if((!$username -and !$pass) -and !$user_credentials){ 
+            return "Missing SCP credentials. Please try again."
+        }
 
-    if($technical_user_credentials){
-        Write-Debug "What is my credential Tenant API Key? $($technical_user_credentials.username)" 
-        Write-debug "What is my credential Tenant Secret? $($technical_user_credentials.password | ConvertFrom-SecureString)"
-        $body.technical_user_credentials.add('api_key', $technical_user_credentials.username)
-        $body.technical_user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($technical_user_credentials.password)))
-    }else{
-        $body.technical_user_credentials.add('api_key', $technical_user_api_key)
-        $body.technical_user_credentials.add('secret', $technical_user_secret)
+        if($user_credentials){
+            Write-Debug "What is my credential Username? $($user_credentials.username)" 
+            Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
+            $body.add('username', $user_credentials.username)
+            $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
+        }else{
+            if($username){ $body.add('username', $username) }
+            if($pass){ $body.add('password', $pass) }
+        }
     }
 
     if($description) { $body.add('description', $description)}
@@ -392,6 +400,13 @@ function New-CMSAPConnection{
         #Write-Debug "Insert REST API call Here."
         $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json' -ErrorVariable apiError
         Write-Debug "Response: $($response)"  
+        if($auth_method -eq "key"){
+            $endpoint = $CM_Session.REST_URL + $target_scp_key
+            Write-Debug "CM SCP Key Endpoint: $($endpoint)"
+            $cm_public_key = Invoke-RestMethod  -Method 'GET' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json' -ErrorVariable apiError
+            Write-Host "`nCipherTrust Manager Public Key for Authentication:" -ForegroundColor Red
+            Write-Host "$($cm_public_key)`n`nBe sure to copy this key to the target's user's authorized_keys file."
+        }
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
@@ -415,30 +430,30 @@ function New-CMSAPConnection{
 }    
 
 
-#Connection Manager -  SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id} - get"
+#Connection Manager -  SCP Connections
+#"#/v1/connectionmgmt/services/scp/connections/{id}"
+#"#/v1/connectionmgmt/services/scp/connections/{id} - get"
 
 <#
     .SYNOPSIS
-        Get full details on a CipherTrust Manager SAP Data Custodian Connection
+        Get full details on a CipherTrust Manager SCP Connection
     .DESCRIPTION
-        Retriving the full list of SAP Data Custodian Connections omits certain values. Use this tool to get the complete details.
+        Retriving the full list of SCP Connections omits certain values. Use this tool to get the complete details.
     .PARAMETER name
-        The complete name of the SAP Data Custodian connection. Do not use wildcards.
+        The complete name of the SCP connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMSAPConnections cmdlet to find the appropriate id value.
+        Use the Find-CMSCPConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Get-CMSAPConnection -name "My SAP Connection"
+        PS> Get-CMSCPConnection -name "My Backup Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Get-CMSAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Get-CMSCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Get-CMSAPConnection{
+function Get-CMSCPConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -450,15 +465,15 @@ function Get-CMSAPConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Getting details on SAP Data Custodian Cloud Connection"
+    Write-Debug "Getting details on SCP Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSCPConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -491,48 +506,49 @@ function Get-CMSAPConnection{
     return $response
 }    
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id} - patch"
+#Connection Manager - SCP Connections
+#"#/v1/connectionmgmt/services/scp/connections/{id}"
+#"#/v1/connectionmgmt/services/scp/connections/{id} - patch"
 
 
 <#
     .SYNOPSIS
-        Update an existing a new CipherTrust Manager SAP Data Custodian Connection.
+        Update an existing a new CipherTrust Manager SCP Connection.
     .DESCRIPTION
         Updates a connection with the given name, ID or URI. The parameters to be updated are specified in the request body.
     .PARAMETER name
-        Name of the existing CipherTrust Manager SAP Data Custodian connection.
+        Name of the existing CipherTrust Manager SCP connection.
     .PARAMETER id
         CipherTrust Manager "id" value of the existing DSM connection.
-    .PARAMETER api_endpoint
-        KMS API endpoint of the SAP Data Custodian. Provide HTTP URL with the API version in it. Only v2 version of KMS API is supported. 
-        Example - https://kms-api-demo.datacustodian.cloud.sap/kms/v2.
+    .PARAMETER target
+        Hostname or FQDN of SCP.
+    .PARAMETER port
+        Port where SCP service runs on host. If not specified, system will default to port 22.
+    .PARAMETER auth_method
+        Authentication type for SCP. Accepted values are "key" or "password".
     .PARAMETER username
-        SAP User
-    .PARAMETER user_secret
-        Secret/Password of the user.
+        Username for accessing SCP.
+    .PARAMETER pass
+        Password for accessing SCP.
     .PARAMETER user_credentials
-        Pass a PowerShell Credential Object for the Private Key Passphrase when using an encrypted private key. 
-    .PARAMETER user_tenant
-        Tenant of the user
-    .PARAMETER technical_user_api_key
-        (Optional) API key of the technical user.
-    .PARAMETER technical_user_secret
-        (Optional) Secret/Password of the technical user.
-    .PARAMETER technical_user_credentials
-        (Optional) Pass a PowerShell Credential Object for the Technical User Credentials.
+        Pass a PowerShell Credential Object for the SCP User and Password when using the password authentication method.. 
+    .PARAMETER public_key
+        Public key of destination host machine. It will be used to verify the host's identity by verifying key fingerprint. You can find it in /etc/ssh/ at host machine.
+    .PARAMETER target_path
+        A path where the file to be copied via SCP. 
+        Note: Use complete paths, not relative to user's home folder. 
+        Example "/home/ubuntu/datafolder" or "/opt/cm_backups"
     .PARAMETER description
         (Optional) Description of the connection.
     .PARAMETER metadata
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
         e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> Update-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
+        PS> Update-CMSCPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Update-CMSAPConnection{
+function Update-CMSCPConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -540,29 +556,29 @@ function Update-CMSAPConnection{
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter()] [string] $api_endpoint,
+        [Parameter()] [string] $target,
+        [Parameter()] [int] $port,
+        [Parameter()] [scpAuthMethod] $auth_method,
         [Parameter()] [string] $username,
-        [Parameter()] [string] $user_secret,
+        [Parameter()] [string] $pass,
         [Parameter()] [pscredential] $user_credentials,
-        [Parameter()] [string] $user_tenant,
-        [Parameter()] [string] $technical_user_api_key,
-        [Parameter()] [string] $technical_user_secret,
-        [Parameter()] [pscredential] $technical_user_credentials,
+        [Parameter()] [string] $public_key,
+        [Parameter()] [string] $target_path,
         [Parameter()] [string] $description,
         [Parameter()] [string[]] $metadata
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an SAP Data Custodian Connection in CM"
+    Write-Debug "Creating an SCP Connection in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSCPConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -570,33 +586,26 @@ function Update-CMSAPConnection{
 
     Write-Debug "Endpoint w Target: $($endpoint)"
 
-    # Optional Parameters
+    # Mandatory Parameters
     $body = [ordered] @{
-        "user_credentials"  = @{}
-        "technical_user_credentials"    = @{}
     }
 
     if($user_credentials){
         Write-Debug "What is my credential Username? $($user_credentials.username)" 
         Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
-        $body.user_credentials.add('user', $user_credentials.username)
-        $body.user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
-        $body.user_credentials.add('tenant', $user_tenant)
+        $body.add('username', $user_credentials.username)
+        $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
     }else{
-        if($username){ $body.user_credentials.add('user', $username) }
-        if($user_secret){ $body.user_credentials.add('secret', $user_secret) }
-        if($user_tenant){ $body.user_credentials.add('tenant', $user_tenant) }
+        if($username){ $body.add('username', $username) }
+        if($pass){ $body.add('password', $pass) }
     }
 
-    if($technical_user_credentials){
-        Write-Debug "What is my credential Tenant API Key? $($technical_user_credentials.username)" 
-        Write-debug "What is my credential Tenant Secret? $($technical_user_credentials.password | ConvertFrom-SecureString)"
-        $body.technical_user_credentials.add('api_key', $technical_user_credentials.username)
-        $body.technical_user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($technical_user_credentials.password)))
-    }else{
-        if($technical_user_api_key){ $body.technical_user_credentials.add('api_key', $technical_user_api_key) }
-        if($technical_user_secret){ $body.technical_user_credentials.add('secret', $technical_user_secret) }
-    }
+    if($target){ $body.add('host', $target)}
+    if($port){ $body.add('port', $port)}
+    if($auth_method){ $body.add('auth_method', $auth_method.ToString())}
+    if($public_key){ $body.add('public_key', $public_key)}
+    if($target_path){ $body.add('path_to', $target_path)}
+
     
     if($description){ $body.add('description', $description)}
     if($metadata){
@@ -641,32 +650,32 @@ function Update-CMSAPConnection{
 }    
 
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id} - delete"
+#Connection Manager - SCP Connections
+#"#/v1/connectionmgmt/services/scp/connections/{id}"
+#"#/v1/connectionmgmt/services/scp/connections/{id} - delete"
 
 <#
     .SYNOPSIS
-        Delete a CipherTrust Manager SAP Data Custodian Connection
+        Delete a CipherTrust Manager SCP  Connection
     .DESCRIPTION
-        Delete a CipherTrust Manager SAP Data Custodian Connection. USE EXTREME CAUTION. This cannot be undone.
+        Delete a CipherTrust Manager SCP  Connection. USE EXTREME CAUTION. This cannot be undone.
     .PARAMETER name
-        The complete name of the SAP Data Custodian Connection. This parameter is case-sensitive.
+        The complete name of the SCP  connection. This parameter is case-sensitive.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMSAPConnections cmdlet to find the appropriate id value.
+        Use the Find-CMSCPConnections cmdlet to find the appropriate id value.
     .PARAMETER force
         Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
-        PS> Remove-CMSAPConnection -name "My SAP Connection"
+        PS> Remove-CMSCPConnection -name "My Backup Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Remove-CMSAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Remove-CMSCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Remove-CMSAPConnection{
+function Remove-CMSCPConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -680,15 +689,15 @@ function Remove-CMSAPConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Preparing to remove SAP Data Custodian Connection"
+    Write-Debug "Preparing to remove SCP Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSCPConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
         return "Missing Connection Identifier."
@@ -732,23 +741,23 @@ function Remove-CMSAPConnection{
     return "Connection Deleted."
 }    
     
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}/test - post"
+#Connection Manager - SCP Connections
+#"#/v1/connectionmgmt/services/scp/connections/{id}"
+#"#/v1/connectionmgmt/services/scp/connections/{id}/test - post"
 
 <#
     .SYNOPSIS
         Test existing connection.
     .DESCRIPTION
-        Tests that an existing connection with the given name, ID, or URI reaches the SAP Data Custodian Cloud Connection. 
+        Tests that an existing connection with the given name, ID, or URI reaches the SCP Connection. 
     .PARAMETER name
-        Name of the existing CipherTrust Manager SAP Data Custodian Cloud connection.
+        Name of the existing CipherTrust Manager SCP connection.
     .PARAMETER id
-        CipherTrust Manager "id" value of the existing SAP Data Custodian connection.
+        CipherTrust Manager "id" value of the existing SCP connection.
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMSAPConnection{
+function Test-CMSCPConnection{
     param(
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)]
@@ -760,15 +769,15 @@ function Test-CMSAPConnection{
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Testing SAP Data Custodian Cloud Connection"
+    Write-Debug "Testing SCP Connection"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
-        if((Find-CMSAPConnections -name $name).total -eq 0){ return "Connection not found."}
-        $id = (Find-CMSAPConnections -name $name).resources[0].id 
+        if((Find-CMSCPConnections -name $name).total -eq 0){ return "Connection not found."}
+        $id = (Find-CMSCPConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{
         return "Missing Connection Identifier."
@@ -784,7 +793,7 @@ function Test-CMSAPConnection{
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
         $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
-        Write-Debug "Response: $($response)"  
+        Write-Debug "Response: $($response)"
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
@@ -802,87 +811,79 @@ function Test-CMSAPConnection{
 }    
 
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connection-test - post"
+#Connection Manager - SCP Connections
+#"#/v1/connectionmgmt/services/scp/connection-test - post"
 
 <#
     .SYNOPSIS
         Test connection parameters for a non-existent connection. 
     .DESCRIPTION
         Tests that the connection parameters can be used to reach the DSM account. This does not create a persistent connection.
-    .PARAMETER api_endpoint
-        KMS API endpoint of the SAP Data Custodian. Provide HTTP URL with the API version in it. Only v2 version of KMS API is supported. 
-        Example - https://kms-api-demo.datacustodian.cloud.sap/kms/v2.
+    .PARAMETER target
+        Hostname or FQDN of SCP.
+    .PARAMETER port
+        Port where SCP service runs on host. If not specified, system will default to port 22.
+    .PARAMETER auth_method
+        Authentication type for SCP. Accepted values are "key" or "password".
     .PARAMETER username
-        SAP User
-    .PARAMETER user_secret
-        Secret/Password of the user.
+        Username for accessing SCP.
+    .PARAMETER pass
+        Password for accessing SCP.
     .PARAMETER user_credentials
-        Pass a PowerShell Credential Object for the Private Key Passphrase when using an encrypted private key. 
-    .PARAMETER user_tenant
-        Tenant of the user
-    .PARAMETER technical_user_api_key
-        (Optional) API key of the technical user.
-    .PARAMETER technical_user_secret
-        (Optional) Secret/Password of the technical user.
-    .PARAMETER technical_user_credentials
-        (Optional) Pass a PowerShell Credential Object for the Technical User Credentials.
+        Pass a PowerShell Credential Object for the SCP User and Password when using the password authentication method.. 
+    .PARAMETER public_key
+        Public key of destination host machine. It will be used to verify the host's identity by verifying key fingerprint. You can find it in /etc/ssh/ at host machine.
+    .PARAMETER target_path
+        A path where the file to be copied via SCP. 
+        Note: Use complete paths, not relative to user's home folder. 
+        Example "/home/ubuntu/datafolder" or "/opt/cm_backups"
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
-function Test-CMSAPConnParameters{
+function Test-CMSCPConnParameters{
     param(
-        [Parameter(Mandatory)] [string] $api_endpoint,
+        [Parameter(Mandatory)] [string] $target,
+        [Parameter()] [int] $port=22,
+        [Parameter(Mandatory)] [scpAuthMethod] $auth_method,
         [Parameter()] [string] $username,
-        [Parameter()] [string] $user_secret,
+        [Parameter()] [string] $pass,
         [Parameter()] [pscredential] $user_credentials,
-        [Parameter()] [string] $user_tenant,
-        [Parameter()] [string] $technical_user_api_key,
-        [Parameter()] [string] $technical_user_secret,
-        [Parameter()] [pscredential] $technical_user_credentials
+        [Parameter(Mandatory)] [string] $public_key,
+        [Parameter(Mandatory)] [string] $target_path
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating an SAP Data Custodian Connection in CM"
+    Write-Debug "Testing SCP Parameters in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri_test
     Write-Debug "Endpoint: $($endpoint)"
 
+
     # Mandatory Parameters
     $body = [ordered] @{
-        "name"          = $name
-        "products"      = @("cckm")
-        "api_endpoint"  = $api_endpoint
-        "user_credentials"  = @{}
-        "technical_user_credentials"    = @{}
+        "host"          = $target
+        "port"          = $port
+        "auth_method"   = $auth_method.ToString()
+        "public_key"    = $public_key
+        "path_to"       = $target_path
     }
 
-    if((!$username -and !$user_secret) -and !$user_credentials){ 
-        return "Missing SAP Data Custodian credentials. Please try again."
-    }
-    if(!$user_tenant){
-        return "Missing SAP Data Custodian tenant. Please try again."
-    }
-    if($user_credentials){
-        Write-Debug "What is my credential Username? $($user_credentials.username)" 
-        Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
-        $body.user_credentials.add('user', $user_credentials.username)
-        $body.user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
-        $body.user_credentials.add('tenant', $user_tenant)
-    }else{
-        if($username){ $body.user_credentials.add('user', $username) }
-        if($user_secret){ $body.user_credentials.add('secret', $user_secret) }
-        if($user_tenant){ $body.user_credentials.add('tenant', $user_tenant) }
-    }
+    if($auth_method -eq "key"){
+        $body.add('username',$username)
+    }elseif ($auth_method -eq "password") {
+        if((!$username -and !$pass) -and !$user_credentials){ 
+            return "Missing SCP credentials. Please try again."
+        }
 
-    if($technical_user_credentials){
-        Write-Debug "What is my credential Tenant API Key? $($technical_user_credentials.username)" 
-        Write-debug "What is my credential Tenant Secret? $($technical_user_credentials.password | ConvertFrom-SecureString)"
-        $body.technical_user_credentials.add('api_key', $technical_user_credentials.username)
-        $body.technical_user_credentials.add('secret', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($technical_user_credentials.password)))
-    }else{
-        $body.technical_user_credentials.add('api_key', $technical_user_api_key)
-        $body.technical_user_credentials.add('secret', $technical_user_secret)
+        if($user_credentials){
+            Write-Debug "What is my credential Username? $($user_credentials.username)" 
+            Write-debug "What is my credential User Secret/Password? $($user_credentials.password | ConvertFrom-SecureString)"
+            $body.add('username', $user_credentials.username)
+            $body.add('password', [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($user_credentials.password)))
+        }else{
+            if($username){ $body.add('username', $username) }
+            if($pass){ $body.add('password', $pass) }
+        }
     }
 
     $jsonBody = $body | ConvertTo-JSON 
@@ -915,9 +916,9 @@ function Test-CMSAPConnParameters{
     return $response
 }  
 
-#Connection Manager - SAP Data Custodian Connections
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}/nodes"
-#"#/v1/connectionmgmt/services/sap-dc/connections/{id}/nodes - get"
+#Connection Manager - SCP Connections
+#"#/v1/connectionmgmt/services/scp/connections/{id}/nodes"
+#"#/v1/connectionmgmt/services/scp/connections/{id}/nodes - get"
 
 <#
     .SYNOPSIS
@@ -928,12 +929,12 @@ function Test-CMSAPConnParameters{
         The complete name of the DSM connection. Do not use wildcards.
     .PARAMETER id
         The CipherTrust manager "id" value for the connection.
-        Use the Find-CMSAPConnections cmdlet to find the appropriate id value.
+        Use the Find-CMSCPConnections cmdlet to find the appropriate id value.
     .EXAMPLE
-        PS> Find-CMSAPConnectionNodes -name "My DSM Connection"
+        PS> Find-CMSCPConnectionNodes -name "My DSM Connection"
         Use the complete name of the connection. 
     .EXAMPLE
-        PS> Find-CMSAPConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
+        PS> Find-CMSCPConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
@@ -943,23 +944,23 @@ function Test-CMSAPConnParameters{
 ####
 # Export Module Members
 ####
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connections"
+#Connection Manager - SCP
+#/v1/connectionmgmt/services/scp/connections"
 
-Export-ModuleMember -Function Find-CMSAPConnections #/v1/connectionmgmt/services/sap-dc/connections - get"
-Export-ModuleMember -Function New-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections - post"
+Export-ModuleMember -Function Find-CMSCPConnections #/v1/connectionmgmt/services/scp/connections - get"
+Export-ModuleMember -Function New-CMSCPConnection #/v1/connectionmgmt/services/scp/connections - post"
 
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connections/{id}"
-Export-ModuleMember -Function Get-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id} - get"
-Export-ModuleMember -Function Update-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id} - patch"
-Export-ModuleMember -Function Remove-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id} - delete"
+#Connection Manager - SCP
+#/v1/connectionmgmt/services/scp/connections/{id}"
+Export-ModuleMember -Function Get-CMSCPConnection #/v1/connectionmgmt/services/scp/connections/{id} - get"
+Export-ModuleMember -Function Update-CMSCPConnection #/v1/connectionmgmt/services/scp/connections/{id} - patch"
+Export-ModuleMember -Function Remove-CMSCPConnection #/v1/connectionmgmt/services/scp/connections/{id} - delete"
 
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connections/{id}/test"
-Export-ModuleMember -Function Test-CMSAPConnection #/v1/connectionmgmt/services/sap-dc/connections/{id}/test - post"
+#Connection Manager - SCP
+#/v1/connectionmgmt/services/scp/connections/{id}/test"
+Export-ModuleMember -Function Test-CMSCPConnection #/v1/connectionmgmt/services/scp/connections/{id}/test - post"
 
-#Connection Manager - SAP Data Custodian
-#/v1/connectionmgmt/services/sap-dc/connection-test"
-Export-ModuleMember -Function Test-CMSAPConnParameters #/v1/connectionmgmt/services/sap-dc/connection-test - post"
+#Connection Manager - SCP
+#/v1/connectionmgmt/services/scp/connection-test"
+Export-ModuleMember -Function Test-CMSCPConnParameters #/v1/connectionmgmt/services/scp/connection-test - post"
 
