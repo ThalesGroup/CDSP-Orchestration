@@ -442,7 +442,22 @@ Export-ModuleMember -Function New-CMOIDCConnection
 Export-ModuleMember -Function Get-CMOIDCConnection
 Export-ModuleMember -Function Update-CMOIDCConnection
 Export-ModuleMember -Function Remove-CMOIDCConnection
-
+#Connection Manager - Oracle Cloud Infrastructure (OCI) Connections
+Export-ModuleMember -Function Find-CMOCIConnections
+Export-ModuleMember -Function New-CMOCIConnection
+Export-ModuleMember -Function Get-CMOCIConnection
+Export-ModuleMember -Function Update-CMOCIConnection
+Export-ModuleMember -Function Remove-CMOCIConnection
+Export-ModuleMember -Function Test-CMOCIConnection
+Export-ModuleMember -Function Test-CMOCIConnParameters
+#Connection Manager - SAP Data Custodians Connections
+Export-ModuleMember -Function Find-CMSAPConnections
+Export-ModuleMember -Function New-CMSAPConnection
+Export-ModuleMember -Function Get-CMSAPConnection
+Export-ModuleMember -Function Update-CMSAPConnection
+Export-ModuleMember -Function Remove-CMSAPConnection
+Export-ModuleMember -Function Test-CMSAPConnection
+Export-ModuleMember -Function Test-CMSAPConnParameters
 #Connection Manager - Connections (IdP)
 Export-ModuleMember -Function Find-CMIdPConnections
 Export-ModuleMember -Function New-CMIdPConnectionLDAP

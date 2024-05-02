@@ -91,6 +91,8 @@
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-LunaHSMConnection",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-LunaHSMSTCPartitions",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-OIDC",
+        "ConnectionsMgr/CipherTrustManager-ConnectionMgr-Oracle",
+        "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SAP",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -295,7 +297,21 @@
         "Remove-CMIdPConnection",
         "Remove-CMIdPConnectionLDAPInUse",
         "Test-CMIdPLDAPConnParameters",
-        "Get-CMIdPConnectionUsers"
+        "Get-CMIdPConnectionUsers",
+        "Find-CMOCIConnections",
+        "New-CMOCIConnection",
+        "Get-CMOCIConnection",
+        "Update-CMOCIConnection",
+        "Remove-CMOCIConnection",
+        "Test-CMOCIConnection",
+        "Test-CMOCIConnParameters",
+        "Find-CMSAPConnections",
+        "New-CMSAPConnection",
+        "Get-CMSAPConnection",
+        "Update-CMSAPConnection",
+        "Remove-CMSAPConnection",
+        "Test-CMSAPConnection",
+        "Test-CMSAPConnParameters"
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

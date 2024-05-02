@@ -1270,7 +1270,7 @@ function Test-CMIdPLDAPConnParameters{
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
-        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json' -ErrorVariable apiError
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -1421,6 +1421,9 @@ function Get-CMIdPConnectionUsers{
         $StatusCode = $_.Exception.Response.StatusCode
         if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
+        }
+        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::UnprocessableEntity) {
+            Write-Error "Error $([int]$StatusCode) $($StatusCode): Invalid JSON.`n$($apiError.Message)" -ErrorAction Stop
         }
         else {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): $($_.Exception.Response.ReasonPhrase)" -ErrorAction Stop

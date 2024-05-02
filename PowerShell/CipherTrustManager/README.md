@@ -52,6 +52,8 @@ Connect-CipherTrustManager `
     │   ├── CipherTrustManager-ConnectionMgr-LunaHSMServer  	# Manage the creation, deletion, and testing of connection to Luna Network HSMs.
     │   ├── CipherTrustManager-ConnectionMgr-LunaHSMSTCPartitions # Manage the creation, deletion, and testing of connection of Luna STC Partitions. (EXPERIMENTAL)
     │   ├── CipherTrustManager-ConnectionMgr-OIDC               # Manage the creation, deletion, and testing of connection to an OIDC Provider for CTE Usage.
+    │   ├── CipherTrustManager-ConnectionMgr-Oracle             # Manage the creation, deletion, and testing of connection to an Oracle Cloud Infrastructure instance..
+    │   ├── CipherTrustManager-ConnectionMgr-OIDC               # Manage the creation, deletion, and testing of connection to a SAP Data Custodian instance.
     ├── CCKM                                                	# CipherTrust Cloud Key Manager can manage the lifecycle of CSP keys as well as create them
     │   ├── CipherTrustManager-CCKM-AWSCKS.psm1             	# Manage keys within AWS
     ├── DataProtection                                      	# Data protection is a centralized place for all Application and Database encryption configuration.
