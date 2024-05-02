@@ -474,6 +474,14 @@ Export-ModuleMember -Function Update-CMSMBConnection
 Export-ModuleMember -Function Remove-CMSMBConnection
 Export-ModuleMember -Function Test-CMSMBConnection
 Export-ModuleMember -Function Test-CMSMBConnParameters
+#Connection Manager - Syslog Connections
+Export-ModuleMember -Function Find-CMSyslogConnections
+Export-ModuleMember -Function New-CMSyslogConnection
+Export-ModuleMember -Function Get-CMSyslogConnection
+Export-ModuleMember -Function Update-CMSyslogConnection
+Export-ModuleMember -Function Remove-CMSyslogConnection
+Export-ModuleMember -Function Test-CMSyslogConnection
+Export-ModuleMember -Function Test-CMSyslogConnParameters
 #Connection Manager - Connections (IdP)
 Export-ModuleMember -Function Find-CMIdPConnections
 Export-ModuleMember -Function New-CMIdPConnectionLDAP

@@ -1,5 +1,5 @@
 #######################################################################################################################
-# File:             CipherTrustManager-ConnectionMgr-Loki.psm1                                               #
+# File:             CipherTrustManager-ConnectionMgr-Loki.psm1                                                        #
 # Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
@@ -459,7 +459,7 @@ function Get-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
+        if((Find-CMLokiConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -580,7 +580,7 @@ function Update-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
+        if((Find-CMLokiConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -694,7 +694,7 @@ function Remove-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id        
     }elseif($name){ 
-        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
+        if((Find-CMLokiConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id
     }else{
@@ -752,27 +752,6 @@ function Remove-CMLokiConnection{
         Name of the existing CipherTrust Manager Loki connection.
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Loki connection.
-    .PARAMETER target
-        IP for Hostname/FQDN of the log-forwarder server.
-    .PARAMETER port
-        Port of the log-forwarder server.
-    .PARAMETER ca_cert
-        (Optional) CA certificate in PEM format.
-        While it can be used from the command-line, the switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
-    .PARAMETER ca_certfile
-        (Optional) Specify the filename for a PEM certificate for Loki CA certificate. 
-    .PARAMETER http_securecreds
-        (Optional) Pass a PowerShell Credential Object only. Do not specify usersname or password.
-    .PARAMETER http_pass
-        (Optional) HTTP basic auth password.
-    .PARAMETER http_user
-        (Optional) HTTP basic auth username.
-    .PARAMETER insecure_tls_skip_verify
-        (Optional) In TLS mode, skip server certificate validation. This setting should only be used for testing.     
-    .PARAMETER transport
-        (Required Transport mode for sending data, supports "tls" and "tcp". "tls" requires either a trusted CA cert or insecure TLS skip verify to be set to true. Default is "tcp".
-            - tcp
-            - tls
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>
@@ -795,7 +774,7 @@ function Test-CMLokiConnection{
     if($id){
         $endpoint += "/" + $id + "/test"    
     }elseif($name){ 
-        if((Find-CMLokiConnections -name $name).resources[0].total -eq 0){ return "Connection not found."}
+        if((Find-CMLokiConnections -name $name).total -eq 0){ return "Connection not found."}
         $id = (Find-CMLokiConnections -name $name).resources[0].id 
         $endpoint += "/" + $id + "/test"
     }else{

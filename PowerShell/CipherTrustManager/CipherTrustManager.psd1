@@ -95,6 +95,7 @@
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SAP",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SCP",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SMB",
+        "ConnectionsMgr/CipherTrustManager-ConnectionMgr-Syslog",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
         "DataProtection/CipherTrustManager-UserSets",
@@ -327,8 +328,14 @@
         "Update-CMSMBConnection",
         "Remove-CMSMBConnection",
         "Test-CMSMBConnection",
-        "Test-CMSMBConnParameters"
-    )
+        "Test-CMSMBConnParameters",
+        "Find-CMSyslogConnections",
+        "New-CMSyslogConnection",
+        "Get-CMSyslogConnection",
+        "Update-CMSyslogConnection",
+        "Remove-CMSyslogConnection",
+        "Test-CMSyslogConnection",
+        "Test-CMSyslogConnParameters"    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
