@@ -510,7 +510,7 @@ function Get-CMSMBConnection{
         (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
         e.g. -metadata "red:stop,green:go,blue:ocean"
     .EXAMPLE
-        PS> Update-CMSMBConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
+        PS> Update-CMSMBConnection -name "My SAP Connection"  -target 192.168.1.18 -user newuser -pass newpass
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
 #>

@@ -95,6 +95,7 @@
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SAP",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SCP",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-SMB",
+        "ConnectionsMgr/CipherTrustManager-ConnectionMgr-Salesforce",
         "ConnectionsMgr/CipherTrustManager-ConnectionMgr-Syslog",
         "CCKM/CipherTrustManager-CCKM-AWSCKS",
         "DataProtection/CipherTrustManager-CharacterSets",
@@ -335,7 +336,15 @@
         "Update-CMSyslogConnection",
         "Remove-CMSyslogConnection",
         "Test-CMSyslogConnection",
-        "Test-CMSyslogConnParameters"    )
+        "Test-CMSyslogConnParameters"
+        "Find-CMSalesforceConnections",
+        "New-CMSalesforceConnection",
+        "Get-CMSalesforceConnection",
+        "Update-CMSalesforceConnection",
+        "Remove-CMSalesforceConnection",
+        "Test-CMSalesforceConnection"#,
+        #"Test-CMSalesforceConnParameters"
+    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()

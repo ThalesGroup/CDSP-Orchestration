@@ -474,6 +474,14 @@ Export-ModuleMember -Function Update-CMSMBConnection
 Export-ModuleMember -Function Remove-CMSMBConnection
 Export-ModuleMember -Function Test-CMSMBConnection
 Export-ModuleMember -Function Test-CMSMBConnParameters
+#Connection Manager - Salesforce Connections
+Export-ModuleMember -Function Find-CMSalesforceConnections
+Export-ModuleMember -Function New-CMSalesforceConnection
+Export-ModuleMember -Function Get-CMSalesforceConnection
+Export-ModuleMember -Function Update-CMSalesforceConnection
+Export-ModuleMember -Function Remove-CMSalesforceConnection
+Export-ModuleMember -Function Test-CMSalesforceConnection
+#Export-ModuleMember -Function Test-CMSalesforceConnParameters
 #Connection Manager - Syslog Connections
 Export-ModuleMember -Function Find-CMSyslogConnections
 Export-ModuleMember -Function New-CMSyslogConnection
