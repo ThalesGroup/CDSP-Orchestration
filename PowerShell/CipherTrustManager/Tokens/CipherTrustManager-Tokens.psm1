@@ -27,8 +27,8 @@ public enum CM_TokensGrantTypes {
 $target_uri = "/auth/tokens"
 $target_revoke_uri = "/auth/revoke"
 $target_selfdomain_uri = "/auth/self/domains"
-#$target_authkey_uri = "/auth/auth-key"
-#$target_authkey_rotation_uri = "/auth/rotate-auth-key"
+$target_authkey_uri = "/auth/auth-key"
+$target_authkey_rotation_uri = "/auth/rotate-auth-key"
 $target_akeyless_uri = "/auth/akeyless/tokens"
 ####
 
