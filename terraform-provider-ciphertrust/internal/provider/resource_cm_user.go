@@ -10,6 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -49,6 +51,9 @@ func (r *resourceCMUser) Schema(_ context.Context, _ resource.SchemaRequest, res
 		Attributes: map[string]schema.Attribute{
 			"user_id": schema.StringAttribute{
 				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"username": schema.StringAttribute{
 				Required: true,
@@ -140,14 +145,112 @@ func (r *resourceCMUser) Create(ctx context.Context, req resource.CreateRequest,
 
 // Read refreshes the Terraform state with the latest data.
 func (r *resourceCMUser) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	// var state tfsdkCMUserModel
+	// diags := req.State.Get(ctx, &state)
+	// resp.Diagnostics.Append(diags...)
+	// if resp.Diagnostics.HasError() {
+	// 	return
+	// }
+
+	// users, err := r.client.GetAll(ctx, state.UserID.ValueString(), URL_USER_MANAGEMENT)
+	// tflog.Trace(ctx, users)
+	// if err != nil {
+	// 	resp.Diagnostics.AddError(
+	// 		"Error Reading CipherTrust User",
+	// 		"Could not read CipherTrust user ID "+state.UserID.ValueString()+": "+err.Error(),
+	// 	)
+	// 	return
+	// }
+
+	// userJSON := make(map[string]interface{})
+	// errJsonUnmarshall := json.Unmarshal([]byte(users), &userJSON)
+	// if errJsonUnmarshall != nil {
+	// 	log.Fatal(errJsonUnmarshall)
+	// }
+
+	// state.Email = userJSON["email"].(basetypes.StringValue)
+	// state.Name = userJSON["name"].(basetypes.StringValue)
+	// state.Nickname = userJSON["nickname"].(basetypes.StringValue)
+	// state.UserName = userJSON["username"].(basetypes.StringValue)
+	// state.UserID = userJSON["user_id"].(basetypes.StringValue)
+
+	// diags = resp.State.Set(ctx, &state)
+	// resp.Diagnostics.Append(diags...)
+	// if resp.Diagnostics.HasError() {
+	// 	return
+	// }
 }
 
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *resourceCMUser) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan tfsdkCMUserModel
+	var loginFlags UserLoginFlags
+	var payload User
+
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	loginFlags.PreventUILogin = plan.PreventUILogin.ValueBool()
+
+	payload.Email = trimString(plan.Email.String())
+	payload.Name = trimString(plan.Name.String())
+	payload.Nickname = trimString(plan.Nickname.String())
+	payload.UserName = trimString(plan.UserName.String())
+	payload.Password = trimString(plan.Password.String())
+	payload.IsDomainUser = plan.IsDomainUser.ValueBool()
+	payload.LoginFlags = loginFlags
+	payload.PasswordChangeRequired = plan.PasswordChangeRequired.ValueBool()
+
+	payloadJSON, err := json.Marshal(payload)
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Create]["+plan.UserID.ValueString()+"]")
+		resp.Diagnostics.AddError(
+			"Invalid data input: User Creation",
+			err.Error(),
+		)
+		return
+	}
+
+	response, err := r.client.UpdateData(ctx, plan.UserID.ValueString(), URL_USER_MANAGEMENT, payloadJSON, "user_id")
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Create]["+plan.UserID.ValueString()+"]")
+		resp.Diagnostics.AddError(
+			"Error creating user on CipherTrust Manager: ",
+			"Could not create user, unexpected error: "+err.Error(),
+		)
+		return
+	}
+	plan.UserID = types.StringValue(response)
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 }
 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *resourceCMUser) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state tfsdkCMUserModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Delete existing order
+	output, err := r.client.DeleteByID(ctx, state.UserID.ValueString(), URL_USER_MANAGEMENT)
+	tflog.Trace(ctx, MSG_METHOD_END+"[resource_cm_user.go -> Delete]["+state.UserID.ValueString()+"]["+output+"]")
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Deleting CipherTrust User",
+			"Could not delete user, unexpected error: "+err.Error(),
+		)
+		return
+	}
 }
 
 func (d *resourceCMUser) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {

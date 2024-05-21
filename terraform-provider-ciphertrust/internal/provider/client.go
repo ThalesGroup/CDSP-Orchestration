@@ -104,7 +104,12 @@ func (c *Client) doRequest(ctx context.Context, uuid string, req *http.Request, 
 		return nil, err
 	}
 
-	if res.StatusCode == http.StatusOK || res.StatusCode == http.StatusCreated {
+	if res.StatusCode == http.StatusOK ||
+		res.StatusCode == http.StatusCreated ||
+		res.StatusCode == http.StatusPartialContent ||
+		res.StatusCode == http.StatusAccepted ||
+		res.StatusCode == http.StatusNonAuthoritativeInfo ||
+		res.StatusCode == http.StatusNoContent {
 		tflog.Trace(ctx, MSG_METHOD_END+"[client.go -> doRequest]["+uuid+"]")
 		return body, err
 	} else {
