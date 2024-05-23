@@ -3,3 +3,10 @@ Ansible/thales/ciphertrust/plugins/module_utils/to_be_refactored/
 Ansible/playbooks/to_be_refactored/
 *.bak
 *.zip
+terraform-provider-ciphertrust/terraform.txt
+terraform-provider-ciphertrust/examples/provider-install-verification/terraform.txt
+terraform-provider-ciphertrust/examples/provider-install-verification/main.tf
+terraform-provider-ciphertrust/examples/provider-install-verification/terraform.tfstate
+terraform-provider-ciphertrust/examples/provider-install-verification/terraform.tfstate.1716307823.backup
+terraform-provider-ciphertrust/examples/provider-install-verification/terraform.tfstate.backup
+terraform-provider-ciphertrust/examples/provider-install-verification/main.tf
