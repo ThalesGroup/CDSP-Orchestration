@@ -206,9 +206,9 @@ func (r *resourceCMUser) Update(ctx context.Context, req resource.UpdateRequest,
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
-		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Create]["+plan.UserID.ValueString()+"]")
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Update]["+plan.UserID.ValueString()+"]")
 		resp.Diagnostics.AddError(
-			"Invalid data input: User Creation",
+			"Invalid data input: User Update",
 			err.Error(),
 		)
 		return
@@ -216,7 +216,7 @@ func (r *resourceCMUser) Update(ctx context.Context, req resource.UpdateRequest,
 
 	response, err := r.client.UpdateData(ctx, plan.UserID.ValueString(), URL_USER_MANAGEMENT, payloadJSON, "user_id")
 	if err != nil {
-		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Create]["+plan.UserID.ValueString()+"]")
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cm_user.go -> Update]["+plan.UserID.ValueString()+"]")
 		resp.Diagnostics.AddError(
 			"Error creating user on CipherTrust Manager: ",
 			"Could not create user, unexpected error: "+err.Error(),

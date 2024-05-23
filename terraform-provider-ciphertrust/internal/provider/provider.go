@@ -243,6 +243,7 @@ func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource
 	return []func() datasource.DataSource{
 		NewDataSourceUsers,
 		NewDataSourceKeys,
+		NewDataSourceGroups,
 	}
 }
 
@@ -251,5 +252,6 @@ func (p *ciphertrustProvider) Resources(_ context.Context) []func() resource.Res
 	return []func() resource.Resource{
 		NewResourceCMUser,
 		NewResourceCMKey,
+		NewresourceCMGroup,
 	}
 }

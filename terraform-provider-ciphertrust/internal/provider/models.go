@@ -16,6 +16,10 @@ type User struct {
 	PasswordChangeRequired bool           `json:"password_change_required"`
 }
 
+type Group struct {
+	Name string `json:"name"`
+}
+
 type Key struct {
 	KeyID            string `json:"id"`
 	URI              string `json:"uri"`

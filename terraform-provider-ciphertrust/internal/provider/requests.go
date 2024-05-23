@@ -30,7 +30,8 @@ func (c *Client) DeleteByID(ctx context.Context, uuid string, endpoint string) (
 }
 
 func (c *Client) GetAll(ctx context.Context, uuid string, endpoint string) (string, error) {
-	tflog.Trace(ctx, MSG_METHOD_START+"[requests.go -> GetAll]["+uuid+"]")
+	tflog.Trace(ctx, MSG_METHOD_START+"[requests.go -> GetAll][Request ID: "+uuid+
+		"****** URL: "+fmt.Sprintf("%s/%s", c.CipherTrustURL, endpoint)+"]")
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", c.CipherTrustURL, endpoint), nil)
 	if err != nil {
 		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [requests.go -> GetAll]["+uuid+"]")
