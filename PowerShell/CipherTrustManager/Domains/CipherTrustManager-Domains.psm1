@@ -1,8 +1,6 @@
 #######################################################################################################################
-# File:             CipherTrustManager-Users.psm1                                                                     #
-# Author:           Rick Leon, Professional Servcies                                                                  #
-# Author:           Marc Seguin, Developer Advocate                                                                   #
-# Author:           Anurag Jain, Developer Advocate                                                                   #
+# File:             CipherTrustManager-Domains.psm1                                                                   #
+# Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2023 Thales Group. All rights reserved.                                                       #
 # Notes:            This module is loaded by the master module, CipherTrustManager                                    #
@@ -12,7 +10,7 @@
 ####
 # Local Variables
 ####
-$target_curdom_uri = "/domain"
+$target_current_domain_uri = "/domain"
 $target_uri = "/domains"
 $target_syslogredir_uri = "/domain-syslog-redirection"
 ####
@@ -72,7 +70,7 @@ function Get-CMDomainCurrent {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
     Write-Debug "Getting a Current Domain in CM"
-    $endpoint = $CM_Session.REST_URL + $target_curdom_uri
+    $endpoint = $CM_Session.REST_URL + $target_current_domain_uri
     Write-Debug "Endpoint: $($endpoint)"
     
     Try {
@@ -87,11 +85,6 @@ function Get-CMDomainCurrent {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
         elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
@@ -134,12 +127,8 @@ function Find-CMDomains {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $name, 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $skip,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
-        [int] $limit
+        [Parameter()] [int] $skip,
+        [Parameter()] [int] $limit
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
     
@@ -189,12 +178,7 @@ function Find-CMDomains {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -228,10 +212,14 @@ function Find-CMDomains {
         (Optional) The CipherTrust ID for the desired parent Certificate Authority. If no CA is specified the oldest CA in the environment will be automatically selected.
     .PARAMETER allow_user_management
         (Optional) Enable to allow local domain users to be created instead of root users being assigned to the domain.
-    .PARAMETER hsm_conn_id
+    .PARAMETER hsm_connection_id
         (Optional) If an HSM-anchored domain is desired, the CipherTrust Connection ID is required.
     .PARAMETER hsm_kek_label
         (Optional) Optional name field for the domain KEK for an HSM-anchored domain. If not provided, a random UUID is assigned for KEK label.
+    .PARAMETER metadata
+        (Optional) Optional end-user or service data stored with the connection. Use key/value pairs separated by a semi-colon. Can be a comma-separated list of metadata pairs. 
+        e.g. -metadata "red:stop,green:go,blue:ocean" 
+        e.g. -metadata "{"red":"stop","green":"go"}"
     .EXAMPLE
         PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356"
         Creates a domain with the name MyDomain with a single administrator.
@@ -254,15 +242,17 @@ function New-CMDomain {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
         [string] $parent_ca,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true )]
+        [Parameter()]
         [switch] $allow_user_management,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [string] $hsm_conn_id,
+        [string] $hsm_connection_id,
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true )]
-        [string] $hsm_kek_label
+        [string] $hsm_kek_label,
+        [Parameter(Mandatory = $false,
+        ValueFromPipelineByPropertyName = $true)]
+        [string[]] $metadata
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
@@ -271,16 +261,23 @@ function New-CMDomain {
     Write-Debug "Endpoint: $($endpoint)"
 
     # Mandatory Parameters
-    $body = @{
+    $body = [ordered] @{
         'name' = $name
         'admins' = @($admins.split(","))
     }
 
     # Optional Parameters
     if ($parent_ca_id) { $body.add('parent_ca_id', $parent_ca_id) }
-    if ($hsm_conn_id) { $body.add('hsm_connection_id', $hsm_conn_id) }
+    if ($hsm_connection_id) { $body.add('hsm_connection_id', $hsm_connection_id) }
     if ($hsm_kek_label) { $body.add('hsm_kek_label', $hsm_kek_label) }
     if ($allow_user_management -eq $True) { $body.add('allow_user_management', [bool]$true) }
+    if($metadata){
+        $body.add('meta',@{})
+        $meta_input = $metadata.split(",")
+        foreach($pair in $meta_input){
+            $body.meta.add($pair.split(":")[0],$pair.split(":")[1])
+        }
+    }
 
     $jsonBody = $body | ConvertTo-Json -Depth 5
     Write-Debug "JSON Body: $($jsonBody)"
@@ -321,9 +318,13 @@ function New-CMDomain {
     .SYNOPSIS
         Delete a Domain
     .DESCRIPTION
-        Permanently deleted a domain and all contents. USE EXTREME CAUTION.
+        Permanently delete a domain and all contents. USE EXTREME CAUTION.
     .PARAMETER name
-        The name of the domain to be deleted. This parameter is CASE-SENSITIVE. 
+        The name of the domain to be deleted. This parameter is CASE-SENSITIVE.
+    .PARAMETER id
+        The CipherTrust Manager id of the domain to be deleted.
+    .PARAMETER force
+        Bypass all deletion confirmations. USE EXTREME CAUTION.
     .EXAMPLE
         PS> Remove-CMDomain -name MyDomain 
     .LINK
@@ -333,41 +334,50 @@ function New-CMDomain {
 function Remove-CMDomain {
     param
     (
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $name
+        [string] $name,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $id,
+        [Parameter()] [switch] $force
     )
     
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
 
-    Write-Debug "Creating a Domain in CM"
+    Write-Debug "Deleting a Domain in CM"
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    if((Find-CMDomains -name $name).resources[0].total -eq 0){
-        return "`nDomain not found. Please try again."
+    if($id){
+        $endpoint += "/" + $id
+    }elseif($name){
+        if((Find-CMDomains -name $name).resources[0].total -eq 0){ return "Domain not found."}
+        $id = (Find-CMDomains -name $name).resources[0].id
+        $endpoint += "/" + $id
     }else{
-        $domainid = (Find-CMDomains -name $name).resources[0].id
-        $endpoint += "/" + $domainid
+        return "Missing Domain Identifier."
     }
 
     Write-Debug "Endpoint: $($endpoint)"
 
-    $confirmop=""
-    $confirmname=""
-    while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
-        $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
-        if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
-            Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
-            return "Operation Cancelled"
+    if(!$force){
+        $confirmop=""
+        $confirmname=""
+        while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
+            $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
+            if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
+                Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
+                return "Operation Cancelled"
+            }
+        }
+        
+        $confirmname = $(Write-Host -ForegroundColor red  "`nConfirm the name of the domain to be deleted: " -NoNewline; Read-Host)
+        if($confirmname -cne $name){
+            return "Domain name does not match. Cancelling Operation."
         }
     }
-    
-    $confirmname = $(Write-Host -ForegroundColor red  "`nConfirm the name of the domain to be deleted: " -NoNewline; Read-Host)
-    if($confirmname -cne $name){
-        return "Domain name does not match. Cancelling Operation."
-    }
-    
+
     Try {
         Test-CMJWT #Make sure we have an up-to-date jwt
         $headers = @{
@@ -380,10 +390,7 @@ function Remove-CMDomain {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Domain already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -436,10 +443,7 @@ function Get-CMDomainSyslogRedirection {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Domain already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -474,8 +478,7 @@ function Get-CMDomainSyslogRedirection {
 function Update-CMDomainSyslogRedirection {
     param
     (
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $true)]
         [string] $status
     )
     
@@ -515,10 +518,7 @@ function Update-CMDomainSyslogRedirection {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Domain already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -545,6 +545,8 @@ function Update-CMDomainSyslogRedirection {
         The ID of the HSM connection. The existing connection ID is used if this parameter is not specified.
     .PARAMETER hsm_kek_label
         Label of the target domain KEK. This is a required parameter. A key with this label must exist on the HSM.
+    .PARAMETER force
+        Bypass any confirmations. USE WITH CAUTION.
     .EXAMPLE
         PS> Update-CMDomainHSM -name "DEV" -hsm_connection_id <UUID> -hsm_kek_label MyNewKEK
     .EXAMPLE
@@ -565,7 +567,8 @@ function Update-CMDomainHSM {
         [string] $hsm_connection_id,
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
-        [string] $hsm_kek_label
+        [string] $hsm_kek_label,
+        [Parameter()] [switch] $force        
     )
     
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -583,22 +586,24 @@ function Update-CMDomainHSM {
 
     Write-Debug "Endpoint: $($endpoint)"
 
-    $confirmop=""
-    $confirmname=""
-    while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
-        $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
-        if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
-            Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
-            return "Operation Cancelled"
+    if(!$force){
+        $confirmop=""
+        $confirmname=""
+        while($confirmop -ne "yes" -or $confirmop -ne "YES" ){
+            $confirmop = $(Write-Host -ForegroundColor red  "THIS OPERATION CANNOT BE UNDONE.`nARE YOU SURE YOU WISH TO CONTINUE? (yes/no) " -NoNewline; Read-Host)
+            if($confirmop -eq "NO" -or $confirmop -eq "no" ){ 
+                Write-Host "CANCELLING OPERATION. NO CHANGES HAVE BEEN MADE."
+                return "Operation Cancelled"
+            }
+        }
+        
+        $confirmname = $(Write-Host -ForegroundColor red  "`nConfirm the name of the domain to convert: " -NoNewline; Read-Host)
+        if($confirmname -cne $name){
+            return "Domain name does not match. Cancelling Operation."
         }
     }
-    
-    $confirmname = $(Write-Host -ForegroundColor red  "`nConfirm the name of the domain to convert: " -NoNewline; Read-Host)
-    if($confirmname -cne $name){
-        return "Domain name does not match. Cancelling Operation."
-    }
 
-    $Body = @{
+    $body = [ordered] @{
      
         "hsm_connection_id" = $hsm_connection_id
         "hsm_kek_label"     = $hsm_kek_label
@@ -621,10 +626,7 @@ function Update-CMDomainHSM {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): Domain already exists" -ErrorAction Continue
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials" -ErrorAction Stop
         }
         else {
@@ -638,13 +640,15 @@ function Update-CMDomainHSM {
 
 #Domains
 #`#/v1/domains/{id}
-#`/v1/domains/{id}/keks - Get (get)
+#`#/v1/domains/{id}/keks - Get (get)
 
 <#
     .SYNOPSIS
         Returns the list of domain KEKs for specified domain along with the status of ongoing and previous KEK rotations. Applicable to hsm anchored domains.
     .DESCRIPTION
         Returns the list of domain KEKs for specified domain along with the status of ongoing and previous KEK rotations. Applicable to hsm anchored domains.
+    .PARAMETER id
+        The name of the domain to check.
     .PARAMETER name
         The name of the domain to check.
     .EXAMPLE
@@ -657,7 +661,10 @@ function Update-CMDomainHSM {
 function Find-CMDomainKEKS {
     param
     (
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
+            ValueFromPipelineByPropertyName = $true)]
+        [string] $id,
+        [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
         [string] $name
     )
@@ -667,11 +674,13 @@ function Find-CMDomainKEKS {
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    if((Find-CMDomains -name $name).resources[0].total -eq 0){
-        return "`nDomain not found. Please try again."
+    if($id){
+        $endpoint += "/" + $id + "/keks/"
+    }elseif($name){
+        $id = (Find-CMDomains -name $name).resources[0].id
+        $endpoint += "/" + $id + "/keks/"
     }else{
-        $domainid = (Find-CMDomains -name $name).resources[0].id
-        $endpoint += "/" + $domainid + "/keks"
+        return "`nDomain not found. Please try again."
     }
     
     Write-Debug "Endpoint: $($endpoint)"
@@ -688,12 +697,7 @@ function Find-CMDomainKEKS {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -715,14 +719,16 @@ function Find-CMDomainKEKS {
         Returns the domain KEK of specified account along with the status of ongoing and previous KEK rotations. Applicable to hsm anchored domains.
     .DESCRIPTION
         Returns the domain KEK of specified account along with the status of ongoing and previous KEK rotations. Applicable to hsm anchored domains.
-    .PARAMETER domain
+    .PARAMETER id
+        The CipherTrust Manager "id" value of the HSM-Anchored CipherTrust Domain.
+    .PARAMETER name
         The name of the HSM-Anchored CipherTrust Domain.
     .PARAMETER kekid
         The CipherTrust Manager ID of the Domain KEK to retrieve detail on. Use Find-CMDomainKEKS cmdlet to find KEK ID.
     .EXAMPLE
-        PS> Get-CMDomainKEK -domainname <DomainName> -kekid <UUID>
+        PS> Get-CMDomainKEK -name <DomainName> -kekid <UUID>
 
-        PS> Get-CMDomainKEK -domainname "MyDomain" -kekid "d0930205-bd38-4230-a46b-03075d85d400"
+        PS> Get-CMDomainKEK -name "MyDomain" -kekid "d0930205-bd38-4230-a46b-03075d85d400"
 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
@@ -731,11 +737,13 @@ function Find-CMDomainKEKS {
 function Get-CMDomainKEK {
     param
     (
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
-        [string] $domain,
-        [Parameter(Mandatory = $true,
+        [string] $name,
+        [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true)]
+        [string] $id,
+        [Parameter(Mandatory = $true)] 
         [string] $kekid
     )
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -744,11 +752,13 @@ function Get-CMDomainKEK {
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
-    if((Find-CMDomains -name $domain).resources[0].total -eq 0){
-        return "`nDomain not found. Please try again."
+    if($id){
+        $endpoint += "/" + $id + "/keks/" + $kekid
+    }elseif($name){
+        $id = (Find-CMDomains -name $name).resources[0].id
+        $endpoint += "/" + $id + "/keks/" + $kekid
     }else{
-        $domainid = (Find-CMDomains -name $name).resources[0].id
-        $endpoint += "/" + $domainid + "/keks/" + $kekid
+        return "`nDomain not found. Please try again."
     }
     
     Write-Debug "Endpoint: $($endpoint)"
@@ -765,12 +775,7 @@ function Get-CMDomainKEK {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }
@@ -793,7 +798,9 @@ function Get-CMDomainKEK {
         Rotates the KEK that protects domain resources such as keys. Applicable only to hsm anchored domains. 
     .DESCRIPTION
         Rotates the KEK that protects domain resources such as keys. Applicable only to hsm anchored domains. This creates a new HSM-based KEK, or reuses an existing HSM-based KEK. All domain keys that are re-wrapped by this KEK.
-    .PARAMETER domain
+    .PARAMETER id
+        The name of the HSM-Anchored CipherTrust Domain.
+    .PARAMETER name
         The name of the HSM-Anchored CipherTrust Domain.
     .PARAMETER hsm_connection_id
         The ID of the HSM connection. The existing connection ID is used if this parameter is not specified.
@@ -802,13 +809,13 @@ function Get-CMDomainKEK {
     .PARAMETER retry
         Retries a domain KEK rotation thats has been stopped. Applicable only to hsm anchored domains. Reuses an existing HSM-based KEK. All domain keys that are re-wrapped by this KEK.
     .EXAMPLE
-        PS> Update-CMDomainRotateKEK -domainname <DomainName>
+        PS> Update-CMDomainRotateKEK -name <DomainName>
     .EXAMPLE
-        PS> Update-CMDomainRotateKEK -domainname <DomainName> -hsm_connection_id <UUID>
+        PS> Update-CMDomainRotateKEK -name <DomainName> -hsm_connection_id <UUID>
     .EXAMPLE
-        PS> Update-CMDomainRotateKEK -domainname <DomainName> -hsm_connection_id <UUID> -hsm_kek_label "MyNewKEK_v2"
+        PS> Update-CMDomainRotateKEK -name <DomainName> -hsm_connection_id <UUID> -hsm_kek_label "MyNewKEK_v2"
     .EXAMPLE
-        PS> Update-CMDomainRotateKEK -domainname <DomainName> -retry
+        PS> Update-CMDomainRotateKEK -name <DomainName> -retry
 
     .LINK
         https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
@@ -817,18 +824,19 @@ function Get-CMDomainKEK {
 function Update-CMDomainRotateKEK {
     param
     (
-        [Parameter(Mandatory = $true,
-            ValueFromPipelineByPropertyName = $true)]
-        [string] $domain,
         [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+        ValueFromPipelineByPropertyName = $true)]
+        [string] $name,
+        [Parameter(Mandatory = $false,
+        ValueFromPipelineByPropertyName = $true)]
+        [string] $id,
+        [Parameter(Mandatory = $false,
+        ValueFromPipelineByPropertyName = $true)]
         [string] $hsm_connection_id,
         [Parameter(Mandatory = $true,
         ValueFromPipelineByPropertyName = $true)]
         [string] $hsm_kek_label,
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
-        [switch] $retry
+        [Parameter()] [switch] $retry
 
 
     )
@@ -838,24 +846,29 @@ function Update-CMDomainRotateKEK {
     $endpoint = $CM_Session.REST_URL + $target_uri
     Write-Debug "Endpoint: $($endpoint)"
 
+    
     if($retry -eq $True){
-        if((Find-CMDomains -name $domain).resources[0].total -eq 0){
-            return "`nDomain not found. Please try again."
+        if($id){
+            $endpoint += "/" + $id + "/retry-kek-rotation"
+        }elseif($name){
+            $id = (Find-CMDomains -name $name).resources[0].id
+            $endpoint += "/" + $id + "/retry-kek-rotation"
         }else{
-            $domainid = (Find-CMDomains -name $name).resources[0].id
-            $endpoint += "/" + $domainid + "/retry-kek-rotation"
+            return "`nDomain not found. Please try again."
         }
-
+    
         Write-Debug "Endpoint: $($endpoint)"
     }else{
-        if((Find-CMDomains -name $domain).resources[0].total -eq 0){
-            return "`nDomain not found. Please try again."
+        if($id){
+            $endpoint += "/" + $id + "/rotate-kek"
+        }elseif($name){
+            $id = (Find-CMDomains -name $name).resources[0].id
+            $endpoint += "/" + $id + "/rotate-kek"
         }else{
-            $domainid = (Find-CMDomains -name $name).resources[0].id
-            $endpoint += "/" + $domainid + "/rotate-kek"
+            return "`nDomain not found. Please try again."
         }
-
-        $body = @{}
+        
+        $body = [ordered] @{}
 
         # Optional Parameters
         if ($hsm_connection_id) { $body.add('hsm_connection_id', $hsm_connection_id) }
@@ -880,12 +893,7 @@ function Update-CMDomainRotateKEK {
     }
     Catch {
         $StatusCode = $_.Exception.Response.StatusCode
-        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Conflict) {
-            Write-Error "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            throw "Error $([int]$StatusCode) $($StatusCode): User set already exists"
-            return
-        }
-        elseif ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
+        if ($StatusCode -EQ [System.Net.HttpStatusCode]::Unauthorized) {
             Write-Error "Error $([int]$StatusCode) $($StatusCode): Unable to connect to CipherTrust Manager with current credentials"
             return
         }

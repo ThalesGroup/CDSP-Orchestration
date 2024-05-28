@@ -2,6 +2,7 @@
 # File:             CipherTrustManager.psm1                                                                           #
 # Author:           Anurag Jain, Developer Advocate                                                                   #
 # Author:           Marc Seguin, Developer Advocate                                                                   #
+# Author:           Rick Leon, Professional Services                                                                  #
 # Publisher:        Thales Group                                                                                      #
 # Copyright:        (c) 2022 Thales Group. All rights reserved.                                                       #
 # Usage:            To load this module in your PowerShell:                                                           #
@@ -307,6 +308,7 @@ Export-ModuleMember -Function Get-CMSelfDomains
 Export-ModuleMember -Function Set-CMAuthKeyRotate
 Export-ModuleMember -Function Get-CMAuthKey
 Export-ModuleMember -Function New-CMAkeylessToken
+Export-ModuleMember -Function Clear-CMRefreshTokens
 #Alarms
 Export-ModuleMember -Function Find-CMAlarms
 Export-ModuleMember -Function Clear-CMAlarm
@@ -321,7 +323,181 @@ Export-ModuleMember -Function Remove-CMDomain
 Export-ModuleMember -Function Get-CMDomainCurrent
 Export-ModuleMember -Function Get-CMDomainSyslogRedirection 
 Export-ModuleMember -Function Update-CMDomainSyslogRedirection
-#Export-ModuleMember -Function Update-CMDomainHSM
 Export-ModuleMember -Function Find-CMDomainKEKS
 Export-ModuleMember -Function Get-CMDomainKEK
 Export-ModuleMember -Function Update-CMDomainRotateKEK
+#Connections
+Export-ModuleMember -Function Find-CMConnections
+Export-ModuleMember -Function Remove-CMConnection
+Export-ModuleMember -Function New-CMConnectionCSR
+#Connections-AWS
+Export-ModuleMember -Function Find-CMAWSConnections
+Export-ModuleMember -Function New-CMAWSConnection
+Export-ModuleMember -Function Get-CMAWSConnection
+Export-ModuleMember -Function Update-CMAWSConnection
+Export-ModuleMember -Function Remove-CMAWSConnection
+Export-ModuleMember -Function Test-CMAWSConnection
+Export-ModuleMember -Function Test-CMAWSConnParameters
+#Connections-AKeyless
+Export-ModuleMember -Function Find-CMAKeylessConnections
+Export-ModuleMember -Function New-CMAKeylessConnection
+Export-ModuleMember -Function Get-CMAKeylessConnection
+Export-ModuleMember -Function Update-CMAKeylessConnection
+Export-ModuleMember -Function Remove-CMAKeylessConnection
+Export-ModuleMember -Function Test-CMAKeylessConnection
+Export-ModuleMember -Function Test-CMAKeylessConnParameters
+#Connection Manager - Azure
+Export-ModuleMember -Function Find-CMAzureConnections
+Export-ModuleMember -Function New-CMAzureConnection
+Export-ModuleMember -Function Get-CMAzureConnection
+Export-ModuleMember -Function Update-CMAzureConnection
+Export-ModuleMember -Function Remove-CMAzureConnection
+Export-ModuleMember -Function Test-CMAzureConnection
+Export-ModuleMember -Function Test-CMAzureConnParameters
+#Connection Manager - Elasticsearch
+Export-ModuleMember -Function Find-CMElasticsearchConnections
+Export-ModuleMember -Function New-CMElasticsearchConnection
+Export-ModuleMember -Function Get-CMElasticsearchConnection
+Export-ModuleMember -Function Update-CMElasticsearchConnection
+Export-ModuleMember -Function Remove-CMElasticsearchConnection
+Export-ModuleMember -Function Test-CMElasticsearchConnection
+Export-ModuleMember -Function Test-CMElasticsearchConnParameters
+#Connection Manager - Google
+Export-ModuleMember -Function Find-CMGCPConnections
+Export-ModuleMember -Function New-CMGCPConnection
+Export-ModuleMember -Function Get-CMGCPConnection
+Export-ModuleMember -Function Update-CMGCPConnection
+Export-ModuleMember -Function Remove-CMGCPConnection
+Export-ModuleMember -Function Test-CMGCPConnection
+Export-ModuleMember -Function Test-CMGCPConnParameters
+#Connection Manager - DSM
+Export-ModuleMember -Function Find-CMDSMConnections
+Export-ModuleMember -Function New-CMDSMConnection
+Export-ModuleMember -Function Get-CMDSMConnection
+Export-ModuleMember -Function Update-CMDSMConnection
+Export-ModuleMember -Function Remove-CMDSMConnection
+Export-ModuleMember -Function Test-CMDSMConnection
+Export-ModuleMember -Function Test-CMDSMConnParameters
+Export-ModuleMember -Function Find-CMDSMConnectionNodes
+Export-ModuleMember -Function Add-CMDSMConnectionNode
+Export-ModuleMember -Function Get-CMDSMConnectionNode
+Export-ModuleMember -Function Update-CMDSMConnectionNode
+Export-ModuleMember -Function Remove-CMDSMConnectionNode
+#Connection Manager - Hadoop
+Export-ModuleMember -Function Find-CMHadoopConnections
+Export-ModuleMember -Function New-CMHadoopConnection
+Export-ModuleMember -Function Get-CMHadoopConnection
+Export-ModuleMember -Function Update-CMHadoopConnection
+Export-ModuleMember -Function Remove-CMHadoopConnection
+Export-ModuleMember -Function Test-CMHadoopConnection
+Export-ModuleMember -Function Test-CMHadoopConnParameters
+Export-ModuleMember -Function Find-CMHadoopConnectionNodes
+Export-ModuleMember -Function Add-CMHadoopConnectionNode
+Export-ModuleMember -Function Get-CMHadoopConnectionNode
+Export-ModuleMember -Function Update-CMHadoopConnectionNode
+Export-ModuleMember -Function Remove-CMHadoopConnectionNode
+#Connection Manager - Loki
+Export-ModuleMember -Function Find-CMLokiConnections
+Export-ModuleMember -Function New-CMLokiConnection
+Export-ModuleMember -Function Get-CMLokiConnection
+Export-ModuleMember -Function Update-CMLokiConnection
+Export-ModuleMember -Function Remove-CMLokiConnection
+Export-ModuleMember -Function Test-CMLokiConnection
+Export-ModuleMember -Function Test-CMLokiConnParameters
+#Connection Manager - Luna HSM Servers
+Export-ModuleMember -Function Find-CMLunaHSMServer
+Export-ModuleMember -Function New-CMLunaHSMServer
+Export-ModuleMember -Function Get-CMLunaHSMServer
+Export-ModuleMember -Function Remove-CMLunaHSMServer
+Export-ModuleMember -Function Remove-CMLunaHSMServerInUse
+Export-ModuleMember -Function Set-CMLunaHSMServerSTCMode
+Export-ModuleMember -Function Get-CMLunaClientInfo
+#Connection Manager - Luna HSM Servers
+Export-ModuleMember -Function Find-CMLunaHSMConnections
+Export-ModuleMember -Function New-CMLunaHSMConnection
+Export-ModuleMember -Function Get-CMLunaHSMConnection
+Export-ModuleMember -Function Update-CMLunaHSMConnection
+Export-ModuleMember -Function Remove-CMLunaHSMConnection
+Export-ModuleMember -Function Add-CMLunaHSMConnectionPartition
+Export-ModuleMember -Function Remove-CMLunaHSMConnectionPartition
+Export-ModuleMember -Function Test-CMLunaHSMConnection
+Export-ModuleMember -Function Get-CMLunaHSMConnectionStatus
+Export-ModuleMember -Function Test-CMLunaHSMConnectionParameters
+#Connection Manager - Luna HSM STC Partitions
+Export-ModuleMember -Function Find-CMLunaHSMSTCPartitions
+Export-ModuleMember -Function Register-CMLunaHSMSTCPartition
+Export-ModuleMember -Function Get-CMLunaHSMSTCPartition
+Export-ModuleMember -Function Remove-CMLunaHSMSTCPartition
+#Connection Manager - LDAP Connections
+Export-ModuleMember -Function Find-CMLDAPConnections
+Export-ModuleMember -Function New-CMLDAPConnection
+Export-ModuleMember -Function Get-CMLDAPConnection
+Export-ModuleMember -Function Update-CMLDAPConnection
+Export-ModuleMember -Function Remove-CMLDAPConnection
+Export-ModuleMember -Function Test-CMLDAPConnection
+Export-ModuleMember -Function Test-CMLDAPConnParameters
+#Connection Manager - OIDC Connections
+Export-ModuleMember -Function Find-CMOIDCConnections
+Export-ModuleMember -Function New-CMOIDCConnection
+Export-ModuleMember -Function Get-CMOIDCConnection
+Export-ModuleMember -Function Update-CMOIDCConnection
+Export-ModuleMember -Function Remove-CMOIDCConnection
+#Connection Manager - Oracle Cloud Infrastructure (OCI) Connections
+Export-ModuleMember -Function Find-CMOCIConnections
+Export-ModuleMember -Function New-CMOCIConnection
+Export-ModuleMember -Function Get-CMOCIConnection
+Export-ModuleMember -Function Update-CMOCIConnection
+Export-ModuleMember -Function Remove-CMOCIConnection
+Export-ModuleMember -Function Test-CMOCIConnection
+Export-ModuleMember -Function Test-CMOCIConnParameters
+#Connection Manager - SAP Data Custodians Connections
+Export-ModuleMember -Function Find-CMSAPConnections
+Export-ModuleMember -Function New-CMSAPConnection
+Export-ModuleMember -Function Get-CMSAPConnection
+Export-ModuleMember -Function Update-CMSAPConnection
+Export-ModuleMember -Function Remove-CMSAPConnection
+Export-ModuleMember -Function Test-CMSAPConnection
+Export-ModuleMember -Function Test-CMSAPConnParameters
+#Connection Manager - SCP Connections
+Export-ModuleMember -Function Find-CMSCPConnections
+Export-ModuleMember -Function New-CMSCPConnection
+Export-ModuleMember -Function Get-CMSCPConnection
+Export-ModuleMember -Function Update-CMSCPConnection
+Export-ModuleMember -Function Remove-CMSCPConnection
+Export-ModuleMember -Function Test-CMSCPConnection
+Export-ModuleMember -Function Test-CMSCPConnParameters
+#Connection Manager - SMB Connections
+Export-ModuleMember -Function Find-CMSMBConnections
+Export-ModuleMember -Function New-CMSMBConnection
+Export-ModuleMember -Function Get-CMSMBConnection
+Export-ModuleMember -Function Update-CMSMBConnection
+Export-ModuleMember -Function Remove-CMSMBConnection
+Export-ModuleMember -Function Test-CMSMBConnection
+Export-ModuleMember -Function Test-CMSMBConnParameters
+#Connection Manager - Salesforce Connections
+Export-ModuleMember -Function Find-CMSalesforceConnections
+Export-ModuleMember -Function New-CMSalesforceConnection
+Export-ModuleMember -Function Get-CMSalesforceConnection
+Export-ModuleMember -Function Update-CMSalesforceConnection
+Export-ModuleMember -Function Remove-CMSalesforceConnection
+Export-ModuleMember -Function Test-CMSalesforceConnection
+#Export-ModuleMember -Function Test-CMSalesforceConnParameters
+#Connection Manager - Syslog Connections
+Export-ModuleMember -Function Find-CMSyslogConnections
+Export-ModuleMember -Function New-CMSyslogConnection
+Export-ModuleMember -Function Get-CMSyslogConnection
+Export-ModuleMember -Function Update-CMSyslogConnection
+Export-ModuleMember -Function Remove-CMSyslogConnection
+Export-ModuleMember -Function Test-CMSyslogConnection
+Export-ModuleMember -Function Test-CMSyslogConnParameters
+#Connection Manager - Connections (IdP)
+Export-ModuleMember -Function Find-CMIdPConnections
+Export-ModuleMember -Function New-CMIdPConnectionLDAP
+Export-ModuleMember -Function New-CMIdPConnectionOIDC
+Export-ModuleMember -Function Get-CMIdPConnection
+Export-ModuleMember -Function Update-CMIdPConnectionLDAP
+Export-ModuleMember -Function Update-CMIdPConnectionOIDC
+Export-ModuleMember -Function Remove-CMIdPConnection
+Export-ModuleMember -Function Remove-CMIdPConnectionLDAPInUse
+Export-ModuleMember -Function Test-CMIdPLDAPConnParameters
+Export-ModuleMember -Function Get-CMIdPConnectionUsers
