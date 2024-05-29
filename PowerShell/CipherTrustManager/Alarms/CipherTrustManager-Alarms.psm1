@@ -15,6 +15,37 @@ $target_uri = "/system/alarms"
 $target_clear = "/clear"
 $target_ack = "/acknowledge"
 ####
+#Allow for backwards compatibility with PowerShell 5.1
+#Set default Param for Invoke-RestMethod in PS 6+ to "-SkipCertificateCheck" to true.
+#For PS 5.x to use SSL handler bypass code.
+
+if($PSVersionTable.PSVersion.Major -ge 6){
+    Write-Debug "Setting PS6+ Defaults - Alarms Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
+}else{
+    Write-Debug "Setting PS5.1 Defaults - Alarms Module"
+    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    # Allow the use of self signed certificates and set TLS
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # C# class to create callback
+    $code = @"
+    public class SSLHandler
+    {
+        public static System.Net.Security.RemoteCertificateValidationCallback GetSSLHandler()
+        {
+            return new System.Net.Security.RemoteCertificateValidationCallback((sender, certificate, chain, policyErrors) => { return true; });
+        }
+    }
+"@
+    # Compile the class
+    Add-Type -TypeDefinition $code
+
+    #disable checks using new class
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
+}
 
 ####
 # ENUMS
@@ -165,7 +196,7 @@ function Find-CMAlarms {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'GET' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response was: $($response)"    
     }
     Catch {
@@ -233,7 +264,7 @@ function Clear-CMAlarm {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -311,7 +342,7 @@ function Ack-CMAlarm {
         }
         Write-Debug "Headers: "
         Write-HashtableArray $($headers)    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {

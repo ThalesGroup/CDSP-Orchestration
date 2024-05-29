@@ -83,6 +83,38 @@ $target_uri_cks = "/cckm/aws/custom-key-stores"
 $target_uri_vkey = "/cckm/virtual/keys"
 ####
 
+#Allow for backwards compatibility with PowerShell 5.1
+#Set default Param for Invoke-RestMethod in PS 6+ to "-SkipCertificateCheck" to true.
+#For PS 5.x to use SSL handler bypass code.
+
+if($PSVersionTable.PSVersion.Major -ge 6){
+    Write-Debug "Setting PS6+ Defaults - CCKM AWS CKS Module"
+    $PSDefaultParameterValues = @{
+        "Invoke-RestMethod:SkipCertificateCheck"=$True
+        "ConvertTo-JSON:Depth"=5
+    }
+}else{
+    Write-Debug "Setting PS5.1 Defaults - CCKM AWS CKS Module"
+    $PSDefaultParameterValues = @{"ConvertTo-JSON:Depth"=5}
+    # Allow the use of self signed certificates and set TLS
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    # C# class to create callback
+    $code = @"
+    public class SSLHandler
+    {
+        public static System.Net.Security.RemoteCertificateValidationCallback GetSSLHandler()
+        {
+            return new System.Net.Security.RemoteCertificateValidationCallback((sender, certificate, chain, policyErrors) => { return true; });
+        }
+    }
+"@
+    # Compile the class
+    Add-Type -TypeDefinition $code
+
+    #disable checks using new class
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [SSLHandler]::GetSSLHandler()
+}
+
 
 <#
     .SYNOPSIS
@@ -315,7 +347,7 @@ function New-CKS {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
         $cksId = $response.id  
     }
@@ -380,7 +412,7 @@ function Edit-CKS {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'PATCH' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
         $cksId = $response.id  
     }
@@ -425,7 +457,7 @@ function Remove-CKS {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'DELETE' -Uri $endpoint -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'DELETE' -Uri $endpoint -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
     }
     Catch {
@@ -538,7 +570,7 @@ function Update-CKSPerformOperation {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
         $cksId = $response.id  
     }
@@ -590,7 +622,7 @@ function New-VirtualKey {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
         $keyId = $response.id  
     }
@@ -662,7 +694,7 @@ function New-HYOKKey {
             Authorization = "Bearer $($CM_Session.AuthToken)"
         }
         Write-Debug "Headers: $($headers)"    
-        $response = Invoke-RestMethod -SkipCertificateCheck -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
+        $response = Invoke-RestMethod  -Method 'POST' -Uri $endpoint -Body $jsonBody -Headers $headers -ContentType 'application/json'
         Write-Debug "Response: $($response)"  
         $keyId = $response.id  
     }
