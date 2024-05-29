@@ -298,6 +298,45 @@ Export-ModuleMember -Function New-CMSyslog
 Export-ModuleMember -Function Get-CMSyslog
 Export-ModuleMember -Function Remove-CMSyslog
 Export-ModuleMember -Function Set-CMSyslog 
+#CTE
+##PolicyElements
+Export-ModuleMember -Function New-CTEPolicyElement
+Export-ModuleMember -Function New-CTEElementsList
+Export-ModuleMember -Function Find-CTEPolicyElementsByType
+#Export-ModuleMember -Function Remove-CTEPolicyElement
+#Export-ModuleMember -Function Update-CTEPolicyElement
+#Export-ModuleMember -Function Update-CTEPolicyElementAddElements
+#Export-ModuleMember -Function Remove-CTEPolicyElementDeleteElements
+#Export-ModuleMember -Function Update-CTEPolicyElementUpdateElementByIndex
+##Policy
+Export-ModuleMember -Function New-CTEPolicy
+Export-ModuleMember -Function New-CTEDataTxRulesList
+Export-ModuleMember -Function New-CTEIDTKeyRulesList
+Export-ModuleMember -Function New-CTEKeyRulesList
+Export-ModuleMember -Function New-CTELDTKeyRulesList
+Export-ModuleMember -Function New-CTESecurityRulesList
+Export-ModuleMember -Function New-CTESignatureRulesList
+Export-ModuleMember -Function New-CTELDTKey
+Export-ModuleMember -Function New-CTEPolicyMetadata
+##Client
+Export-ModuleMember -Function New-CTEClient
+Export-ModuleMember -Function Find-CTEClients
+Export-ModuleMember -Function Update-CTEClient
+Export-ModuleMember -Function New-CTEGuardPointParams
+Export-ModuleMember -Function New-CTEGuardPoint
+Export-ModuleMember -Function Find-CTEGuardPoints
+Export-ModuleMember -Function Remove-CTEGuardPoint
+##CSI Storage Group
+Export-ModuleMember -Function New-CTECSIStorageGroup
+Export-ModuleMember -Function Find-CTECSIStorageGroups
+Export-ModuleMember -Function Remove-CTECSIStorageGroup
+Export-ModuleMember -Function New-CTEAddClientsStorageGroup
+Export-ModuleMember -Function New-CTEAddGuardPoliciesStorageGroup
+#Newly Added for keys
+Export-ModuleMember -Function New-CMKeyMeta
+Export-ModuleMember -Function New-CMKeyMetaPermission
+Export-ModuleMember -Function New-CMKeyMetaCTEParams
+Export-ModuleMember -Function New-CM_ClientToken
 #Tokens
 Export-ModuleMember -Function Find-CMTokens
 Export-ModuleMember -Function New-CMToken
