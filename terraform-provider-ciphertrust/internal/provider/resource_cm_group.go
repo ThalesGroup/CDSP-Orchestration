@@ -21,7 +21,7 @@ var (
 	_ resource.ResourceWithConfigure = &resourceCMGroup{}
 )
 
-func NewresourceCMGroup() resource.Resource {
+func NewResourceCMGroup() resource.Resource {
 	return &resourceCMGroup{}
 }
 

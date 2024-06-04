@@ -46,3 +46,11 @@ type Key struct {
 	Description      string `json:"description"`
 	Name             string `json:"name"`
 }
+
+type CTEUserJSON struct {
+	GID      int    `json:"gid"`
+	GName    string `json:"gname"`
+	OSDomain string `json:"os_domain"`
+	UID      int    `json:"uid"`
+	UName    string `json:"uname"`
+}
