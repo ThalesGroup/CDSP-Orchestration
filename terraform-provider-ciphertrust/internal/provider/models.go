@@ -54,3 +54,32 @@ type CTEUserJSON struct {
 	UID      int    `json:"uid"`
 	UName    string `json:"uname"`
 }
+
+type ClassificationTagAttributesJSON struct {
+	DataType string `json:"data_type"`
+	Name     string `json:"name"`
+	Operator string `json:"operator"`
+	Value    string `json:"value"`
+}
+
+type ClassificationTagJSON struct {
+	Description string                            `json:"description"`
+	Name        string                            `json:"name"`
+	Attributes  []ClassificationTagAttributesJSON `json:"attributes"`
+}
+
+type CTEResourceJSON struct {
+	Directory         string `json:"directory"`
+	File              string `json:"file"`
+	HDFS              bool   `json:"hdfs"`
+	IncludeSubfolders bool   `json:"include_subfolders"`
+}
+
+type CTEResourceSetModelJSON struct {
+	ID                 string                  `json:"id"`
+	Name               string                  `json:"name"`
+	Description        string                  `json:"description"`
+	Resources          []CTEResourceJSON       `json:"resources"`
+	Type               string                  `json:"type"`
+	ClassificationTags []ClassificationTagJSON `json:"classification_tags"`
+}

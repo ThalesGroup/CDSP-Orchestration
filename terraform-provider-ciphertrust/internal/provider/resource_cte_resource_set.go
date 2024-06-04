@@ -42,10 +42,10 @@ type ClassificationTag struct {
 }
 
 type CTEResource struct {
-	Directory         types.Int64  `tfsdk:"directory"`
+	Directory         types.String `tfsdk:"directory"`
 	File              types.String `tfsdk:"file"`
-	HDFS              types.String `tfsdk:"hdfs"`
-	IncludeSubfolders types.Int64  `tfsdk:"include_subfolders"`
+	HDFS              types.Bool   `tfsdk:"hdfs"`
+	IncludeSubfolders types.Bool   `tfsdk:"include_subfolders"`
 }
 
 type tfsdkCTEResourceSetModel struct {
@@ -77,24 +77,56 @@ func (r *resourceCTEResourceSet) Schema(_ context.Context, _ resource.SchemaRequ
 			"description": schema.StringAttribute{
 				Optional: true,
 			},
-			"users": schema.ListNestedAttribute{
+			"type": schema.StringAttribute{
+				Optional: true,
+			},
+			"resources": schema.ListNestedAttribute{
 				Optional: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"gid": schema.Int64Attribute{
+						"directory": schema.StringAttribute{
 							Optional: true,
 						},
-						"gname": schema.Int64Attribute{
+						"file": schema.StringAttribute{
 							Optional: true,
 						},
-						"os_domain": schema.StringAttribute{
+						"hdfs": schema.BoolAttribute{
 							Optional: true,
 						},
-						"uid": schema.Int64Attribute{
+						"include_subfolders": schema.BoolAttribute{
 							Optional: true,
 						},
-						"uname": schema.StringAttribute{
+					},
+				},
+			},
+			"classification_tags": schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"description": schema.StringAttribute{
 							Optional: true,
+						},
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"attributes": schema.ListNestedAttribute{
+							Optional: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"data_type": schema.StringAttribute{
+										Optional: true,
+									},
+									"name": schema.StringAttribute{
+										Optional: true,
+									},
+									"operator": schema.StringAttribute{
+										Optional: true,
+									},
+									"value": schema.StringAttribute{
+										Optional: true,
+									},
+								},
+							},
 						},
 					},
 				},
@@ -110,7 +142,7 @@ func (r *resourceCTEResourceSet) Create(ctx context.Context, req resource.Create
 
 	// Retrieve values from plan
 	var plan tfsdkCTEResourceSetModel
-	payload := map[string]interface{}{}
+	var payload CTEResourceSetModelJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -118,9 +150,66 @@ func (r *resourceCTEResourceSet) Create(ctx context.Context, req resource.Create
 		return
 	}
 
-	payload["name"] = trimString(plan.Name.String())
-	payload["description"] = trimString(plan.Description.String())
-	payload["resources"] = plan.Resources
+	payload.Name = trimString(plan.Name.String())
+	if plan.Description.ValueString() != "" && plan.Description.ValueString() != types.StringNull().ValueString() {
+		payload.Description = trimString(plan.Description.String())
+	}
+	if plan.Type.ValueString() != "" && plan.Type.ValueString() != types.StringNull().ValueString() {
+		payload.Type = trimString(plan.Type.String())
+	} else {
+		payload.Type = "Directory"
+	}
+
+	var tagsJSONArr []ClassificationTagJSON
+	for _, tag := range plan.ClassificationTags {
+		var tagsJSON ClassificationTagJSON
+		if tag.Description.ValueString() != "" && tag.Description.ValueString() != types.StringNull().ValueString() {
+			tagsJSON.Description = string(tag.Description.ValueString())
+		}
+		if tag.Name.ValueString() != "" && tag.Name.ValueString() != types.StringNull().ValueString() {
+			tagsJSON.Name = string(tag.Name.ValueString())
+		}
+		var tagAttributesJSONArr []ClassificationTagAttributesJSON
+		for _, atribute := range tag.Attributes {
+			var tagAttributesJSON ClassificationTagAttributesJSON
+			if atribute.Name.ValueString() != "" && atribute.Name.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.Name = string(atribute.Name.ValueString())
+			}
+			if atribute.DataType.ValueString() != "" && atribute.DataType.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.DataType = string(atribute.DataType.ValueString())
+			}
+			if atribute.Operator.ValueString() != "" && atribute.Operator.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.Operator = string(atribute.Operator.ValueString())
+			}
+			if atribute.Value.ValueString() != "" && atribute.Value.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.Value = string(atribute.Value.ValueString())
+			}
+			tagAttributesJSONArr = append(tagAttributesJSONArr, tagAttributesJSON)
+		}
+		tagsJSON.Attributes = tagAttributesJSONArr
+
+		tagsJSONArr = append(tagsJSONArr, tagsJSON)
+	}
+	payload.ClassificationTags = tagsJSONArr
+
+	var resources []CTEResourceJSON
+	for _, resource := range plan.Resources {
+		var resourceJSON CTEResourceJSON
+		if resource.Directory.ValueString() != "" && resource.Directory.ValueString() != types.StringNull().ValueString() {
+			resourceJSON.Directory = string(resource.Directory.ValueString())
+		}
+		if resource.File.ValueString() != "" && resource.File.ValueString() != types.StringNull().ValueString() {
+			resourceJSON.File = string(resource.File.ValueString())
+		}
+		if resource.HDFS.ValueBool() != types.BoolNull().ValueBool() {
+			resourceJSON.HDFS = bool(resource.HDFS.ValueBool())
+		}
+		if resource.IncludeSubfolders.ValueBool() != types.BoolNull().ValueBool() {
+			resourceJSON.IncludeSubfolders = bool(resource.IncludeSubfolders.ValueBool())
+		}
+		resources = append(resources, resourceJSON)
+	}
+	payload.Resources = resources
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
