@@ -69,7 +69,7 @@ func (r *resourceCTEProcessSet) Schema(_ context.Context, _ resource.SchemaReque
 						"directory": schema.StringAttribute{
 							Optional: true,
 						},
-						"file": schema.Int64Attribute{
+						"file": schema.StringAttribute{
 							Optional: true,
 						},
 						"resource_set_id": schema.StringAttribute{
