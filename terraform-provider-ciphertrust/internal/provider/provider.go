@@ -257,5 +257,6 @@ func (p *ciphertrustProvider) Resources(_ context.Context) []func() resource.Res
 		NewResourceCTEResourceSet,
 		NewResourceCTEUserSet,
 		NewResourceCTESignatureSet,
+		NewResourceCTEPolicy,
 	}
 }

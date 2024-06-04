@@ -9,4 +9,5 @@ const (
 	URL_CTE_USER_SET      = "api/v1/transparent-encryption/usersets"
 	URL_CTE_RESOURCE_SET  = "api/v1/transparent-encryption/resourcesets"
 	URL_CTE_SIGNATURE_SET = "api/v1/transparent-encryption/signaturesets"
+	URL_CTE_POLICY        = "api/v1/transparent-encryption/policies"
 )

@@ -105,3 +105,76 @@ type CTESignatureSetModelJSON struct {
 	Type        string   `json:"type"`
 	Sources     []string `json:"source_list"`
 }
+
+// CTE Policy related structs
+type DataTxRuleJSON struct {
+	KeyID         string `json:"key_id"`
+	KeyType       string `json:"key_type"`
+	ResourceSetID string `json:"resource_set_id"`
+}
+
+type IDTRuleJSON struct {
+	CurrentKey            string `json:"current_key"`
+	CurrentKeyType        string `json:"current_key_type"`
+	TransformationKey     string `json:"transformation_key"`
+	TransformationKeyType string `json:"transformation_key_type"`
+}
+
+type KeyRuleJSON struct {
+	KeyID         string `json:"key_id"`
+	KeyType       string `json:"key_type"`
+	ResourceSetID string `json:"resource_set_id"`
+}
+
+type CurrentKeyJSON struct {
+	KeyID   string `json:"key_id"`
+	KeyType string `json:"key_type"`
+}
+
+type TransformationKeyJSON struct {
+	KeyID   string `json:"key_id"`
+	KeyType string `json:"key_type"`
+}
+
+type LDTRuleJSON struct {
+	CurrentKey        CurrentKeyJSON        `json:"current_key"`
+	TransformationKey TransformationKeyJSON `json:"transformation_key"`
+	IsExclusionRule   bool                  `json:"is_exclusion_rule"`
+	ResourceSetID     string                `json:"resource_set_id"`
+}
+
+type CTEPolicyMetadataJSON struct {
+	RestrictUpdate bool `json:"restrict_update"`
+}
+
+type SecurityRuleJSON struct {
+	Action             string `json:"action"`
+	Effect             string `json:"effect"`
+	ExcludeProcessSet  bool   `json:"exclude_process_set"`
+	ExcludeResourceSet bool   `json:"exclude_resource_set"`
+	ExcludeUserSet     bool   `json:"exclude_user_set"`
+	PartialMatch       bool   `json:"partial_match"`
+	ProcessSetID       string `json:"process_set_id"`
+	ResourceSetID      string `json:"resource_set_id"`
+	UserSetID          string `json:"user_set_id"`
+}
+
+type SignatureRuleJSON struct {
+	SignatureSetID string `json:"signature_set_id"`
+}
+
+type CTEPolicyModelJSON struct {
+	ID                  string                `json:"id"`
+	Name                string                `json:"name"`
+	Description         string                `json:"description"`
+	PolicyType          string                `json:"policy_type"`
+	Metadata            CTEPolicyMetadataJSON `json:"metadata"`
+	NeverDeny           bool                  `json:"never_deny"`
+	DataTransformRules  []DataTxRuleJSON      `json:"data_transform_rules"`
+	IDTKeyRules         []IDTRuleJSON         `json:"idt_key_rules"`
+	KeyRules            []KeyRuleJSON         `json:"key_rules"`
+	LDTKeyRules         []LDTRuleJSON         `json:"ldt_key_rules"`
+	SecurityRules       []SecurityRuleJSON    `json:"security_rules"`
+	SignatureRules      []SignatureRuleJSON   `json:"signature_rules"`
+	ForceRestrictUpdate bool                  `json:"force_restrict_update"`
+}

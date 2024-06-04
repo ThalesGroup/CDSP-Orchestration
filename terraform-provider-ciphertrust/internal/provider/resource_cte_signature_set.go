@@ -187,7 +187,7 @@ func (r *resourceCTESignatureSet) Delete(ctx context.Context, req resource.Delet
 	}
 
 	// Delete existing order
-	output, err := r.client.DeleteByID(ctx, state.ID.ValueString(), URL_CTE_PROCESS_SET)
+	output, err := r.client.DeleteByID(ctx, state.ID.ValueString(), URL_CTE_SIGNATURE_SET)
 	tflog.Trace(ctx, MSG_METHOD_END+"[resource_cm_signature_set.go -> Delete]["+state.ID.ValueString()+"]["+output+"]")
 	if err != nil {
 		resp.Diagnostics.AddError(
