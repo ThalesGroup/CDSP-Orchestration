@@ -97,3 +97,11 @@ type CTEProcessSetModelJSON struct {
 	Description string           `json:"description"`
 	Processes   []CTEProcessJSON `json:"processes"`
 }
+
+type CTESignatureSetModelJSON struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Type        string   `json:"type"`
+	Sources     []string `json:"source_list"`
+}
