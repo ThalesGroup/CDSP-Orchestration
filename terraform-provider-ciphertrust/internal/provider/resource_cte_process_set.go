@@ -92,7 +92,7 @@ func (r *resourceCTEProcessSet) Create(ctx context.Context, req resource.CreateR
 
 	// Retrieve values from plan
 	var plan tfsdkCTEProcessSetModel
-	payload := map[string]interface{}{}
+	var payload CTEProcessSetModelJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -100,9 +100,28 @@ func (r *resourceCTEProcessSet) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	payload["name"] = trimString(plan.Name.String())
-	payload["description"] = trimString(plan.Description.String())
-	payload["processes"] = plan.Processes
+	payload.Name = trimString(plan.Name.String())
+	if plan.Description.ValueString() != "" && plan.Description.ValueString() != types.StringNull().ValueString() {
+		payload.Description = trimString(plan.Description.String())
+	}
+	var processes []CTEProcessJSON
+	for _, process := range plan.Processes {
+		var processJSON CTEProcessJSON
+		if process.Directory.ValueString() != "" && process.Directory.ValueString() != types.StringNull().ValueString() {
+			processJSON.Directory = string(process.Directory.ValueString())
+		}
+		if process.File.ValueString() != "" && process.File.ValueString() != types.StringNull().ValueString() {
+			processJSON.File = string(process.File.ValueString())
+		}
+		if process.ResourceSetId.ValueString() != "" && process.ResourceSetId.ValueString() != types.StringNull().ValueString() {
+			processJSON.ResourceSetId = string(process.ResourceSetId.ValueString())
+		}
+		if process.Signature.ValueString() != "" && process.Signature.ValueString() != types.StringNull().ValueString() {
+			processJSON.Signature = string(process.Signature.ValueString())
+		}
+		processes = append(processes, processJSON)
+	}
+	payload.Processes = processes
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -141,7 +160,7 @@ func (r *resourceCTEProcessSet) Read(ctx context.Context, req resource.ReadReque
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *resourceCTEProcessSet) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan tfsdkCTEProcessSetModel
-	payload := map[string]interface{}{}
+	var payload CTEProcessSetModelJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -149,8 +168,27 @@ func (r *resourceCTEProcessSet) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	payload["description"] = trimString(plan.Description.String())
-	payload["processes"] = plan.Processes
+	if plan.Description.ValueString() != "" && plan.Description.ValueString() != types.StringNull().ValueString() {
+		payload.Description = trimString(plan.Description.String())
+	}
+	var processes []CTEProcessJSON
+	for _, process := range plan.Processes {
+		var processJSON CTEProcessJSON
+		if process.Directory.ValueString() != "" && process.Directory.ValueString() != types.StringNull().ValueString() {
+			processJSON.Directory = string(process.Directory.ValueString())
+		}
+		if process.File.ValueString() != "" && process.File.ValueString() != types.StringNull().ValueString() {
+			processJSON.File = string(process.File.ValueString())
+		}
+		if process.ResourceSetId.ValueString() != "" && process.ResourceSetId.ValueString() != types.StringNull().ValueString() {
+			processJSON.ResourceSetId = string(process.ResourceSetId.ValueString())
+		}
+		if process.Signature.ValueString() != "" && process.Signature.ValueString() != types.StringNull().ValueString() {
+			processJSON.Signature = string(process.Signature.ValueString())
+		}
+		processes = append(processes, processJSON)
+	}
+	payload.Processes = processes
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {

@@ -83,3 +83,17 @@ type CTEResourceSetModelJSON struct {
 	Type               string                  `json:"type"`
 	ClassificationTags []ClassificationTagJSON `json:"classification_tags"`
 }
+
+type CTEProcessJSON struct {
+	Directory     string `json:"directory"`
+	File          string `json:"file"`
+	ResourceSetId string `json:"resource_set_id"`
+	Signature     string `json:"signature"`
+}
+
+type CTEProcessSetModelJSON struct {
+	ID          string           `json:"id"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Processes   []CTEProcessJSON `json:"processes"`
+}

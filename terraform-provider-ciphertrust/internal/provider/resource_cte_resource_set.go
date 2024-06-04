@@ -248,7 +248,7 @@ func (r *resourceCTEResourceSet) Read(ctx context.Context, req resource.ReadRequ
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *resourceCTEResourceSet) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan tfsdkCTEResourceSetModel
-	payload := map[string]interface{}{}
+	var payload CTEResourceSetModelJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -256,8 +256,58 @@ func (r *resourceCTEResourceSet) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	payload["description"] = trimString(plan.Description.String())
-	payload["resources"] = plan.Resources
+	payload.Description = trimString(plan.Description.String())
+
+	var tagsJSONArr []ClassificationTagJSON
+	for _, tag := range plan.ClassificationTags {
+		var tagsJSON ClassificationTagJSON
+		if tag.Description.ValueString() != "" && tag.Description.ValueString() != types.StringNull().ValueString() {
+			tagsJSON.Description = string(tag.Description.ValueString())
+		}
+		if tag.Name.ValueString() != "" && tag.Name.ValueString() != types.StringNull().ValueString() {
+			tagsJSON.Name = string(tag.Name.ValueString())
+		}
+		var tagAttributesJSONArr []ClassificationTagAttributesJSON
+		for _, atribute := range tag.Attributes {
+			var tagAttributesJSON ClassificationTagAttributesJSON
+			if atribute.Name.ValueString() != "" && atribute.Name.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.Name = string(atribute.Name.ValueString())
+			}
+			if atribute.DataType.ValueString() != "" && atribute.DataType.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.DataType = string(atribute.DataType.ValueString())
+			}
+			if atribute.Operator.ValueString() != "" && atribute.Operator.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.Operator = string(atribute.Operator.ValueString())
+			}
+			if atribute.Value.ValueString() != "" && atribute.Value.ValueString() != types.StringNull().ValueString() {
+				tagAttributesJSON.Value = string(atribute.Value.ValueString())
+			}
+			tagAttributesJSONArr = append(tagAttributesJSONArr, tagAttributesJSON)
+		}
+		tagsJSON.Attributes = tagAttributesJSONArr
+
+		tagsJSONArr = append(tagsJSONArr, tagsJSON)
+	}
+	payload.ClassificationTags = tagsJSONArr
+
+	var resources []CTEResourceJSON
+	for _, resource := range plan.Resources {
+		var resourceJSON CTEResourceJSON
+		if resource.Directory.ValueString() != "" && resource.Directory.ValueString() != types.StringNull().ValueString() {
+			resourceJSON.Directory = string(resource.Directory.ValueString())
+		}
+		if resource.File.ValueString() != "" && resource.File.ValueString() != types.StringNull().ValueString() {
+			resourceJSON.File = string(resource.File.ValueString())
+		}
+		if resource.HDFS.ValueBool() != types.BoolNull().ValueBool() {
+			resourceJSON.HDFS = bool(resource.HDFS.ValueBool())
+		}
+		if resource.IncludeSubfolders.ValueBool() != types.BoolNull().ValueBool() {
+			resourceJSON.IncludeSubfolders = bool(resource.IncludeSubfolders.ValueBool())
+		}
+		resources = append(resources, resourceJSON)
+	}
+	payload.Resources = resources
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {

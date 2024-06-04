@@ -104,8 +104,6 @@ func (r *resourceCTEUserSet) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	//arrUsersJSON, _ := json.Marshal(plan.Users)
-
 	payload["name"] = trimString(plan.Name.String())
 	if plan.Description.ValueString() != "" && plan.Description.ValueString() != types.StringNull().ValueString() {
 		payload["description"] = trimString(plan.Description.String())
