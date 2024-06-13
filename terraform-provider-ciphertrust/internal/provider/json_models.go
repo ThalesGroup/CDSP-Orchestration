@@ -206,21 +206,41 @@ type CTEClientModelJSON struct {
 }
 
 type UserSetJSON struct {
-	ID          string            `json:"id"`
-	URI         string            `json:"uri"`
-	Account     string            `json:"account"`
-	CreatedAt   string            `json:"createdAt"`
-	Name        string            `json:"name"`
-	UpdatedAt   string            `json:"updatedAt"`
-	Description string            `json:"description"`
-	Users       []UserSetUserJSON `json:"users"`
+	ID          string             `json:"id"`
+	URI         string             `json:"uri"`
+	Account     string             `json:"account"`
+	CreatedAt   string             `json:"createdAt"`
+	Name        string             `json:"name"`
+	UpdatedAt   string             `json:"updatedAt"`
+	Description string             `json:"description"`
+	Users       []UserSetEntryJSON `json:"users"`
 }
 
-type UserSetUserJSON struct {
+type UserSetEntryJSON struct {
 	Index    int64  `json:"index"`
 	GID      int64  `json:"gid"`
 	GName    string `json:"gname"`
 	OSDomain string `json:"os_domain"`
 	UID      int64  `json:"uid"`
 	UName    string `json:"uname"`
+}
+
+type ResourceSetJSON struct {
+	ID          string                 `json:"id"`
+	URI         string                 `json:"uri"`
+	Account     string                 `json:"account"`
+	CreatedAt   string                 `json:"createdAt"`
+	Name        string                 `json:"name"`
+	UpdatedAt   string                 `json:"updatedAt"`
+	Description string                 `json:"description"`
+	Type        string                 `json:"type"`
+	Resources   []ResourceSetEntryJSON `json:"resources"`
+}
+
+type ResourceSetEntryJSON struct {
+	Index             int64  `json:"index"`
+	Directory         string `json:"directory"`
+	File              string `json:"file"`
+	IncludeSubfolders bool   `json:"include_subfolders"`
+	HDFS              bool   `json:"hdfs"`
 }

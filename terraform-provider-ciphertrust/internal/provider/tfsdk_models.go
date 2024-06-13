@@ -317,3 +317,23 @@ type tfsdkCTEUserSetsListModel struct {
 	UpdatedAt   types.String      `tfsdk:"updated_at"`
 	Users       []tfsdkCTEUserSet `tfsdk:"users"`
 }
+
+type tfsdkCTEResourceSet struct {
+	Index             types.Int64  `tfsdk:"index"`
+	Directory         types.String `tfsdk:"directory"`
+	File              types.String `tfsdk:"file"`
+	IncludeSubfolders types.Bool   `tfsdk:"include_subfolders"`
+	HDFS              types.Bool   `tfsdk:"hdfs"`
+}
+
+type tfsdkCTEResourceSetsListModel struct {
+	ID          types.String          `tfsdk:"id"`
+	Name        types.String          `tfsdk:"name"`
+	Description types.String          `tfsdk:"description"`
+	URI         types.String          `tfsdk:"uri"`
+	Account     types.String          `tfsdk:"account"`
+	CreateAt    types.String          `tfsdk:"created_at"`
+	UpdatedAt   types.String          `tfsdk:"updated_at"`
+	Type        types.String          `tfsdk:"type"`
+	Resources   []tfsdkCTEResourceSet `tfsdk:"resources"`
+}
