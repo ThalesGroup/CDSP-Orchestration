@@ -337,3 +337,22 @@ type tfsdkCTEResourceSetsListModel struct {
 	Type        types.String          `tfsdk:"type"`
 	Resources   []tfsdkCTEResourceSet `tfsdk:"resources"`
 }
+
+type tfsdkCTEProcessSet struct {
+	Index         types.Int64  `tfsdk:"index"`
+	Directory     types.String `tfsdk:"directory"`
+	File          types.String `tfsdk:"file"`
+	Signature     types.String `tfsdk:"signature"`
+	ResourceSetID types.String `tfsdk:"resource_set_id"`
+}
+
+type tfsdkCTEProcessSetsListModel struct {
+	ID          types.String         `tfsdk:"id"`
+	Name        types.String         `tfsdk:"name"`
+	Description types.String         `tfsdk:"description"`
+	URI         types.String         `tfsdk:"uri"`
+	Account     types.String         `tfsdk:"account"`
+	CreateAt    types.String         `tfsdk:"created_at"`
+	UpdatedAt   types.String         `tfsdk:"updated_at"`
+	Processes   []tfsdkCTEProcessSet `tfsdk:"resources"`
+}

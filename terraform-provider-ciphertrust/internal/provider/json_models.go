@@ -244,3 +244,22 @@ type ResourceSetEntryJSON struct {
 	IncludeSubfolders bool   `json:"include_subfolders"`
 	HDFS              bool   `json:"hdfs"`
 }
+
+type ProcessSetJSON struct {
+	ID          string                `json:"id"`
+	URI         string                `json:"uri"`
+	Account     string                `json:"account"`
+	CreatedAt   string                `json:"createdAt"`
+	Name        string                `json:"name"`
+	UpdatedAt   string                `json:"updatedAt"`
+	Description string                `json:"description"`
+	Processes   []ProcessSetEntryJSON `json:"resources"`
+}
+
+type ProcessSetEntryJSON struct {
+	Index         int64  `json:"index"`
+	Directory     string `json:"directory"`
+	File          string `json:"file"`
+	Signature     string `tfsdk:"signature"`
+	ResourceSetID string `tfsdk:"resource_set_id"`
+}

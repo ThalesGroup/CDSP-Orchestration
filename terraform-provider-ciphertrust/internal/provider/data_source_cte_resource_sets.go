@@ -27,7 +27,7 @@ type dataSourceCTEResourceSets struct {
 }
 
 type CTEResourceSetsDataSourceModel struct {
-	ResourceSet []tfsdkCTEResourceSetsListModel `tfsdk:"resources"`
+	ResourceSet []tfsdkCTEResourceSetsListModel `tfsdk:"resource_sets"`
 }
 
 func (d *dataSourceCTEResourceSets) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -37,7 +37,7 @@ func (d *dataSourceCTEResourceSets) Metadata(_ context.Context, req datasource.M
 func (d *dataSourceCTEResourceSets) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"resources": schema.ListNestedAttribute{
+			"resource_sets": schema.ListNestedAttribute{
 				Computed: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
