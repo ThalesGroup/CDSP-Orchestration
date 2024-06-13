@@ -28,20 +28,6 @@ type resourceCTEProcessSet struct {
 	client *Client
 }
 
-type CTEProcess struct {
-	Directory     types.String `tfsdk:"directory"`
-	File          types.String `tfsdk:"file"`
-	ResourceSetId types.String `tfsdk:"resource_set_id"`
-	Signature     types.String `tfsdk:"signature"`
-}
-
-type tfsdkCTEProcessSetModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Processes   []CTEProcess `tfsdk:"processes"`
-}
-
 func (r *resourceCTEProcessSet) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_cte_process_set"
 }

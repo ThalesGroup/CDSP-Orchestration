@@ -90,7 +90,7 @@ func (d *dataSourceUsers) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	users := []User{}
+	users := []UserJSON{}
 
 	err = json.Unmarshal([]byte(jsonStr), &users)
 	if err != nil {

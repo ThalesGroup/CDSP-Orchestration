@@ -70,7 +70,7 @@ func (d *dataSourceGroups) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	groups := []Group{}
+	groups := []GroupJSON{}
 
 	err = json.Unmarshal([]byte(jsonStr), &groups)
 	if err != nil {

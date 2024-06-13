@@ -29,18 +29,6 @@ type resourceCMUser struct {
 	client *Client
 }
 
-type tfsdkCMUserModel struct {
-	UserID                 types.String `tfsdk:"user_id"`
-	Name                   types.String `tfsdk:"full_name"`
-	UserName               types.String `tfsdk:"username"`
-	Nickname               types.String `tfsdk:"nickname"`
-	Email                  types.String `tfsdk:"email"`
-	Password               types.String `tfsdk:"password"`
-	IsDomainUser           types.Bool   `tfsdk:"is_domain_user"`
-	PreventUILogin         types.Bool   `tfsdk:"prevent_ui_login"`
-	PasswordChangeRequired types.Bool   `tfsdk:"password_change_required"`
-}
-
 func (r *resourceCMUser) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_cm_user"
 }
@@ -93,8 +81,8 @@ func (r *resourceCMUser) Create(ctx context.Context, req resource.CreateRequest,
 
 	// Retrieve values from plan
 	var plan tfsdkCMUserModel
-	var loginFlags UserLoginFlags
-	var payload User
+	var loginFlags UserLoginFlagsJSON
+	var payload UserJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -184,8 +172,8 @@ func (r *resourceCMUser) Read(ctx context.Context, req resource.ReadRequest, res
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *resourceCMUser) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan tfsdkCMUserModel
-	var loginFlags UserLoginFlags
-	var payload User
+	var loginFlags UserLoginFlagsJSON
+	var payload UserJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)

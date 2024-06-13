@@ -29,14 +29,6 @@ type resourceCMGroup struct {
 	client *Client
 }
 
-type tfsdkCMGroupModel struct {
-	Name           types.String           `tfsdk:"name"`
-	AppMetadata    map[string]interface{} `tfsdk:"app_metadata"`
-	ClientMetadata map[string]interface{} `tfsdk:"client_metadata"`
-	Description    types.String           `tfsdk:"description"`
-	UserMetadata   map[string]interface{} `tfsdk:"user_metadata"`
-}
-
 func (r *resourceCMGroup) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_cm_group"
 }

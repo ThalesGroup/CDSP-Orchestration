@@ -28,14 +28,6 @@ type resourceCTESignatureSet struct {
 	client *Client
 }
 
-type tfsdkCTESignatureSetModel struct {
-	ID          types.String   `tfsdk:"id"`
-	Name        types.String   `tfsdk:"name"`
-	Description types.String   `tfsdk:"description"`
-	Type        types.String   `tfsdk:"type"`
-	Sources     []types.String `tfsdk:"source_list"`
-}
-
 func (r *resourceCTESignatureSet) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_cte_signature_set"
 }

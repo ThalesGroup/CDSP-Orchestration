@@ -244,6 +244,7 @@ func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource
 		NewDataSourceUsers,
 		NewDataSourceKeys,
 		NewDataSourceGroups,
+		NewDataSourceCTEUserSets,
 	}
 }
 
@@ -258,5 +259,6 @@ func (p *ciphertrustProvider) Resources(_ context.Context) []func() resource.Res
 		NewResourceCTEUserSet,
 		NewResourceCTESignatureSet,
 		NewResourceCTEPolicy,
+		NewResourceCTEClient,
 	}
 }

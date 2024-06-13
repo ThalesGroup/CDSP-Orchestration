@@ -28,21 +28,6 @@ type resourceCTEUserSet struct {
 	client *Client
 }
 
-type CTEUser struct {
-	GID      types.Int64  `tfsdk:"gid"`
-	GName    types.String `tfsdk:"gname"`
-	OSDomain types.String `tfsdk:"os_domain"`
-	UID      types.Int64  `tfsdk:"uid"`
-	UName    types.String `tfsdk:"uname"`
-}
-
-type tfsdkCTEUserSetModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Users       []CTEUser    `tfsdk:"users"`
-}
-
 func (r *resourceCTEUserSet) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_cte_user_set"
 }

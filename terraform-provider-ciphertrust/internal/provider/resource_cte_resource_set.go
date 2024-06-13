@@ -28,35 +28,6 @@ type resourceCTEResourceSet struct {
 	client *Client
 }
 
-type ClassificationTagAttributes struct {
-	DataType types.String `tfsdk:"data_type"`
-	Name     types.String `tfsdk:"name"`
-	Operator types.String `tfsdk:"operator"`
-	Value    types.String `tfsdk:"value"`
-}
-
-type ClassificationTag struct {
-	Description types.String                  `tfsdk:"description"`
-	Name        types.String                  `tfsdk:"name"`
-	Attributes  []ClassificationTagAttributes `tfsdk:"attributes"`
-}
-
-type CTEResource struct {
-	Directory         types.String `tfsdk:"directory"`
-	File              types.String `tfsdk:"file"`
-	HDFS              types.Bool   `tfsdk:"hdfs"`
-	IncludeSubfolders types.Bool   `tfsdk:"include_subfolders"`
-}
-
-type tfsdkCTEResourceSetModel struct {
-	ID                 types.String        `tfsdk:"id"`
-	Name               types.String        `tfsdk:"name"`
-	Description        types.String        `tfsdk:"description"`
-	Resources          []CTEResource       `tfsdk:"resources"`
-	Type               types.String        `tfsdk:"type"`
-	ClassificationTags []ClassificationTag `tfsdk:"classification_tags"`
-}
-
 func (r *resourceCTEResourceSet) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_cte_resource_set"
 }
