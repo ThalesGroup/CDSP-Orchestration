@@ -356,3 +356,54 @@ type tfsdkCTEProcessSetsListModel struct {
 	UpdatedAt   types.String         `tfsdk:"updated_at"`
 	Processes   []tfsdkCTEProcessSet `tfsdk:"resources"`
 }
+
+type tfsdkCTESignatureSetsListModel struct {
+	ID                 types.String   `tfsdk:"id"`
+	URI                types.String   `tfsdk:"uri"`
+	Account            types.String   `tfsdk:"account"`
+	CreatedAt          types.String   `tfsdk:"created_at"`
+	UpdatedAt          types.String   `tfsdk:"updated_at"`
+	Name               types.String   `tfsdk:"name"`
+	Type               types.String   `tfsdk:"type"`
+	Description        types.String   `tfsdk:"description"`
+	ReferenceVersion   types.Int64    `tfsdk:"reference_version"`
+	SourceList         []types.String `tfsdk:"source_list"`
+	SigningStatus      types.String   `tfsdk:"signing_status"`
+	PercentageComplete types.Int64    `tfsdk:"percentage_complete"`
+	UpdatedBy          types.String   `tfsdk:"updated_by"`
+	DockerImgID        types.String   `tfsdk:"docker_img_id"`
+	DockerContID       types.String   `tfsdk:"docker_cont_id"`
+}
+
+type tfsdkCTEClientGuardPointParamsModel struct {
+	GPType                         types.String `tfsdk:"guard_point_type"`
+	PolicyID                       types.String `tfsdk:"policy_id"`
+	IsAutomountEnabled             types.Bool   `tfsdk:"automount_enabled"`
+	IsCIFSEnabled                  types.Bool   `tfsdk:"cifs_enabled"`
+	IsDataClassificationEnabled    types.Bool   `tfsdk:"data_classification_enabled"`
+	IsDataLineageEnabled           types.Bool   `tfsdk:"data_lineage_enabled"`
+	DiskName                       types.String `tfsdk:"disk_name"`
+	DiskgroupName                  types.String `tfsdk:"diskgroup_name"`
+	IsEarlyAccessEnabled           types.Bool   `tfsdk:"early_access"`
+	IsIntelligentProtectionEnabled types.Bool   `tfsdk:"intelligent_protection"`
+	IsDeviceIDTCapable             types.Bool   `tfsdk:"is_idt_capable_device"`
+	IsMFAEnabled                   types.Bool   `tfsdk:"mfa_enabled"`
+	NWShareCredentialsID           types.String `tfsdk:"network_share_credentials_id"`
+	PreserveSparseRegions          types.Bool   `tfsdk:"preserve_sparse_regions"`
+}
+
+type tfsdkCTEClientGuardPoint struct {
+	CTEClientID      types.String                        `tfsdk:"cte_client_id"`
+	GuardPaths       []types.String                      `tfsdk:"guard_paths"`
+	GuardPointParams tfsdkCTEClientGuardPointParamsModel `tfsdk:"guard_point_params"`
+}
+
+type tfsdkUpdateGPModel struct {
+	CTEClientID                 types.String `tfsdk:"cte_client_id"`
+	GPID                        types.String `tfsdk:"cte_client_gp_id"`
+	IsDataClassificationEnabled types.Bool   `tfsdk:"data_classification_enabled"`
+	IsDataLineageEnabled        types.Bool   `tfsdk:"data_lineage_enabled"`
+	IsGuardEnabled              types.Bool   `tfsdk:"guard_enabled"`
+	IsMFAEnabled                types.Bool   `tfsdk:"mfa_enabled"`
+	NWShareCredentialsID        types.String `tfsdk:"network_share_credentials_id"`
+}

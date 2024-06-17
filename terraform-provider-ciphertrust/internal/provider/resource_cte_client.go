@@ -37,74 +37,96 @@ func (r *resourceCTEClient) Schema(_ context.Context, _ resource.SchemaRequest, 
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				Computed: true,
+				Computed:    true,
+				Description: "Identifier of a CTE client to be generated on successful creation of Client",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "Name to uniquely identify the client. This name will be visible on the CipherTrust Manager.",
 			},
 			"description": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Description to identify the client.",
 			},
 			"client_locked": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether the CTE client is locked. The default value is false. Enable this option to lock the configuration of the CTE Agent on the client. Set to true to lock the configuration, set to false to unlock. Locking the Agent configuration prevents updates to any policies on the client.",
 			},
 			"client_type": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Type of CTE Client. The default value is FS. Valid values are CTE-U and FS.",
 			},
 			"password": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Password for the client. Required when password_creation_method is MANUAL.",
 			},
 			"password_creation_method": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Password creation method for the client. Valid values are MANUAL and GENERATE. The default value is GENERATE.",
 			},
 			"profile_identifier": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Identifier of the Client Profile to be associated with the client. If not provided, the default profile will be linked.",
 			},
 			"registration_allowed": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether client's registration with the CipherTrust Manager is allowed. The default value is false. Set to true to allow registration.",
 			},
 			"system_locked": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether the system is locked. The default value is false. Enable this option to lock the important operating system files of the client. When enabled, patches to the operating system of the client will fail due to the protection of these files.",
 			},
 			"client_mfa_enabled": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether MFA is enabled on the client.",
 			},
 			"del_client": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether to mark the client for deletion from the CipherTrust Manager. The default value is false.",
 			},
 			"disable_capability": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Client capability to be disabled. Only EKP - Encryption Key Protection can be disabled.",
 			},
 			"dynamic_parameters": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Array of parameters to be updated after the client is registered. Specify the parameters in the name-value pair JSON format strings. Make sure to specify all the parameters even if you want to update one or more parameters. For example, if there are two parameters in the CTE client list and you want to update the value of \"param1\", then specify the correct value (one from the \"allowed_values\") in the \"current_value\" field, and keep the remaining parameters intact.",
 			},
 			"enable_domain_sharing": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether domain sharing is enabled for the client.",
 			},
 			"enabled_capabilities": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Client capabilities to be enabled. Separate values with comma. Valid values are LDT and EKP",
 			},
 			"lgcs_access_only": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether the client can be added to an LDT communication group. If lgcs_access_only is set to false, the client can be added to an LDT communication group. Only available on Windows clients.",
 			},
 			"max_num_cache_log": schema.Int64Attribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Maximum number of logs to cache.",
 			},
 			"max_space_cache_log": schema.Int64Attribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Maximum space for the cached logs.",
 			},
 			"profile_id": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "ID of the profile that contains logger, logging, and QOS configuration.",
 			},
 			"protection_mode": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Update protection mode for windows client. This change is irreversible. The valid value is \"CTE RWP\"",
 			},
 			"shared_domain_list": schema.ListAttribute{
 				Optional:    true,
 				ElementType: types.StringType,
+				Description: "List of domains in which the client needs to be shared.",
 			},
 		},
 	}

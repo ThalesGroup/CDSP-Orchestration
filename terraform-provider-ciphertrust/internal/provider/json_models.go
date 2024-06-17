@@ -191,18 +191,18 @@ type CTEClientModelJSON struct {
 	ProfileIdentifier      string   `json:"profile_identifier"`
 	RegistrationAllowed    bool     `json:"registration_allowed"`
 	SystemLocked           bool     `json:"system_locked"`
-	ClientMFAEnabled       bool     `tfsdk:"client_mfa_enabled"`
-	DelClient              bool     `tfsdk:"del_client"`
-	DisableCapability      string   `tfsdk:"disable_capability"`
-	DynamicParameters      string   `tfsdk:"dynamic_parameters"`
-	EnableDomainSharing    bool     `tfsdk:"enable_domain_sharing"`
-	EnabledCapabilities    string   `tfsdk:"enabled_capabilities"`
-	LGCSAccessOnly         bool     `tfsdk:"lgcs_access_only"`
-	MaxNumCacheLog         int64    `tfsdk:"max_num_cache_log"`
-	MaxSpaceCacheLog       int64    `tfsdk:"max_space_cache_log"`
-	ProfileID              string   `tfsdk:"profile_id"`
-	ProtectionMode         string   `tfsdk:"protection_mode"`
-	SharedDomainList       []string `tfsdk:"shared_domain_list"`
+	ClientMFAEnabled       bool     `json:"client_mfa_enabled"`
+	DelClient              bool     `json:"del_client"`
+	DisableCapability      string   `json:"disable_capability"`
+	DynamicParameters      string   `json:"dynamic_parameters"`
+	EnableDomainSharing    bool     `json:"enable_domain_sharing"`
+	EnabledCapabilities    string   `json:"enabled_capabilities"`
+	LGCSAccessOnly         bool     `json:"lgcs_access_only"`
+	MaxNumCacheLog         int64    `json:"max_num_cache_log"`
+	MaxSpaceCacheLog       int64    `json:"max_space_cache_log"`
+	ProfileID              string   `json:"profile_id"`
+	ProtectionMode         string   `json:"protection_mode"`
+	SharedDomainList       []string `json:"shared_domain_list"`
 }
 
 type UserSetJSON struct {
@@ -260,6 +260,57 @@ type ProcessSetEntryJSON struct {
 	Index         int64  `json:"index"`
 	Directory     string `json:"directory"`
 	File          string `json:"file"`
-	Signature     string `tfsdk:"signature"`
-	ResourceSetID string `tfsdk:"resource_set_id"`
+	Signature     string `json:"signature"`
+	ResourceSetID string `json:"resource_set_id"`
+}
+
+type SignatureSetJSON struct {
+	ID                 string   `json:"id"`
+	URI                string   `json:"uri"`
+	Account            string   `json:"account"`
+	CreatedAt          string   `json:"created_at"`
+	UpdatedAt          string   `json:"updated_at"`
+	Name               string   `json:"name"`
+	Type               string   `json:"type"`
+	Description        string   `json:"description"`
+	ReferenceVersion   int64    `json:"reference_version"`
+	SourceList         []string `json:"source_list"`
+	SigningStatus      string   `json:"signing_status"`
+	PercentageComplete int64    `json:"percentage_complete"`
+	UpdatedBy          string   `json:"updated_by"`
+	DockerImgID        string   `json:"docker_img_id"`
+	DockerContID       string   `json:"docker_cont_id"`
+}
+
+type CTEClientGuardPointParamsJSON struct {
+	GPType                         string `json:"guard_point_type"`
+	PolicyID                       string `json:"policy_id"`
+	IsAutomountEnabled             bool   `json:"automount_enabled"`
+	IsCIFSEnabled                  bool   `json:"cifs_enabled"`
+	IsDataClassificationEnabled    bool   `json:"data_classification_enabled"`
+	IsDataLineageEnabled           bool   `json:"data_lineage_enabled"`
+	DiskName                       string `json:"disk_name"`
+	DiskgroupName                  string `json:"diskgroup_name"`
+	IsEarlyAccessEnabled           bool   `json:"early_access"`
+	IsIntelligentProtectionEnabled bool   `json:"intelligent_protection"`
+	IsDeviceIDTCapable             bool   `json:"is_idt_capable_device"`
+	IsMFAEnabled                   bool   `json:"mfa_enabled"`
+	NWShareCredentialsID           string `json:"network_share_credentials_id"`
+	PreserveSparseRegions          bool   `json:"preserve_sparse_regions"`
+}
+
+type CTEClientGuardPointJSON struct {
+	CTEClientID      string                        `json:"cte_client_id"`
+	GuardPaths       []string                      `json:"guard_paths"`
+	GuardPointParams CTEClientGuardPointParamsJSON `json:"guard_point_params"`
+}
+
+type UpdateGPJSON struct {
+	CTEClientID                 string `json:"cte_client_id"`
+	GPID                        string `json:"cte_client_gp_id"`
+	IsDataClassificationEnabled bool   `json:"data_classification_enabled"`
+	IsDataLineageEnabled        bool   `json:"data_lineage_enabled"`
+	IsGuardEnabled              bool   `json:"guard_enabled"`
+	IsMFAEnabled                bool   `json:"mfa_enabled"`
+	NWShareCredentialsID        string `json:"network_share_credentials_id"`
 }
