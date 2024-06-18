@@ -437,9 +437,10 @@ type tfsdkAddSecurityRulePolicy struct {
 }
 
 type tfsdkAddSignatureRulePolicy struct {
-	CTEClientPolicyID types.String  `tfsdk:"policy_id"`
-	SignatureRuleID   types.String  `tfsdk:"rule_id"`
-	SignatureRule     SignatureRule `tfsdk:"rule"`
+	CTEClientPolicyID types.String   `tfsdk:"policy_id"`
+	SignatureRuleID   types.String   `tfsdk:"rule_id"`
+	SignatureSetList  []types.String `tfsdk:"signature_set_id_list"`
+	SignatureSetID    types.String   `tfsdk:"signature_set_id"`
 }
 
 type tfsdkUpdateIDTKeyRulePolicy struct {

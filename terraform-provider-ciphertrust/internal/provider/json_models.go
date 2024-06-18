@@ -163,6 +163,10 @@ type SignatureRuleJSON struct {
 	SignatureSetID string `json:"signature_set_id"`
 }
 
+type AddSignaturesToRuleJSON struct {
+	SignatureSets []string `json:"signature_set_id_list"`
+}
+
 type CTEPolicyModelJSON struct {
 	ID                  string                `json:"id"`
 	Name                string                `json:"name"`
