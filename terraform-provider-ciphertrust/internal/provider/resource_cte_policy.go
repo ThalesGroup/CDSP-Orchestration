@@ -7,10 +7,12 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -43,97 +45,125 @@ func (r *resourceCTEPolicy) Schema(_ context.Context, _ resource.SchemaRequest, 
 				},
 			},
 			"name": schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "Name of the policy.",
 			},
 			"policy_type": schema.StringAttribute{
 				Optional: true,
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{"Standard", "LDT", "IDT", "Cloud_Object_Storage", "CSI"}...),
+				},
+				Description: "Type of the policy. Valid values are - Standard, LDT, IDT, Cloud_Object_Storage, CSI",
 			},
 			"data_transform_rules": schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Data transformation rules to link with the policy.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"key_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string \"clear_key\" only. Do not specify any other identifier.",
 						},
 						"key_type": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.",
 						},
 						"resource_set_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "ID of the resource set linked with the rule.",
 						},
 					},
 				},
 			},
 			"description": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Description of the policy.",
 			},
 			"idt_key_rules": schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "IDT rules to link with the policy.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"current_key": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string \"clear_key\" only. Do not specify any other identifier.",
 						},
 						"current_key_type": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.",
 						},
 						"transformation_key": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id.",
 						},
 						"transformation_key_type": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.",
 						},
 					},
 				},
 			},
 			"key_rules": schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Key rules to link with the policy.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"key_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string \"clear_key\" only. Do not specify any other identifier.",
 						},
 						"key_type": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.",
 						},
 						"resource_set_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "ID of the resource set to link with the rule. Supported for Standard, LDT and IDT policies.",
 						},
 					},
 				},
 			},
 			"ldt_key_rules": schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "LDT rules to link with the policy. Supported for LDT policies.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"is_exclusion_rule": schema.BoolAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Whether this is an exclusion rule. If enabled, no need to specify the transformation rule.",
 						},
 						"resource_set_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "ID of the resource set to link with the rule.",
 						},
 						"current_key": schema.ListNestedAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Properties of the current key.",
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"key_id": schema.StringAttribute{
-										Optional: true,
+										Optional:    true,
+										Description: "Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string \"clear_key\" only. Do not specify any other identifier.",
 									},
 									"key_type": schema.StringAttribute{
-										Optional: true,
+										Optional:    true,
+										Description: "Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.",
 									},
 								},
 							},
 						},
 						"transformation_key": schema.ListNestedAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Properties of the transformation key.",
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"key_id": schema.StringAttribute{
-										Optional: true,
+										Optional:    true,
+										Description: "Identifier of the key to link with the rule. Supported fields are name, id, slug, alias, uri, uuid, muid, and key_id. Note: For decryption, where a clear key is to be supplied, use the string \"clear_key\" only. Do not specify any other identifier.",
 									},
 									"key_type": schema.StringAttribute{
-										Optional: true,
+										Optional:    true,
+										Description: "Specify the type of the key. Must be one of name, id, slug, alias, uri, uuid, muid or key_id. If not specified, the type of the key is inferred.",
 									},
 								},
 							},
@@ -142,64 +172,83 @@ func (r *resourceCTEPolicy) Schema(_ context.Context, _ resource.SchemaRequest, 
 				},
 			},
 			"metadata": schema.MapNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Restrict policy for modification",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"restrict_update": schema.BoolAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "To restrict the policy for modification. If its value enabled means user not able to modify the guarded policy.",
 						},
 					},
 				},
 			},
 			"never_deny": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Whether to always allow operations in the policy. By default, it is disabled, that is, operations are not allowed. Supported for Standard, LDT, and Cloud_Object_Storage policies. For Learn Mode activations, never_deny is set to true, by default.",
 			},
 			"security_rules": schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Security rules to link with the policy.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"action": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Actions applicable to the rule. Examples of actions are read, write, all_ops, and key_op.",
+							Validators: []validator.String{
+								stringvalidator.OneOf([]string{"read", "write", "all_ops", "key_op"}...),
+							},
 						},
 						"effect": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Effects applicable to the rule. Separate multiple effects by commas. The valid values are: permit, deny, audit, applykey",
 						},
 						"exclude_process_set": schema.BoolAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Process set to exclude. Supported for Standard, LDT and IDT policies.",
 						},
 						"exclude_resource_set": schema.BoolAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Resource set to exclude. Supported for Standard, LDT and IDT policies.",
 						},
 						"exclude_user_set": schema.BoolAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "User set to exclude. Supported for Standard, LDT and IDT policies.",
 						},
 						"partial_match": schema.BoolAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "Whether to allow partial match operations. By default, it is enabled. Supported for Standard, LDT and IDT policies.",
 						},
 						"process_set_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "ID of the process set to link to the policy.",
 						},
 						"resource_set_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "ID of the resource set to link to the policy. Supported for Standard, LDT and IDT policies.",
 						},
 						"user_set_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "ID of the user set to link to the policy.",
 						},
 					},
 				},
 			},
 			"signature_rules": schema.ListNestedAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Security rules to link with the policy.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"signature_set_id": schema.StringAttribute{
-							Optional: true,
+							Optional:    true,
+							Description: "List of identifiers of signature sets. This identifier can be the Name, ID (a UUIDv4), URI, or slug of the signature set.",
 						},
 					},
 				},
 			},
 			"force_restrict_update": schema.BoolAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "To remove restriction of policy for modification.",
 			},
 		},
 	}

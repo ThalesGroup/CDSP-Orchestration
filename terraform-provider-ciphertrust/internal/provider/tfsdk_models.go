@@ -407,3 +407,43 @@ type tfsdkUpdateGPModel struct {
 	IsMFAEnabled                types.Bool   `tfsdk:"mfa_enabled"`
 	NWShareCredentialsID        types.String `tfsdk:"network_share_credentials_id"`
 }
+
+type tfsdkAddDataTXRulePolicy struct {
+	CTEClientPolicyID types.String           `tfsdk:"policy_id"`
+	DataTXRuleID      types.String           `tfsdk:"rule_id"`
+	OrderNumber       types.Int64            `tfsdk:"order_number"`
+	DataTXRule        DataTransformationRule `tfsdk:"rule"`
+}
+
+type tfsdkAddKeyRulePolicy struct {
+	CTEClientPolicyID types.String `tfsdk:"policy_id"`
+	KeyRuleID         types.String `tfsdk:"rule_id"`
+	OrderNumber       types.Int64  `tfsdk:"order_number"`
+	KeyRule           KeyRule      `tfsdk:"rule"`
+}
+
+type tfsdkAddLDTKeyRulePolicy struct {
+	CTEClientPolicyID types.String `tfsdk:"policy_id"`
+	LDTKeyRuleID      types.String `tfsdk:"rule_id"`
+	OrderNumber       types.Int64  `tfsdk:"order_number"`
+	LDTKeyRule        LDTKeyRule   `tfsdk:"rule"`
+}
+
+type tfsdkAddSecurityRulePolicy struct {
+	CTEClientPolicyID types.String `tfsdk:"policy_id"`
+	SecurityRuleID    types.String `tfsdk:"rule_id"`
+	OrderNumber       types.Int64  `tfsdk:"order_number"`
+	SecurityRule      SecurityRule `tfsdk:"rule"`
+}
+
+type tfsdkAddSignatureRulePolicy struct {
+	CTEClientPolicyID types.String  `tfsdk:"policy_id"`
+	SignatureRuleID   types.String  `tfsdk:"rule_id"`
+	SignatureRule     SignatureRule `tfsdk:"rule"`
+}
+
+type tfsdkUpdateIDTKeyRulePolicy struct {
+	CTEClientPolicyID types.String `tfsdk:"policy_id"`
+	IDTKeyRuleID      types.String `tfsdk:"rule_id"`
+	IDTKeyRule        IDTKeyRule   `tfsdk:"rule"`
+}

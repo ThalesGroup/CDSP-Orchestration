@@ -314,3 +314,68 @@ type UpdateGPJSON struct {
 	IsMFAEnabled                bool   `json:"mfa_enabled"`
 	NWShareCredentialsID        string `json:"network_share_credentials_id"`
 }
+
+// type jsonAddDataTXRulePolicy struct {
+// 	CTEClientPolicyID string         `json:"policy_id"`
+// 	DataTXRuleID      string         `json:"rule_id"`
+// 	DataTXRule        DataTxRuleJSON `json:"rule"`
+// }
+
+// type jsonAddKeyRulePolicy struct {
+// 	CTEClientPolicyID string      `json:"policy_id"`
+// 	KeyRuleID         string      `json:"rule_id"`
+// 	KeyRule           KeyRuleJSON `json:"rule"`
+// }
+
+// type jsonAddLDTKeyRulePolicy struct {
+// 	CTEClientPolicyID string      `json:"policy_id"`
+// 	LDTKeyRuleID      string      `json:"rule_id"`
+// 	LDTKeyRule        LDTRuleJSON `json:"rule"`
+// }
+
+// type jsonAddSecurityRulePolicy struct {
+// 	CTEClientPolicyID string           `json:"policy_id"`
+// 	SecurityRuleID    string           `json:"rule_id"`
+// 	SecurityRule      SecurityRuleJSON `json:"rule"`
+// }
+
+// type jsonAddSignatureRulePolicy struct {
+// 	CTEClientPolicyID string            `json:"policy_id"`
+// 	SignatureRuleID   string            `json:"rule_id"`
+// 	SignatureRule     SignatureRuleJSON `json:"rule"`
+// }
+
+type DataTxRuleUpdateJSON struct {
+	KeyID         string `json:"key_id"`
+	KeyType       string `json:"key_type"`
+	ResourceSetID string `json:"resource_set_id"`
+	OrderNumber   int64  `json:"order_number"`
+}
+
+type KeyRuleUpdateJSON struct {
+	KeyID         string `json:"key_id"`
+	KeyType       string `json:"key_type"`
+	ResourceSetID string `json:"resource_set_id"`
+	OrderNumber   int64  `json:"order_number"`
+}
+
+type LDTRuleUpdateJSON struct {
+	CurrentKey        CurrentKeyJSON        `json:"current_key"`
+	TransformationKey TransformationKeyJSON `json:"transformation_key"`
+	IsExclusionRule   bool                  `json:"is_exclusion_rule"`
+	ResourceSetID     string                `json:"resource_set_id"`
+	OrderNumber       int64                 `json:"order_number"`
+}
+
+type SecurityRuleUpdateJSON struct {
+	Action             string `json:"action"`
+	Effect             string `json:"effect"`
+	ExcludeProcessSet  bool   `json:"exclude_process_set"`
+	ExcludeResourceSet bool   `json:"exclude_resource_set"`
+	ExcludeUserSet     bool   `json:"exclude_user_set"`
+	PartialMatch       bool   `json:"partial_match"`
+	ProcessSetID       string `json:"process_set_id"`
+	ResourceSetID      string `json:"resource_set_id"`
+	UserSetID          string `json:"user_set_id"`
+	OrderNumber        int64  `json:"order_number"`
+}
