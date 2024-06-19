@@ -448,3 +448,25 @@ type tfsdkUpdateIDTKeyRulePolicy struct {
 	IDTKeyRuleID      types.String `tfsdk:"rule_id"`
 	IDTKeyRule        IDTKeyRule   `tfsdk:"rule"`
 }
+
+type tfsdkCTEPolicyDataTxRulesListModel struct {
+	ID            types.String `tfsdk:"id"`
+	URI           types.String `tfsdk:"uri"`
+	Account       types.String `tfsdk:"account"`
+	Application   types.String `tfsdk:"application"`
+	DevAccount    types.String `tfsdk:"dev_account"`
+	CreateAt      types.String `tfsdk:"created_at"`
+	UpdatedAt     types.String `tfsdk:"updated_at"`
+	PolicyID      types.String `tfsdk:"policy_id"`
+	OrderNumber   types.Int64  `tfsdk:"order_number"`
+	KeyID         types.String `tfsdk:"key_id"`
+	NewKeyRule    types.Bool   `tfsdk:"new_key_rule"`
+	ResourceSetID types.String `tfsdk:"resource_set_id"`
+}
+
+type tfsdkCTEPolicyIDTKeyRulesListModel struct {
+	ID                types.String `tfsdk:"id"`
+	PolicyID          types.String `tfsdk:"policy_id"`
+	CurrentKey        types.String `tfsdk:"current_key"`
+	TransformationKey types.String `tfsdk:"transformation_key"`
+}

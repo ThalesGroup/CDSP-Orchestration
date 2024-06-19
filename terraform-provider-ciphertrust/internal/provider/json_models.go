@@ -383,3 +383,25 @@ type SecurityRuleUpdateJSON struct {
 	UserSetID          string `json:"user_set_id"`
 	OrderNumber        int64  `json:"order_number"`
 }
+
+type CTEPolicyDataTxRulesJSON struct {
+	ID            string `json:"id"`
+	URI           string `json:"uri"`
+	Account       string `json:"account"`
+	Application   string `json:"application"`
+	DevAccount    string `json:"dev_account"`
+	CreatedAt     string `json:"created_at"`
+	UpdatedAt     string `json:"updated_at"`
+	PolicyID      string `json:"policy_id"`
+	OrderNumber   int64  `json:"order_number"`
+	KeyID         string `json:"key_id"`
+	NewKeyRule    bool   `json:"new_key_rule"`
+	ResourceSetID string `json:"resource_set_id"`
+}
+
+type CTEPolicyIDTKeyRulesJSON struct {
+	ID                string `json:"id"`
+	PolicyID          string `json:"policy_id"`
+	CurrentKey        string `json:"current_key"`
+	TransformationKey string `json:"transformation_key"`
+}
