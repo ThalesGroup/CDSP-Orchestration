@@ -482,3 +482,24 @@ type tfsdkCTEPolicyLDTKeyRulesListModel struct {
 	TransformationKeyType types.String `tfsdk:"transformation_key_type"`
 	ISExclusionRule       types.Bool   `tfsdk:"is_exclusion_rule"`
 }
+
+type tfsdkCTEPolicySecurityRulesListModel struct {
+	ID                 types.String `tfsdk:"id"`
+	URI                types.String `tfsdk:"uri"`
+	Account            types.String `tfsdk:"account"`
+	Application        types.String `tfsdk:"application"`
+	DevAccount         types.String `tfsdk:"dev_account"`
+	CreatedAt          types.String `tfsdk:"created_at"`
+	UpdatedAt          types.String `tfsdk:"updated_at"`
+	PolicyID           types.String `tfsdk:"policy_id"`
+	OrderNumber        types.Int64  `tfsdk:"order_number"`
+	Action             types.String `tfsdk:"action"`
+	Effect             types.String `tfsdk:"effect"`
+	UserSetID          types.String `tfsdk:"user_set_id"`
+	ExcludeUserSet     types.Bool   `tfsdk:"exclude_user_set"`
+	ResourceSetID      types.String `tfsdk:"resource_set_id"`
+	ExcludeResourceSet types.Bool   `tfsdk:"exclude_resource_set"`
+	ProcessSetID       types.String `tfsdk:"process_set_id"`
+	ExcludeProcessSet  types.Bool   `tfsdk:"exclude_process_set"`
+	PartialMatch       types.Bool   `tfsdk:"partial_match"`
+}

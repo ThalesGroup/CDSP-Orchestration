@@ -415,3 +415,24 @@ type CTEPolicyLDTKeyRulesJSON struct {
 	TransformationKey TransformationKeyJSON `json:"transformation_key"`
 	ISExclusionRule   bool                  `json:"is_exclusion_rule"`
 }
+
+type CTEPolicySecurityRulesJSON struct {
+	ID                 string `json:"id"`
+	URI                string `json:"uri"`
+	Account            string `json:"account"`
+	Application        string `json:"application"`
+	DevAccount         string `json:"dev_account"`
+	CreatedAt          string `json:"created_at"`
+	UpdatedAt          string `json:"updated_at"`
+	PolicyID           string `json:"policy_id"`
+	OrderNumber        int64  `json:"order_number"`
+	Action             string `json:"action"`
+	Effect             string `json:"effect"`
+	UserSetID          string `json:"user_set_id"`
+	ExcludeUserSet     bool   `json:"exclude_user_set"`
+	ResourceSetID      string `json:"resource_set_id"`
+	ExcludeResourceSet bool   `json:"exclude_resource_set"`
+	ProcessSetID       string `json:"process_set_id"`
+	ExcludeProcessSet  bool   `json:"exclude_process_set"`
+	PartialMatch       bool   `json:"partial_match"`
+}
