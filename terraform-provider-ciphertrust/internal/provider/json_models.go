@@ -405,3 +405,13 @@ type CTEPolicyIDTKeyRulesJSON struct {
 	CurrentKey        string `json:"current_key"`
 	TransformationKey string `json:"transformation_key"`
 }
+
+type CTEPolicyLDTKeyRulesJSON struct {
+	ID                string                `json:"id"`
+	PolicyID          string                `json:"policy_id"`
+	OrderNumber       int64                 `json:"order_number"`
+	ResourceSetID     string                `json:"resource_set_id"`
+	CurrentKey        CurrentKeyJSON        `json:"current_key"`
+	TransformationKey TransformationKeyJSON `json:"transformation_key"`
+	ISExclusionRule   bool                  `json:"is_exclusion_rule"`
+}

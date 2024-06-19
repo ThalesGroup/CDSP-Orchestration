@@ -249,6 +249,8 @@ func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource
 		NewDataSourceCTEProcessSets,
 		NewDataSourceCTEPolicyDataTXRule,
 		NewDataSourceCTEPolicyIDTKeyRule,
+		NewDataSourceCTEPolicyKeyRule,
+		NewDataSourceCTEPolicyLDTKeyRule,
 	}
 }
 

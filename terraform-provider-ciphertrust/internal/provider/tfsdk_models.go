@@ -470,3 +470,15 @@ type tfsdkCTEPolicyIDTKeyRulesListModel struct {
 	CurrentKey        types.String `tfsdk:"current_key"`
 	TransformationKey types.String `tfsdk:"transformation_key"`
 }
+
+type tfsdkCTEPolicyLDTKeyRulesListModel struct {
+	ID                    types.String `tfsdk:"id"`
+	PolicyID              types.String `tfsdk:"policy_id"`
+	OrderNumber           types.Int64  `tfsdk:"order_number"`
+	ResourceSetID         types.String `tfsdk:"resource_set_id"`
+	CurrentKeyID          types.String `tfsdk:"current_key_id"`
+	CurrentKeyType        types.String `tfsdk:"current_key_type"`
+	TransformationKeyID   types.String `tfsdk:"transformation_key_id"`
+	TransformationKeyType types.String `tfsdk:"transformation_key_type"`
+	ISExclusionRule       types.Bool   `tfsdk:"is_exclusion_rule"`
+}
