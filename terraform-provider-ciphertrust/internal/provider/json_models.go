@@ -390,8 +390,8 @@ type CTEPolicyDataTxRulesJSON struct {
 	Account       string `json:"account"`
 	Application   string `json:"application"`
 	DevAccount    string `json:"dev_account"`
-	CreatedAt     string `json:"created_at"`
-	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"createdAt"`
+	UpdatedAt     string `json:"updatedAt"`
 	PolicyID      string `json:"policy_id"`
 	OrderNumber   int64  `json:"order_number"`
 	KeyID         string `json:"key_id"`
@@ -422,8 +422,8 @@ type CTEPolicySecurityRulesJSON struct {
 	Account            string `json:"account"`
 	Application        string `json:"application"`
 	DevAccount         string `json:"dev_account"`
-	CreatedAt          string `json:"created_at"`
-	UpdatedAt          string `json:"updated_at"`
+	CreatedAt          string `json:"createdAt"`
+	UpdatedAt          string `json:"updatedAt"`
 	PolicyID           string `json:"policy_id"`
 	OrderNumber        int64  `json:"order_number"`
 	Action             string `json:"action"`
@@ -435,4 +435,15 @@ type CTEPolicySecurityRulesJSON struct {
 	ProcessSetID       string `json:"process_set_id"`
 	ExcludeProcessSet  bool   `json:"exclude_process_set"`
 	PartialMatch       bool   `json:"partial_match"`
+}
+
+type CTEPolicySignatureRulesJSON struct {
+	ID               string `json:"id"`
+	URI              string `json:"uri"`
+	Account          string `json:"account"`
+	CreatedAt        string `json:"createdAt"`
+	UpdatedAt        string `json:"updatedAt"`
+	PolicyID         string `json:"policy_id"`
+	SignatureSetID   string `json:"signature_set_id"`
+	SignatureSetName string `json:"signature_set_name"`
 }

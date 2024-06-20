@@ -503,3 +503,14 @@ type tfsdkCTEPolicySecurityRulesListModel struct {
 	ExcludeProcessSet  types.Bool   `tfsdk:"exclude_process_set"`
 	PartialMatch       types.Bool   `tfsdk:"partial_match"`
 }
+
+type tfsdkCTEPolicySignatureRulesListModel struct {
+	ID               types.String `tfsdk:"id"`
+	URI              types.String `tfsdk:"uri"`
+	Account          types.String `tfsdk:"account"`
+	CreatedAt        types.String `tfsdk:"created_at"`
+	UpdatedAt        types.String `tfsdk:"updated_at"`
+	PolicyID         types.String `tfsdk:"policy_id"`
+	SignatureSetID   types.String `tfsdk:"signature_set_id"`
+	SignatureSetName types.String `tfsdk:"signature_set_name"`
+}

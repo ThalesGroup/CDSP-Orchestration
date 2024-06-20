@@ -50,7 +50,7 @@ func (d *dataSourceCTEPolicyIDTKeyRule) Schema(_ context.Context, _ datasource.S
 						"policy_id": schema.StringAttribute{
 							Computed: true,
 						},
-						"current_key": schema.Int64Attribute{
+						"current_key": schema.StringAttribute{
 							Computed: true,
 						},
 						"transformation_key": schema.StringAttribute{
