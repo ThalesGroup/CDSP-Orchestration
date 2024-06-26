@@ -30,7 +30,7 @@ func New(version string) func() provider.Provider {
 	}
 }
 
-// hashicupsProvider is the provider implementation.
+// ciphertrustProvider is the provider implementation.
 type ciphertrustProvider struct {
 	// version is set to the provider version on release, "dev" when the
 	// provider is built and ran locally, and "test" when running acceptance
@@ -98,7 +98,7 @@ func (p *ciphertrustProvider) Schema(_ context.Context, _ provider.SchemaRequest
 	}
 }
 
-// Configure prepares a HashiCups API client for data sources and resources.
+// Configure prepares a CipherTrust API client for data sources and resources.
 func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	id := uuid.New().String()
 	tflog.Trace(ctx, MSG_METHOD_START+"[provider.go -> Configure]["+id+"]")
@@ -218,7 +218,7 @@ func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.Config
 
 	tflog.Debug(ctx, "Creating CM client")
 
-	// Create a new HashiCups client using the configuration values
+	// Create a new CipherTrust client using the configuration values
 	client, err := NewClient(ctx, id, &address, &auth_domain, &domain, &username, &password)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -230,10 +230,6 @@ func (p *ciphertrustProvider) Configure(ctx context.Context, req provider.Config
 		return
 	}
 
-	//tflog.Debug(ctx, fmt.Sprintf("Client is: %T", client))
-
-	// Make the HashiCups client available during DataSource and Resource
-	// type Configure methods.
 	resp.DataSourceData = client
 	resp.ResourceData = client
 }
@@ -252,6 +248,8 @@ func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource
 		NewDataSourceCTEPolicyKeyRule,
 		NewDataSourceCTEPolicyLDTKeyRule,
 		NewDataSourceCTEPolicySecurityRule,
+		NewDataSourceCTEPolicySignatureRule,
+		NewDataSourceCTEProfiles,
 	}
 }
 
@@ -267,5 +265,12 @@ func (p *ciphertrustProvider) Resources(_ context.Context) []func() resource.Res
 		NewResourceCTESignatureSet,
 		NewResourceCTEPolicy,
 		NewResourceCTEClient,
+		NewResourceCTEPolicyDataTXRule,
+		NewResourceCTEPolicyIDTKeyRule,
+		NewResourceCTEPolicyKeyRule,
+		NewResourceCTEPolicyLDTKeyRule,
+		NewResourceCTEPolicySecurityRule,
+		NewResourceCTEPolicySignatureRule,
+		NewResourceCTEProfile,
 	}
 }
