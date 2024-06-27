@@ -10,3 +10,5 @@ terraform-provider-ciphertrust/examples/provider-install-verification/terraform.
 terraform-provider-ciphertrust/examples/provider-install-verification/terraform.tfstate.1716307823.backup
 terraform-provider-ciphertrust/examples/provider-install-verification/terraform.tfstate.backup
 terraform-provider-ciphertrust/examples/provider-install-verification/main.tf
+terraform-provider-ciphertrust/examples/provider-install-verification/main.tf
+*.backup
