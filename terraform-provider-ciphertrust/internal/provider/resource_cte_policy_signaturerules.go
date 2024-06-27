@@ -29,7 +29,7 @@ type resourceCTEPolicySignatureRule struct {
 }
 
 func (r *resourceCTEPolicySignatureRule) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_cte_policy_key_rule"
+	resp.TypeName = req.ProviderTypeName + "_cte_policy_signature_rule"
 }
 
 // Schema defines the schema for the resource.

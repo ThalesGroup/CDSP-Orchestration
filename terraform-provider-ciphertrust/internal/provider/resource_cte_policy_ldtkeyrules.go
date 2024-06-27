@@ -29,7 +29,7 @@ type resourceCTEPolicyLDTKeyRule struct {
 }
 
 func (r *resourceCTEPolicyLDTKeyRule) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_cte_policy_key_rule"
+	resp.TypeName = req.ProviderTypeName + "_cte_policy_ldtkey_rule"
 }
 
 // Schema defines the schema for the resource.

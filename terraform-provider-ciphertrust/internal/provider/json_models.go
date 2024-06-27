@@ -545,38 +545,39 @@ type jsonCTEProfileCreate struct {
 }
 
 type jsonCTEProfilesList struct {
-	ID                      string                                `json:"id"`
-	URI                     string                                `json:"uri"`
-	Account                 string                                `json:"account"`
-	Application             string                                `json:"application"`
-	CreatedAt               string                                `json:"created_at"`
-	UpdatedAt               string                                `json:"updated_at"`
-	Name                    string                                `json:"name"`
-	Description             string                                `json:"description"`
-	ManagementServiceLogger jsonCTEProfileManagementServiceLogger `json:"management_service_logger"`
-	PolicyEvaluationLogger  jsonCTEProfileManagementServiceLogger `json:"policy_evaluation_logger"`
-	SecurityAdminLogger     jsonCTEProfileManagementServiceLogger `json:"security_admin_logger"`
-	SystemAdminLogger       jsonCTEProfileManagementServiceLogger `json:"system_admin_logger"`
-	FileSettings            jsonCTEProfileFileSettings            `json:"file_settings"`
-	SyslogSettings          jsonCTEProfileSyslogSettings          `json:"syslog_settings"`
-	UploadSettings          jsonCTEProfileUploadSettings          `json:"upload_settings"`
-	DuplicateSettings       jsonCTEProfileDuplicateSettings       `json:"duplicate_settings"`
-	CacheSettings           jsonCTEProfileCacheSettings           `json:"cache_settings"`
-	LDTQOSCapCPUAllocation  bool                                  `json:"ldt_qos_cap_cpu_allocation"`
-	LDTQOSCapCPUPercent     int64                                 `json:"ldt_qos_cpu_percent"`
-	LDTQOSRekeyOption       string                                `json:"ldt_qos_rekey_option"`
-	LDTQOSRekeyRate         int64                                 `json:"ldt_qos_rekey_rate"`
-	ConciseLogging          bool                                  `json:"concise_logging"`
-	ConnectTimeout          int64                                 `json:"connect_timeout"`
-	LDTQOSSchedule          string                                `json:"ldt_qos_schedule"`
-	QOSSchedules            []jsonCTEProfileQOSSchedule           `json:"qos_schedules"`
-	LDTQOSStatusCheckRate   int64                                 `json:"ldt_qos_status_check_rate"`
-	MetadataScanInterval    int64                                 `json:"metadata_scan_interval"`
-	MFAExemptUserSetID      string                                `json:"mfa_exempt_user_set_id"`
-	MFAExemptUserSetName    string                                `json:"mfa_exempt_user_set_name"`
-	ServerSettings          []jsonCTEProfileServiceSetting        `json:"server_settings"`
-	OIDCConnectionID        string                                `json:"oidc_connection_id"`
-	OIDCConnectionName      string                                `json:"oidc_connection_name"`
-	RWPOperation            string                                `json:"rwp_operation"`
-	RWPProcessSet           string                                `json:"rwp_process_set"`
+	ID                     string `json:"id"`
+	URI                    string `json:"uri"`
+	Account                string `json:"account"`
+	Application            string `json:"application"`
+	CreatedAt              string `json:"created_at"`
+	UpdatedAt              string `json:"updated_at"`
+	Name                   string `json:"name"`
+	Description            string `json:"description"`
+	LDTQOSCapCPUAllocation bool   `json:"ldt_qos_cap_cpu_allocation"`
+	LDTQOSCapCPUPercent    int64  `json:"ldt_qos_cpu_percent"`
+	LDTQOSRekeyOption      string `json:"ldt_qos_rekey_option"`
+	LDTQOSRekeyRate        int64  `json:"ldt_qos_rekey_rate"`
+	ConciseLogging         bool   `json:"concise_logging"`
+	ConnectTimeout         int64  `json:"connect_timeout"`
+	LDTQOSSchedule         string `json:"ldt_qos_schedule"`
+	LDTQOSStatusCheckRate  int64  `json:"ldt_qos_status_check_rate"`
+	MetadataScanInterval   int64  `json:"metadata_scan_interval"`
+	MFAExemptUserSetID     string `json:"mfa_exempt_user_set_id"`
+	MFAExemptUserSetName   string `json:"mfa_exempt_user_set_name"`
+	OIDCConnectionID       string `json:"oidc_connection_id"`
+	OIDCConnectionName     string `json:"oidc_connection_name"`
+	RWPOperation           string `json:"rwp_operation"`
+	RWPProcessSet          string `json:"rwp_process_set"`
+	ServerResponseRate     int64  `json:"server_response_rate"`
+	// QOSSchedules            []jsonCTEProfileQOSSchedule           `json:"qos_schedules"`
+	// ServerSettings          []jsonCTEProfileServiceSetting        `json:"server_settings"`
+	// ManagementServiceLogger jsonCTEProfileManagementServiceLogger `json:"management_service_logger"`
+	// PolicyEvaluationLogger  jsonCTEProfileManagementServiceLogger `json:"policy_evaluation_logger"`
+	// SecurityAdminLogger     jsonCTEProfileManagementServiceLogger `json:"security_admin_logger"`
+	// SystemAdminLogger       jsonCTEProfileManagementServiceLogger `json:"system_admin_logger"`
+	// FileSettings            jsonCTEProfileFileSettings            `json:"file_settings"`
+	// SyslogSettings          jsonCTEProfileSyslogSettings          `json:"syslog_settings"`
+	// UploadSettings          jsonCTEProfileUploadSettings          `json:"upload_settings"`
+	// DuplicateSettings       jsonCTEProfileDuplicateSettings       `json:"duplicate_settings"`
+	// CacheSettings           jsonCTEProfileCacheSettings           `json:"cache_settings"`
 }

@@ -65,15 +65,15 @@ func (r *resourceCTEProfile) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"concise_logging": schema.BoolAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Whether to allow concise logging.",
 			},
 			"connect_timeout": schema.Int64Attribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Connect timeout in seconds. Valid values are 5 to 150.",
 			},
 			"description": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Description of the profile resource.",
 			},
 			"duplicate_settings": schema.MapNestedAttribute{
@@ -120,33 +120,33 @@ func (r *resourceCTEProfile) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"ldt_qos_cap_cpu_allocation": schema.BoolAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Whether to allow CPU allocation for Quality of Service (QoS) capabilities.",
 			},
 			"ldt_qos_cpu_percent": schema.Int64Attribute{
-				Required:    true,
+				Optional:    true,
 				Description: "CPU application percentage if ldt_qos_cap_cpu_allocation is true. Valid values are 0 to 100.",
 			},
 			"ldt_qos_rekey_option": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Rekey option and applicable options are RekeyRate and CPU.",
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{"RekeyRate", "CPU"}...),
 				},
 			},
 			"ldt_qos_rekey_rate": schema.Int64Attribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Rekey rate in terms of MB/s. Valid values are 0 to 32767.",
 			},
 			"ldt_qos_schedule": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Type of QoS schedule.",
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{"CUSTOM", "CUSTOM_WITH_OVERWRITE", "ANY_TIME", "WEEKNIGHTS", "WEEKENDS"}...),
 				},
 			},
 			"ldt_qos_status_check_rate": schema.Int64Attribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Frequency to check and update the LDT status on the CipherTrust Manager. The valid value ranges from 600 to 86400 seconds. The default value is 3600 seconds.",
 			},
 			"management_service_logger": schema.MapNestedAttribute{
@@ -184,15 +184,15 @@ func (r *resourceCTEProfile) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"metadata_scan_interval": schema.Int64Attribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Time interval in seconds to scan files under the GuardPoint. The default value is 600.",
 			},
 			"mfa_exempt_user_set_id": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "ID of the user set to be exempted from MFA. MFA will not be enforced on the users of this set.",
 			},
 			"oidc_connection_id": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "ID of the OIDC connection.",
 			},
 			"policy_evaluation_logger": schema.MapNestedAttribute{
@@ -268,14 +268,14 @@ func (r *resourceCTEProfile) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"rwp_operation": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Applicable to the Ransomware clients only. The valid values are permit(for Audit), deny(for Block), and disable. The default value is deny.",
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{"permit", "deny", "disable"}...),
 				},
 			},
 			"rwp_process_set": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "ID of the process set to be whitelisted.",
 			},
 			"security_admin_logger": schema.MapNestedAttribute{
@@ -313,15 +313,15 @@ func (r *resourceCTEProfile) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"server_response_rate": schema.Int64Attribute{
-				Required:    true,
-				Description: "the percentage value of successful API calls to the server, for which the agent will consider the server to be working fine. If the value is set to 75 then, if the server responds to 75% of the calls it is considered OK & no update is sent by agent. Valid values are between 0 to 100, both inclusive. Default value is 0.",
+				Optional:    true,
+				Description: "the percentage value of successful API calls to the server, for which the agent will consider the server to be working fine. If the value is set to 75 then, if the server responds to 75 percent of the calls it is considered OK & no update is sent by agent. Valid values are between 0 to 100, both inclusive. Default value is 0.",
 			},
 			"server_settings": schema.ListNestedAttribute{
 				Optional:    true,
 				Description: "Server configuration of cluster nodes. These settings are allowed only in cluster environment.",
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"hostName": schema.StringAttribute{
+						"host_name": schema.StringAttribute{
 							Optional:    true,
 							Description: "Host name of the cluster node.",
 						},

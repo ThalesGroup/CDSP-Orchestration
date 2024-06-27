@@ -550,7 +550,7 @@ type tfsdkCTEProfileQOSSchedule struct {
 }
 
 type tfsdkCTEProfileServiceSetting struct {
-	HostName types.String `tfsdk:"hostName"`
+	HostName types.String `tfsdk:"host_name"`
 	Priority types.Int64  `tfsdk:"priority"`
 }
 
@@ -612,38 +612,39 @@ type tfsdkCTEProfileCreate struct {
 }
 
 type tfsdkCTEProfilesList struct {
-	ID                      types.String                           `tfsdk:"id"`
-	URI                     types.String                           `tfsdk:"uri"`
-	Account                 types.String                           `tfsdk:"account"`
-	Application             types.String                           `tfsdk:"application"`
-	CreatedAt               types.String                           `tfsdk:"created_at"`
-	UpdatedAt               types.String                           `tfsdk:"updated_at"`
-	Name                    types.String                           `tfsdk:"name"`
-	Description             types.String                           `tfsdk:"description"`
-	ManagementServiceLogger tfsdkCTEProfileManagementServiceLogger `tfsdk:"management_service_logger"`
-	PolicyEvaluationLogger  tfsdkCTEProfileManagementServiceLogger `tfsdk:"policy_evaluation_logger"`
-	SecurityAdminLogger     tfsdkCTEProfileManagementServiceLogger `tfsdk:"security_admin_logger"`
-	SystemAdminLogger       tfsdkCTEProfileManagementServiceLogger `tfsdk:"system_admin_logger"`
-	FileSettings            tfsdkCTEProfileFileSettings            `tfsdk:"file_settings"`
-	SyslogSettings          tfsdkCTEProfileSyslogSettings          `tfsdk:"syslog_settings"`
-	UploadSettings          tfsdkCTEProfileUploadSettings          `tfsdk:"upload_settings"`
-	DuplicateSettings       tfsdkCTEProfileDuplicateSettings       `tfsdk:"duplicate_settings"`
-	CacheSettings           tfsdkCTEProfileCacheSettings           `tfsdk:"cache_settings"`
-	LDTQOSCapCPUAllocation  types.Bool                             `tfsdk:"ldt_qos_cap_cpu_allocation"`
-	LDTQOSCapCPUPercent     types.Int64                            `tfsdk:"ldt_qos_cpu_percent"`
-	LDTQOSRekeyOption       types.String                           `tfsdk:"ldt_qos_rekey_option"`
-	LDTQOSRekeyRate         types.Int64                            `tfsdk:"ldt_qos_rekey_rate"`
-	ConciseLogging          types.Bool                             `tfsdk:"concise_logging"`
-	ConnectTimeout          types.Int64                            `tfsdk:"connect_timeout"`
-	LDTQOSSchedule          types.String                           `tfsdk:"ldt_qos_schedule"`
-	QOSSchedules            []tfsdkCTEProfileQOSSchedule           `tfsdk:"qos_schedules"`
-	LDTQOSStatusCheckRate   types.Int64                            `tfsdk:"ldt_qos_status_check_rate"`
-	MetadataScanInterval    types.Int64                            `tfsdk:"metadata_scan_interval"`
-	MFAExemptUserSetID      types.String                           `tfsdk:"mfa_exempt_user_set_id"`
-	MFAExemptUserSetName    types.String                           `tfsdk:"mfa_exempt_user_set_name"`
-	ServerSettings          []tfsdkCTEProfileServiceSetting        `tfsdk:"server_settings"`
-	OIDCConnectionID        types.String                           `tfsdk:"oidc_connection_id"`
-	OIDCConnectionName      types.String                           `tfsdk:"oidc_connection_name"`
-	RWPOperation            types.String                           `tfsdk:"rwp_operation"`
-	RWPProcessSet           types.String                           `tfsdk:"rwp_process_set"`
+	ID                     types.String `tfsdk:"id"`
+	URI                    types.String `tfsdk:"uri"`
+	Account                types.String `tfsdk:"account"`
+	Application            types.String `tfsdk:"application"`
+	CreatedAt              types.String `tfsdk:"created_at"`
+	UpdatedAt              types.String `tfsdk:"updated_at"`
+	Name                   types.String `tfsdk:"name"`
+	Description            types.String `tfsdk:"description"`
+	LDTQOSCapCPUAllocation types.Bool   `tfsdk:"ldt_qos_cap_cpu_allocation"`
+	LDTQOSCapCPUPercent    types.Int64  `tfsdk:"ldt_qos_cpu_percent"`
+	LDTQOSRekeyOption      types.String `tfsdk:"ldt_qos_rekey_option"`
+	LDTQOSRekeyRate        types.Int64  `tfsdk:"ldt_qos_rekey_rate"`
+	ConciseLogging         types.Bool   `tfsdk:"concise_logging"`
+	ConnectTimeout         types.Int64  `tfsdk:"connect_timeout"`
+	LDTQOSSchedule         types.String `tfsdk:"ldt_qos_schedule"`
+	LDTQOSStatusCheckRate  types.Int64  `tfsdk:"ldt_qos_status_check_rate"`
+	MetadataScanInterval   types.Int64  `tfsdk:"metadata_scan_interval"`
+	MFAExemptUserSetID     types.String `tfsdk:"mfa_exempt_user_set_id"`
+	MFAExemptUserSetName   types.String `tfsdk:"mfa_exempt_user_set_name"`
+	OIDCConnectionID       types.String `tfsdk:"oidc_connection_id"`
+	OIDCConnectionName     types.String `tfsdk:"oidc_connection_name"`
+	RWPOperation           types.String `tfsdk:"rwp_operation"`
+	RWPProcessSet          types.String `tfsdk:"rwp_process_set"`
+	ServerResponseRate     types.Int64  `tfsdk:"server_response_rate"`
+	//QOSSchedules            []tfsdkCTEProfileQOSSchedule           `tfsdk:"qos_schedules"`
+	//ServerSettings          []tfsdkCTEProfileServiceSetting        `tfsdk:"server_settings"`
+	// ManagementServiceLogger tfsdkCTEProfileManagementServiceLogger `tfsdk:"management_service_logger"`
+	// PolicyEvaluationLogger  tfsdkCTEProfileManagementServiceLogger `tfsdk:"policy_evaluation_logger"`
+	// SecurityAdminLogger     tfsdkCTEProfileManagementServiceLogger `tfsdk:"security_admin_logger"`
+	// SystemAdminLogger       tfsdkCTEProfileManagementServiceLogger `tfsdk:"system_admin_logger"`
+	// FileSettings            tfsdkCTEProfileFileSettings            `tfsdk:"file_settings"`
+	// SyslogSettings          tfsdkCTEProfileSyslogSettings          `tfsdk:"syslog_settings"`
+	// UploadSettings          tfsdkCTEProfileUploadSettings          `tfsdk:"upload_settings"`
+	// DuplicateSettings       tfsdkCTEProfileDuplicateSettings       `tfsdk:"duplicate_settings"`
+	// CacheSettings           tfsdkCTEProfileCacheSettings           `tfsdk:"cache_settings"`
 }
