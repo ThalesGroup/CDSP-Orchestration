@@ -4,3 +4,8 @@ Ansible/playbooks/to_be_refactored/
 *.bak
 *.zip
 PowerShell Project Notes.txt
+terraform-provider-ciphertrust/terraform.txt
+terraform-provider-ciphertrust/examples/provider-install-verification/terraform.txt
+terraform-provider-ciphertrust/examples/provider-install-verification/main.tf
+*.backup
+*.tfstate
