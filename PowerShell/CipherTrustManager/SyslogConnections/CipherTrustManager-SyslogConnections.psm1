@@ -449,7 +449,8 @@ function Remove-CMSyslog {
     .PARAMETER port 
         Port of the syslog connection
     .PARAMETER caCert
-        The trusted CA cert in PEM format. Only used in TLS transport mode
+        The trusted CA cert in PEM format. Only used in TLS transport mode.
+        The switch is best used when running automation scripts. Populate a variable with the PEM-formatted certificate then pass the variable to the command.
     .PARAMETER messageFormat
         The log message format for new log messages:
             rfc5424 (default)

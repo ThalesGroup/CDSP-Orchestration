@@ -59,18 +59,20 @@ function Get-CMJWT {
 
     $CM_Session.AuthToken = $null
     $REST_URL = $CM_Session.REST_URL + "/auth/tokens"
-
+    $timestamp = Get-Date -Format "yyyymmdd-HHmm"
     if($CM_Session.Pass){
         $Body = @{
             grant_type = "password"
             username = $CM_Session.User
             password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($CM_Session.Pass))
             domain   = $CM_Session.Domain
+            labels   = @("ps_module_$($timestamp)")
         }
     }elseif($CM_Session.refresh_token){
         $Body = @{
             grant_type = "refresh_token"
             refresh_token = $CM_Session.refresh_token
+            labels   = @("ps_module_$($timestamp)")
         }
     }
 
