@@ -97,6 +97,7 @@ type tfsdkCMKeyModel struct {
 	Exportable               types.Bool          `tfsdk:"unexportable"`
 	Deletable                types.Bool          `tfsdk:"undeletable"`
 	State                    types.String        `tfsdk:"state"`
+	TemplateID               types.String        `tfsdk:"template_id"`
 	UsageMask                types.Int64         `tfsdk:"usage_mask"`
 	UUID                     types.String        `tfsdk:"uuid"`
 	WrapKeyIDType            types.String        `tfsdk:"wrap_key_id_type"`

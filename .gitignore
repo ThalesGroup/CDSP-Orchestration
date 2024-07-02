@@ -9,3 +9,4 @@ terraform-provider-ciphertrust/examples/provider-install-verification/terraform.
 terraform-provider-ciphertrust/examples/provider-install-verification/main.tf
 *.backup
 *.tfstate
+/terraform-provider-ciphertrust/vendor

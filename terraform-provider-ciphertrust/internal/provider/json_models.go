@@ -20,6 +20,123 @@ type GroupJSON struct {
 	Name string `json:"name"`
 }
 
+// CipherTrust Manager Key Management related attributes
+type HKDFParametersJSON struct {
+	HashAlgorithm string `json:"hash_algorithm"`
+	IKMKeyName    string `json:"ikm_key_name"`
+	Info          string `json:"info"`
+	Salt          string `json:"salt"`
+}
+
+type KeyMetadataJSON struct {
+	OwnerId string `json:"owner_id"`
+}
+
+type KeyAliasJSON struct {
+	Alias string `json:"alias"`
+	Index int64  `json:"index"`
+	Type  string `json:"type"`
+}
+
+type PublicKeyParametersJSON struct {
+	ActivationDate   string     `json:"activation_date"`
+	Aliases          []KeyAlias `json:"aliases"`
+	ArchiveDate      string     `json:"archive_date"`
+	DeactivationDate string     `json:"deactivation_date"`
+	Name             string     `json:"name"`
+	State            string     `json:"state"`
+	Deletable        bool       `json:"undeletable"`
+	Exportable       bool       `json:"unexportable"`
+	UsageMask        int64      `json:"usage_mask"`
+}
+
+type WrapHKDFJSON struct {
+	HashAlgorithm string `json:"hash_algorithm"`
+	Info          string `json:"info"`
+	OKMLen        int64  `json:"okm_len"`
+	Salt          string `json:"salt"`
+}
+
+type WrapPBEJSON struct {
+	DKLen                  int64  `json:"dklen"`
+	HashAlgorithm          string `json:"hash_algorithm"`
+	Iteration              int64  `json:"iteration"`
+	Password               string `json:"password"`
+	PasswordIdentifier     string `json:"password_identifier"`
+	PasswordIdentifierType string `json:"password_identifier_type"`
+	Purpose                string `json:"purpose"`
+	Salt                   string `json:"salt"`
+}
+
+type WrapRSAAESJSON struct {
+	AESKeySize int64  `json:"aes_key_size"`
+	Padding    string `json:"padding"`
+}
+
+type jsonCMKeyModel struct {
+	ID                       string                  `json:"id"`
+	ActivationDate           string                  `json:"activation_date"`
+	Algorithm                string                  `json:"algorithm"`
+	ArchiveDate              string                  `json:"archive_date"`
+	AssignSelfAsOwner        bool                    `json:"assign_self_as_owner"`
+	CertType                 string                  `json:"cert_type"`
+	CompromiseDate           string                  `json:"compromise_date"`
+	CompromiseOccurrenceDate string                  `json:"compromise_occurrence_date"`
+	Curveid                  string                  `json:"curveid"`
+	DeactivationDate         string                  `json:"deactivation_date"`
+	DefaultIV                string                  `json:"default_iv"`
+	Description              string                  `json:"description"`
+	DestroyDate              string                  `json:"destroy_date"`
+	EmptyMaterial            bool                    `json:"empty_material"`
+	Encoding                 string                  `json:"encoding"`
+	Format                   string                  `json:"format"`
+	GenerateKeyId            bool                    `json:"generate_key_id"`
+	HKDFCreateParameters     HKDFParametersJSON      `json:"hkdf_create_parameters"`
+	IDSize                   int64                   `json:"id_size"`
+	KeyId                    string                  `json:"key_id"`
+	MacSignBytes             string                  `json:"mac_sign_bytes"`
+	MacSignKeyIdentifier     string                  `json:"mac_sign_key_identifier"`
+	MacSignKeyIdentifierType string                  `json:"mac_sign_key_identifier_type"`
+	Material                 string                  `json:"material"`
+	MUID                     string                  `json:"muid"`
+	ObjectType               string                  `json:"object_type"`
+	Name                     string                  `json:"name"`
+	Metadata                 KeyMetadataJSON         `json:"meta"`
+	Padded                   bool                    `json:"padded"`
+	Password                 string                  `json:"password"`
+	ProcessStartDate         string                  `json:"process_start_date"`
+	ProtectStopDate          string                  `json:"protect_stop_date"`
+	RevocationReason         string                  `json:"revocation_reason"`
+	RevocationMessage        string                  `json:"revocation_message"`
+	RotationFrequencyDays    string                  `json:"rotation_frequency_days"`
+	SecretDataEncoding       string                  `json:"secret_data_encoding"`
+	SecretDataLink           string                  `json:"secret_data_link"`
+	SigningAlgo              string                  `json:"signing_algo"`
+	Size                     int64                   `json:"size"`
+	Exportable               bool                    `json:"unexportable"`
+	Deletable                bool                    `json:"undeletable"`
+	State                    string                  `json:"state"`
+	TemplateID               string                  `json:"templateId"`
+	UsageMask                int64                   `json:"usage_mask"`
+	UUID                     string                  `json:"uuid"`
+	WrapKeyIDType            string                  `json:"wrap_key_id_type"`
+	WrapKeyName              string                  `json:"wrap_key_name"`
+	WrapPublicKey            string                  `json:"wrap_public_key"`
+	WrapPublicKeyPadding     string                  `json:"wrap_public_key_padding"`
+	WrappingEncryptionAlgo   string                  `json:"wrapping_encryption_algo"`
+	WrappingHashAlgo         string                  `json:"wrapping_hash_algo"`
+	WrappingMethod           string                  `json:"wrapping_method"`
+	XTS                      bool                    `json:"xts"`
+	Aliases                  []KeyAliasJSON          `json:"aliases"`
+	PublicKeyParameters      PublicKeyParametersJSON `json:"public_key_parameters"`
+	HKDFWrap                 WrapHKDFJSON            `json:"wrap_hkdf"`
+	PBEWrap                  WrapPBEJSON             `json:"wrap_pbe"`
+	RSAAESWrap               WrapRSAAESJSON          `json:"wrap_rsaaes"`
+}
+
+// CipherTrust Manager Key Management related attributes - END
+
+// We might not need the below struct
 type KeyJSON struct {
 	KeyID            string `json:"id"`
 	URI              string `json:"uri"`
