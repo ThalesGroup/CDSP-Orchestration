@@ -27,7 +27,7 @@ type dataSourceKeys struct {
 }
 
 type keysDataSourceModel struct {
-	Keys []tfsdkCMKeyModel `tfsdk:"keys"`
+	Keys []tfsdkCMKeysListModel `tfsdk:"keys"`
 }
 
 func (d *dataSourceKeys) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -44,10 +44,31 @@ func (d *dataSourceKeys) Schema(_ context.Context, _ datasource.SchemaRequest, r
 						"id": schema.StringAttribute{
 							Computed: true,
 						},
+						"uri": schema.StringAttribute{
+							Computed: true,
+						},
+						"account": schema.StringAttribute{
+							Computed: true,
+						},
+						"application": schema.StringAttribute{
+							Computed: true,
+						},
+						"dev_account": schema.StringAttribute{
+							Computed: true,
+						},
+						"created_at": schema.StringAttribute{
+							Computed: true,
+						},
 						"name": schema.StringAttribute{
 							Computed: true,
 						},
+						"updated_at": schema.StringAttribute{
+							Computed: true,
+						},
 						"usage_mask": schema.Int64Attribute{
+							Computed: true,
+						},
+						"version": schema.Int64Attribute{
 							Computed: true,
 						},
 						"algorithm": schema.StringAttribute{
@@ -56,131 +77,7 @@ func (d *dataSourceKeys) Schema(_ context.Context, _ datasource.SchemaRequest, r
 						"size": schema.Int64Attribute{
 							Computed: true,
 						},
-						"uuid": schema.StringAttribute{
-							Computed: true,
-						},
-						"description": schema.StringAttribute{
-							Computed: true,
-						},
-						"activation_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"archive_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"assign_self_as_owner": schema.BoolAttribute{
-							Computed: true,
-						},
-						"cert_type": schema.StringAttribute{
-							Computed: true,
-						},
-						"compromise_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"compromise_occurrence_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"curveid": schema.StringAttribute{
-							Computed: true,
-						},
-						"deactivation_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"default_iv": schema.StringAttribute{
-							Computed: true,
-						},
-						"destroy_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"empty_material": schema.BoolAttribute{
-							Computed: true,
-						},
-						"encoding": schema.StringAttribute{
-							Computed: true,
-						},
 						"format": schema.StringAttribute{
-							Computed: true,
-						},
-						"generate_key_id": schema.BoolAttribute{
-							Computed: true,
-						},
-						"hkdf_create_parameters": schema.SingleNestedAttribute{
-							Computed: true,
-							Attributes: map[string]schema.Attribute{
-								"hash_algorithm": schema.StringAttribute{
-									Computed: true,
-								},
-								"ikm_key_name": schema.StringAttribute{
-									Computed: true,
-								},
-								"info": schema.StringAttribute{
-									Computed: true,
-								},
-								"salt": schema.StringAttribute{
-									Computed: true,
-								},
-							},
-						},
-						"id_size": schema.Int64Attribute{
-							Computed: true,
-						},
-						"key_id": schema.StringAttribute{
-							Computed: true,
-						},
-						"mac_sign_bytes": schema.StringAttribute{
-							Computed: true,
-						},
-						"mac_sign_key_identifier": schema.StringAttribute{
-							Computed: true,
-						},
-						"mac_sign_key_identifier_type": schema.StringAttribute{
-							Computed: true,
-						},
-						"material": schema.StringAttribute{
-							Computed: true,
-						},
-						"muid": schema.StringAttribute{
-							Computed: true,
-						},
-						"object_type": schema.StringAttribute{
-							Computed: true,
-						},
-						"meta": schema.SingleNestedAttribute{
-							Computed: true,
-							Attributes: map[string]schema.Attribute{
-								"owner_id": schema.StringAttribute{
-									Computed: true,
-								},
-							},
-						},
-						"padded": schema.BoolAttribute{
-							Computed: true,
-						},
-						"password": schema.StringAttribute{
-							Computed: true,
-						},
-						"process_start_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"protect_stop_date": schema.StringAttribute{
-							Computed: true,
-						},
-						"revocation_reason": schema.StringAttribute{
-							Computed: true,
-						},
-						"revocation_message": schema.StringAttribute{
-							Computed: true,
-						},
-						"rotation_frequency_days": schema.StringAttribute{
-							Computed: true,
-						},
-						"secret_data_encoding": schema.StringAttribute{
-							Computed: true,
-						},
-						"secret_data_link": schema.StringAttribute{
-							Computed: true,
-						},
-						"signing_algo": schema.StringAttribute{
 							Computed: true,
 						},
 						"unexportable": schema.BoolAttribute{
@@ -189,150 +86,32 @@ func (d *dataSourceKeys) Schema(_ context.Context, _ datasource.SchemaRequest, r
 						"undeletable": schema.BoolAttribute{
 							Computed: true,
 						},
+						"object_type": schema.StringAttribute{
+							Computed: true,
+						},
+						"activation_date": schema.StringAttribute{
+							Computed: true,
+						},
+						"deactivation_date": schema.StringAttribute{
+							Computed: true,
+						},
+						"archive_date": schema.StringAttribute{
+							Computed: true,
+						},
+						"destroy_date": schema.StringAttribute{
+							Computed: true,
+						},
+						"revocation_reason": schema.StringAttribute{
+							Computed: true,
+						},
 						"state": schema.StringAttribute{
 							Computed: true,
 						},
-						"wrap_key_id_type": schema.StringAttribute{
+						"uuid": schema.StringAttribute{
 							Computed: true,
 						},
-						"wrap_key_name": schema.StringAttribute{
+						"description": schema.StringAttribute{
 							Computed: true,
-						},
-						"wrap_public_key": schema.StringAttribute{
-							Computed: true,
-						},
-						"wrap_public_key_padding": schema.StringAttribute{
-							Computed: true,
-						},
-						"wrapping_encryption_algo": schema.StringAttribute{
-							Computed: true,
-						},
-						"wrapping_hash_algo": schema.StringAttribute{
-							Computed: true,
-						},
-						"wrapping_method": schema.StringAttribute{
-							Computed: true,
-						},
-						"xts": schema.BoolAttribute{
-							Computed: true,
-						},
-						"aliases": schema.ListNestedAttribute{
-							Computed: true,
-							NestedObject: schema.NestedAttributeObject{
-								Attributes: map[string]schema.Attribute{
-									"alias": schema.StringAttribute{
-										Required: true,
-									},
-									"index": schema.Int64Attribute{
-										Required: true,
-									},
-									"type": schema.StringAttribute{
-										Required: true,
-									},
-								},
-							},
-						},
-						"public_key_parameters": schema.SingleNestedAttribute{
-							Computed: true,
-							Attributes: map[string]schema.Attribute{
-								"activation_date": schema.StringAttribute{
-									Computed: true,
-								},
-								"archive_date": schema.StringAttribute{
-									Computed: true,
-								},
-								"deactivation_date": schema.StringAttribute{
-									Computed: true,
-								},
-								"name": schema.StringAttribute{
-									Computed: true,
-								},
-								"state": schema.StringAttribute{
-									Computed: true,
-								},
-								"undeletable": schema.BoolAttribute{
-									Computed: true,
-								},
-								"unexportable": schema.BoolAttribute{
-									Computed: true,
-								},
-								"usage_mask": schema.Int64Attribute{
-									Computed: true,
-								},
-								"aliases": schema.ListNestedAttribute{
-									Computed: true,
-									NestedObject: schema.NestedAttributeObject{
-										Attributes: map[string]schema.Attribute{
-											"alias": schema.StringAttribute{
-												Required: true,
-											},
-											"index": schema.Int64Attribute{
-												Required: true,
-											},
-											"type": schema.StringAttribute{
-												Required: true,
-											},
-										},
-									},
-								},
-							},
-						},
-						"wrap_hkdf": schema.SingleNestedAttribute{
-							Computed: true,
-							Attributes: map[string]schema.Attribute{
-								"hash_algorithm": schema.StringAttribute{
-									Computed: true,
-								},
-								"okm_len": schema.Int64Attribute{
-									Computed: true,
-								},
-								"info": schema.StringAttribute{
-									Computed: true,
-								},
-								"salt": schema.StringAttribute{
-									Computed: true,
-								},
-							},
-						},
-						"wrap_pbe": schema.SingleNestedAttribute{
-							Computed: true,
-							Attributes: map[string]schema.Attribute{
-								"dklen": schema.Int64Attribute{
-									Computed: true,
-								},
-								"hash_algorithm": schema.StringAttribute{
-									Computed: true,
-								},
-								"salt": schema.StringAttribute{
-									Computed: true,
-								},
-								"iteration": schema.Int64Attribute{
-									Computed: true,
-								},
-								"password": schema.StringAttribute{
-									Computed: true,
-								},
-								"password_identifier": schema.StringAttribute{
-									Computed: true,
-								},
-								"password_identifier_type": schema.StringAttribute{
-									Computed: true,
-								},
-								"purpose": schema.StringAttribute{
-									Computed: true,
-								},
-							},
-						},
-						"wrap_rsaaes": schema.SingleNestedAttribute{
-							Computed: true,
-							Attributes: map[string]schema.Attribute{
-								"aes_key_size": schema.Int64Attribute{
-									Computed: true,
-								},
-								"padding": schema.StringAttribute{
-									Computed: true,
-								},
-							},
 						},
 					},
 				},
@@ -379,30 +158,78 @@ func (d *dataSourceKeys) Read(ctx context.Context, req datasource.ReadRequest, r
 	}
 
 	for _, key := range data {
-		keyState := tfsdkCMKeyModel{}
-		if key["name"] != nil {
-			keyState.Name = types.StringValue(key["name"].(string))
-		}
+		keyState := tfsdkCMKeysListModel{}
 		if key["id"] != nil {
 			keyState.ID = types.StringValue(key["id"].(string))
 		}
-		if key["uuid"] != nil {
-			keyState.UUID = types.StringValue(key["uuid"].(string))
+		if key["uri"] != nil {
+			keyState.URI = types.StringValue(key["uri"].(string))
+		}
+		if key["account"] != nil {
+			keyState.Account = types.StringValue(key["account"].(string))
+		}
+		if key["application"] != nil {
+			keyState.Application = types.StringValue(key["application"].(string))
+		}
+		if key["devAccount"] != nil {
+			keyState.DevAccount = types.StringValue(key["devAccount"].(string))
+		}
+		if key["createdAt"] != nil {
+			keyState.CreatedAt = types.StringValue(key["createdAt"].(string))
+		}
+		if key["name"] != nil {
+			keyState.Name = types.StringValue(key["name"].(string))
+		}
+		if key["updatedAt"] != nil {
+			keyState.UpdatedAt = types.StringValue(key["updatedAt"].(string))
 		}
 		if key["usageMask"] != nil {
 			keyState.UsageMask = types.Int64Value(int64(key["usageMask"].(float64)))
 		}
-		if key["size"] != nil {
-			keyState.Size = types.Int64Value(int64(key["size"].(float64)))
+		if key["version"] != nil {
+			keyState.Version = types.Int64Value(int64(key["version"].(float64)))
 		}
 		if key["algorithm"] != nil {
 			keyState.Algorithm = types.StringValue(key["algorithm"].(string))
 		}
+		if key["size"] != nil {
+			keyState.Size = types.Int64Value(int64(key["size"].(float64)))
+		}
+		if key["format"] != nil {
+			keyState.Format = types.StringValue(key["format"].(string))
+		}
 		if key["unexportable"] != nil {
-			keyState.Exportable = types.BoolValue(key["unexportable"].(bool))
+			keyState.Unexportable = types.BoolValue(bool(key["unexportable"].(bool)))
 		}
 		if key["undeletable"] != nil {
-			keyState.Deletable = types.BoolValue(key["undeletable"].(bool))
+			keyState.Undeletable = types.BoolValue(bool(key["undeletable"].(bool)))
+		}
+		if key["objectType"] != nil {
+			keyState.ObjectType = types.StringValue(key["objectType"].(string))
+		}
+		if key["activationDate"] != nil {
+			keyState.ActivationDate = types.StringValue(key["activationDate"].(string))
+		}
+		if key["deactivationDate"] != nil {
+			keyState.DeactivationDate = types.StringValue(key["deactivationDate"].(string))
+		}
+		if key["archiveDate"] != nil {
+			keyState.ArchiveDate = types.StringValue(key["archiveDate"].(string))
+		}
+		if key["destroyDate"] != nil {
+			keyState.DestroyDate = types.StringValue(key["destroyDate"].(string))
+		}
+		if key["revocationReason"] != nil {
+			keyState.RevocationReason = types.StringValue(key["revocationReason"].(string))
+		}
+		if key["state"] != nil {
+			keyState.State = types.StringValue(key["state"].(string))
+		}
+		if key["uuid"] != nil {
+			keyState.UUID = types.StringValue(key["uuid"].(string))
+		}
+		if key["description"] != nil {
+			keyState.Description = types.StringValue(key["description"].(string))
 		}
 		state.Keys = append(state.Keys, keyState)
 	}

@@ -115,6 +115,33 @@ type tfsdkCMKeyModel struct {
 	RSAAESWrap               WrapRSAAES          `tfsdk:"wrap_rsaaes"`
 }
 
+type tfsdkCMKeysListModel struct {
+	ID               types.String `tfsdk:"id"`
+	URI              types.String `tfsdk:"uri"`
+	Account          types.String `tfsdk:"account"`
+	Application      types.String `tfsdk:"application"`
+	DevAccount       types.String `tfsdk:"dev_account"`
+	CreatedAt        types.String `tfsdk:"created_at"`
+	Name             types.String `tfsdk:"name"`
+	UpdatedAt        types.String `tfsdk:"updated_at"`
+	UsageMask        types.Int64  `tfsdk:"usage_mask"`
+	Version          types.Int64  `tfsdk:"version"`
+	Algorithm        types.String `tfsdk:"algorithm"`
+	Size             types.Int64  `tfsdk:"size"`
+	Format           types.String `tfsdk:"format"`
+	Unexportable     types.Bool   `tfsdk:"unexportable"`
+	Undeletable      types.Bool   `tfsdk:"undeletable"`
+	ObjectType       types.String `tfsdk:"object_type"`
+	ActivationDate   types.String `tfsdk:"activation_date"`
+	DeactivationDate types.String `tfsdk:"deactivation_date"`
+	ArchiveDate      types.String `tfsdk:"archive_date"`
+	DestroyDate      types.String `tfsdk:"destroy_date"`
+	RevocationReason types.String `tfsdk:"revocation_reason"`
+	State            types.String `tfsdk:"state"`
+	UUID             types.String `tfsdk:"uuid"`
+	Description      types.String `tfsdk:"description"`
+}
+
 type tfsdkCMGroupModel struct {
 	Name           types.String           `tfsdk:"name"`
 	AppMetadata    map[string]interface{} `tfsdk:"app_metadata"`

@@ -134,6 +134,33 @@ type jsonCMKeyModel struct {
 	RSAAESWrap               WrapRSAAESJSON          `json:"wrap_rsaaes"`
 }
 
+// type jsonCMKeysListModel struct {
+// 	ID               string `json:"id"`
+// 	URI              string `json:"uri"`
+// 	Account          string `json:"account"`
+// 	Application      string `json:"application"`
+// 	DevAccount       string `json:"devAccount"`
+// 	CreateAt         string `json:"createdAt"`
+// 	Name             string `json:"name"`
+// 	UpdatedAt        string `json:"updatedAt"`
+// 	UsageMask        int64  `json:"usageMask"`
+// 	Version          int64  `json:"version"`
+// 	Algorithm        string `json:"algorithm"`
+// 	Size             int64  `json:"size"`
+// 	Format           string `json:"format"`
+// 	Unexportable     bool   `json:"unexportable"`
+// 	Undeletable      bool   `json:"undeletable"`
+// 	ObjectType       string `json:"objectType"`
+// 	ActivationDate   string `json:"activationDate"`
+// 	DeactivationDate string `json:"deactivationDate"`
+// 	ArchiveDate      string `json:"archiveDate"`
+// 	DestroyDate      string `json:"destroyDate"`
+// 	RevocationReason string `json:"revocationReason"`
+// 	State            string `json:"state"`
+// 	UUID             string `json:"uuid"`
+// 	Description      string `json:"description"`
+// }
+
 // CipherTrust Manager Key Management related attributes - END
 
 // We might not need the below struct
