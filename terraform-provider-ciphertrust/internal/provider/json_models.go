@@ -39,15 +39,15 @@ type KeyAliasJSON struct {
 }
 
 type PublicKeyParametersJSON struct {
-	ActivationDate   string     `json:"activation_date"`
-	Aliases          []KeyAlias `json:"aliases"`
-	ArchiveDate      string     `json:"archive_date"`
-	DeactivationDate string     `json:"deactivation_date"`
-	Name             string     `json:"name"`
-	State            string     `json:"state"`
-	Deletable        bool       `json:"undeletable"`
-	Exportable       bool       `json:"unexportable"`
-	UsageMask        int64      `json:"usage_mask"`
+	ActivationDate   string         `json:"activation_date"`
+	Aliases          []KeyAliasJSON `json:"aliases"`
+	ArchiveDate      string         `json:"archive_date"`
+	DeactivationDate string         `json:"deactivation_date"`
+	Name             string         `json:"name"`
+	State            string         `json:"state"`
+	Deletable        bool           `json:"undeletable"`
+	Exportable       bool           `json:"unexportable"`
+	UsageMask        int64          `json:"usage_mask"`
 }
 
 type WrapHKDFJSON struct {

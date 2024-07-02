@@ -755,6 +755,135 @@ func (r *resourceCMKey) Create(ctx context.Context, req resource.CreateRequest, 
 	if plan.XTS.ValueBool() != types.BoolNull().ValueBool() {
 		payload.XTS = plan.XTS.ValueBool()
 	}
+	// Add aliases to the payload if set
+	var arrAlias []KeyAliasJSON
+	for _, alias := range plan.Aliases {
+		var aliasJSON KeyAliasJSON
+		if alias.Alias.ValueString() != "" && alias.Alias.ValueString() != types.StringNull().ValueString() {
+			aliasJSON.Alias = alias.Alias.ValueString()
+		}
+		if alias.Index.ValueInt64() != types.Int64Null().ValueInt64() {
+			aliasJSON.Index = alias.Index.ValueInt64()
+		}
+		if alias.Type.ValueString() != "" && alias.Type.ValueString() != types.StringNull().ValueString() {
+			aliasJSON.Type = alias.Type.ValueString()
+		}
+		arrAlias = append(arrAlias, aliasJSON)
+	}
+	payload.Aliases = arrAlias
+	// Add hkdfCreateParameters to payload if set
+	var hkdfCreateParameters HKDFParametersJSON
+	if plan.HKDFCreateParameters.HashAlgorithm.ValueString() != "" && plan.HKDFCreateParameters.HashAlgorithm.ValueString() != types.StringNull().ValueString() {
+		hkdfCreateParameters.HashAlgorithm = plan.HKDFCreateParameters.HashAlgorithm.ValueString()
+	}
+	if plan.HKDFCreateParameters.IKMKeyName.ValueString() != "" && plan.HKDFCreateParameters.IKMKeyName.ValueString() != types.StringNull().ValueString() {
+		hkdfCreateParameters.IKMKeyName = plan.HKDFCreateParameters.IKMKeyName.ValueString()
+	}
+	if plan.HKDFCreateParameters.Info.ValueString() != "" && plan.HKDFCreateParameters.Info.ValueString() != types.StringNull().ValueString() {
+		hkdfCreateParameters.Info = plan.HKDFCreateParameters.Info.ValueString()
+	}
+	if plan.HKDFCreateParameters.Salt.ValueString() != "" && plan.HKDFCreateParameters.Salt.ValueString() != types.StringNull().ValueString() {
+		hkdfCreateParameters.Salt = plan.HKDFCreateParameters.Salt.ValueString()
+	}
+	payload.HKDFCreateParameters = hkdfCreateParameters
+	// Add hkdfCreateParameters to payload if set
+	var metadata KeyMetadataJSON
+	if plan.Metadata.OwnerId.ValueString() != "" && plan.Metadata.OwnerId.ValueString() != types.StringNull().ValueString() {
+		metadata.OwnerId = plan.Metadata.OwnerId.ValueString()
+	}
+	payload.Metadata = metadata
+	// Add publicKeyParameters to payload if set
+	var publicKeyParameters PublicKeyParametersJSON
+	if plan.PublicKeyParameters.ActivationDate.ValueString() != "" && plan.PublicKeyParameters.ActivationDate.ValueString() != types.StringNull().ValueString() {
+		publicKeyParameters.ActivationDate = plan.PublicKeyParameters.ActivationDate.ValueString()
+	}
+	if plan.PublicKeyParameters.ArchiveDate.ValueString() != "" && plan.PublicKeyParameters.ArchiveDate.ValueString() != types.StringNull().ValueString() {
+		publicKeyParameters.ArchiveDate = plan.PublicKeyParameters.ArchiveDate.ValueString()
+	}
+	if plan.PublicKeyParameters.DeactivationDate.ValueString() != "" && plan.PublicKeyParameters.DeactivationDate.ValueString() != types.StringNull().ValueString() {
+		publicKeyParameters.DeactivationDate = plan.PublicKeyParameters.DeactivationDate.ValueString()
+	}
+	if plan.PublicKeyParameters.Name.ValueString() != "" && plan.PublicKeyParameters.Name.ValueString() != types.StringNull().ValueString() {
+		publicKeyParameters.Name = plan.PublicKeyParameters.Name.ValueString()
+	}
+	if plan.PublicKeyParameters.State.ValueString() != "" && plan.PublicKeyParameters.State.ValueString() != types.StringNull().ValueString() {
+		publicKeyParameters.State = plan.PublicKeyParameters.State.ValueString()
+	}
+	if plan.PublicKeyParameters.Deletable.ValueBool() != types.BoolNull().ValueBool() {
+		publicKeyParameters.Deletable = !plan.PublicKeyParameters.Deletable.ValueBool()
+	}
+	if plan.PublicKeyParameters.Exportable.ValueBool() != types.BoolNull().ValueBool() {
+		publicKeyParameters.Exportable = !plan.PublicKeyParameters.Exportable.ValueBool()
+	}
+	if plan.PublicKeyParameters.UsageMask.ValueInt64() != types.Int64Null().ValueInt64() {
+		publicKeyParameters.UsageMask = plan.PublicKeyParameters.UsageMask.ValueInt64()
+	}
+	var arrPubKeyAlias []KeyAliasJSON
+	for _, pubKeyAlias := range plan.PublicKeyParameters.Aliases {
+		var pubKeyAliasJSON KeyAliasJSON
+		if pubKeyAlias.Alias.ValueString() != "" && pubKeyAlias.Alias.ValueString() != types.StringNull().ValueString() {
+			pubKeyAliasJSON.Alias = pubKeyAlias.Alias.ValueString()
+		}
+		if pubKeyAlias.Index.ValueInt64() != types.Int64Null().ValueInt64() {
+			pubKeyAliasJSON.Index = pubKeyAlias.Index.ValueInt64()
+		}
+		if pubKeyAlias.Type.ValueString() != "" && pubKeyAlias.Type.ValueString() != types.StringNull().ValueString() {
+			pubKeyAliasJSON.Type = pubKeyAlias.Type.ValueString()
+		}
+		arrPubKeyAlias = append(arrPubKeyAlias, pubKeyAliasJSON)
+	}
+	publicKeyParameters.Aliases = arrPubKeyAlias
+	payload.PublicKeyParameters = publicKeyParameters
+	// Add wrapHKDF to payload if set
+	var wrapHKDF WrapHKDFJSON
+	if plan.HKDFWrap.HashAlgorithm.ValueString() != "" && plan.HKDFWrap.HashAlgorithm.ValueString() != types.StringNull().ValueString() {
+		wrapHKDF.HashAlgorithm = plan.HKDFWrap.HashAlgorithm.ValueString()
+	}
+	if plan.HKDFWrap.OKMLen.ValueInt64() != types.Int64Null().ValueInt64() {
+		wrapHKDF.OKMLen = plan.HKDFWrap.OKMLen.ValueInt64()
+	}
+	if plan.HKDFWrap.Info.ValueString() != "" && plan.HKDFWrap.Info.ValueString() != types.StringNull().ValueString() {
+		wrapHKDF.Info = plan.HKDFWrap.Info.ValueString()
+	}
+	if plan.HKDFWrap.Salt.ValueString() != "" && plan.HKDFWrap.Salt.ValueString() != types.StringNull().ValueString() {
+		wrapHKDF.Salt = plan.HKDFWrap.Salt.ValueString()
+	}
+	payload.HKDFWrap = wrapHKDF
+	// Add wrapPBE to payload if set
+	var wrapPBE WrapPBEJSON
+	if plan.PBEWrap.DKLen.ValueInt64() != types.Int64Null().ValueInt64() {
+		wrapPBE.DKLen = plan.PBEWrap.DKLen.ValueInt64()
+	}
+	if plan.PBEWrap.HashAlgorithm.ValueString() != "" && plan.PBEWrap.HashAlgorithm.ValueString() != types.StringNull().ValueString() {
+		wrapPBE.HashAlgorithm = plan.PBEWrap.HashAlgorithm.ValueString()
+	}
+	if plan.PBEWrap.Iteration.ValueInt64() != types.Int64Null().ValueInt64() {
+		wrapPBE.Iteration = plan.PBEWrap.Iteration.ValueInt64()
+	}
+	if plan.PBEWrap.Password.ValueString() != "" && plan.PBEWrap.Password.ValueString() != types.StringNull().ValueString() {
+		wrapPBE.Password = plan.PBEWrap.Password.ValueString()
+	}
+	if plan.PBEWrap.PasswordIdentifier.ValueString() != "" && plan.PBEWrap.PasswordIdentifier.ValueString() != types.StringNull().ValueString() {
+		wrapPBE.PasswordIdentifier = plan.PBEWrap.PasswordIdentifier.ValueString()
+	}
+	if plan.PBEWrap.PasswordIdentifierType.ValueString() != "" && plan.PBEWrap.PasswordIdentifierType.ValueString() != types.StringNull().ValueString() {
+		wrapPBE.PasswordIdentifierType = plan.PBEWrap.PasswordIdentifierType.ValueString()
+	}
+	if plan.PBEWrap.Purpose.ValueString() != "" && plan.PBEWrap.Purpose.ValueString() != types.StringNull().ValueString() {
+		wrapPBE.Purpose = plan.PBEWrap.Purpose.ValueString()
+	}
+	if plan.PBEWrap.Salt.ValueString() != "" && plan.PBEWrap.Salt.ValueString() != types.StringNull().ValueString() {
+		wrapPBE.Salt = plan.PBEWrap.Salt.ValueString()
+	}
+	payload.PBEWrap = wrapPBE
+	// Add wrapPBE to payload if set
+	var wrapRSAAES WrapRSAAESJSON
+	if plan.RSAAESWrap.AESKeySize.ValueInt64() != types.Int64Null().ValueInt64() {
+		wrapRSAAES.AESKeySize = plan.RSAAESWrap.AESKeySize.ValueInt64()
+	}
+	if plan.RSAAESWrap.Padding.ValueString() != "" && plan.RSAAESWrap.Padding.ValueString() != types.StringNull().ValueString() {
+		wrapRSAAES.Padding = plan.RSAAESWrap.Padding.ValueString()
+	}
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
