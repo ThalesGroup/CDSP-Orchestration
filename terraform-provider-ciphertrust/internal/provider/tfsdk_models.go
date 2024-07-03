@@ -26,8 +26,8 @@ type PublicKeyParameters struct {
 	DeactivationDate types.String `tfsdk:"deactivation_date"`
 	Name             types.String `tfsdk:"name"`
 	State            types.String `tfsdk:"state"`
-	Deletable        types.Bool   `tfsdk:"undeletable"`
-	Exportable       types.Bool   `tfsdk:"unexportable"`
+	UnDeletable      types.Bool   `tfsdk:"undeletable"`
+	UnExportable     types.Bool   `tfsdk:"unexportable"`
 	UsageMask        types.Int64  `tfsdk:"usage_mask"`
 }
 
@@ -94,8 +94,8 @@ type tfsdkCMKeyModel struct {
 	SecretDataLink           types.String        `tfsdk:"secret_data_link"`
 	SigningAlgo              types.String        `tfsdk:"signing_algo"`
 	Size                     types.Int64         `tfsdk:"size"`
-	Exportable               types.Bool          `tfsdk:"unexportable"`
-	Deletable                types.Bool          `tfsdk:"undeletable"`
+	UnExportable             types.Bool          `tfsdk:"unexportable"`
+	UnDeletable              types.Bool          `tfsdk:"undeletable"`
 	State                    types.String        `tfsdk:"state"`
 	TemplateID               types.String        `tfsdk:"template_id"`
 	UsageMask                types.Int64         `tfsdk:"usage_mask"`

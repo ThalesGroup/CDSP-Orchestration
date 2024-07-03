@@ -22,8 +22,8 @@ type GroupJSON struct {
 
 // CipherTrust Manager Key Management related attributes
 type HKDFParametersJSON struct {
-	HashAlgorithm string `json:"hash_algorithm"`
-	IKMKeyName    string `json:"ikm_key_name"`
+	HashAlgorithm string `json:"hashAlgorithm"`
+	IKMKeyName    string `json:"ikmKeyName"`
 	Info          string `json:"info"`
 	Salt          string `json:"salt"`
 }
@@ -39,99 +39,99 @@ type KeyAliasJSON struct {
 }
 
 type PublicKeyParametersJSON struct {
-	ActivationDate   string         `json:"activation_date"`
+	ActivationDate   string         `json:"activationDate,omitempty"`
 	Aliases          []KeyAliasJSON `json:"aliases"`
-	ArchiveDate      string         `json:"archive_date"`
-	DeactivationDate string         `json:"deactivation_date"`
+	ArchiveDate      string         `json:"archiveDate,omitempty"`
+	DeactivationDate string         `json:"deactivationDate,omitempty"`
 	Name             string         `json:"name"`
 	State            string         `json:"state"`
-	Deletable        bool           `json:"undeletable"`
-	Exportable       bool           `json:"unexportable"`
-	UsageMask        int64          `json:"usage_mask"`
+	UnDeletable      bool           `json:"undeletable"`
+	UnExportable     bool           `json:"unexportable"`
+	UsageMask        int64          `json:"usageMask"`
 }
 
 type WrapHKDFJSON struct {
-	HashAlgorithm string `json:"hash_algorithm"`
+	HashAlgorithm string `json:"hashAlgorithm"`
 	Info          string `json:"info"`
-	OKMLen        int64  `json:"okm_len"`
+	OKMLen        int64  `json:"okmLen"`
 	Salt          string `json:"salt"`
 }
 
 type WrapPBEJSON struct {
 	DKLen                  int64  `json:"dklen"`
-	HashAlgorithm          string `json:"hash_algorithm"`
+	HashAlgorithm          string `json:"hashAlgorithm"`
 	Iteration              int64  `json:"iteration"`
 	Password               string `json:"password"`
-	PasswordIdentifier     string `json:"password_identifier"`
-	PasswordIdentifierType string `json:"password_identifier_type"`
+	PasswordIdentifier     string `json:"passwordIdentifier"`
+	PasswordIdentifierType string `json:"passwordIdentifierType"`
 	Purpose                string `json:"purpose"`
 	Salt                   string `json:"salt"`
 }
 
 type WrapRSAAESJSON struct {
-	AESKeySize int64  `json:"aes_key_size"`
+	AESKeySize int64  `json:"aesKeySize"`
 	Padding    string `json:"padding"`
 }
 
 type jsonCMKeyModel struct {
-	ID                       string                  `json:"id"`
-	ActivationDate           string                  `json:"activation_date"`
-	Algorithm                string                  `json:"algorithm"`
-	ArchiveDate              string                  `json:"archive_date"`
-	AssignSelfAsOwner        bool                    `json:"assign_self_as_owner"`
-	CertType                 string                  `json:"cert_type"`
-	CompromiseDate           string                  `json:"compromise_date"`
-	CompromiseOccurrenceDate string                  `json:"compromise_occurrence_date"`
-	Curveid                  string                  `json:"curveid"`
-	DeactivationDate         string                  `json:"deactivation_date"`
-	DefaultIV                string                  `json:"default_iv"`
-	Description              string                  `json:"description"`
-	DestroyDate              string                  `json:"destroy_date"`
-	EmptyMaterial            bool                    `json:"empty_material"`
-	Encoding                 string                  `json:"encoding"`
-	Format                   string                  `json:"format"`
-	GenerateKeyId            bool                    `json:"generate_key_id"`
-	HKDFCreateParameters     HKDFParametersJSON      `json:"hkdf_create_parameters"`
-	IDSize                   int64                   `json:"id_size"`
-	KeyId                    string                  `json:"key_id"`
-	MacSignBytes             string                  `json:"mac_sign_bytes"`
-	MacSignKeyIdentifier     string                  `json:"mac_sign_key_identifier"`
-	MacSignKeyIdentifierType string                  `json:"mac_sign_key_identifier_type"`
-	Material                 string                  `json:"material"`
-	MUID                     string                  `json:"muid"`
-	ObjectType               string                  `json:"object_type"`
-	Name                     string                  `json:"name"`
-	Metadata                 KeyMetadataJSON         `json:"meta"`
-	Padded                   bool                    `json:"padded"`
-	Password                 string                  `json:"password"`
-	ProcessStartDate         string                  `json:"process_start_date"`
-	ProtectStopDate          string                  `json:"protect_stop_date"`
-	RevocationReason         string                  `json:"revocation_reason"`
-	RevocationMessage        string                  `json:"revocation_message"`
-	RotationFrequencyDays    string                  `json:"rotation_frequency_days"`
-	SecretDataEncoding       string                  `json:"secret_data_encoding"`
-	SecretDataLink           string                  `json:"secret_data_link"`
-	SigningAlgo              string                  `json:"signing_algo"`
-	Size                     int64                   `json:"size"`
-	Exportable               bool                    `json:"unexportable"`
-	Deletable                bool                    `json:"undeletable"`
-	State                    string                  `json:"state"`
-	TemplateID               string                  `json:"templateId"`
-	UsageMask                int64                   `json:"usage_mask"`
-	UUID                     string                  `json:"uuid"`
-	WrapKeyIDType            string                  `json:"wrap_key_id_type"`
-	WrapKeyName              string                  `json:"wrap_key_name"`
-	WrapPublicKey            string                  `json:"wrap_public_key"`
-	WrapPublicKeyPadding     string                  `json:"wrap_public_key_padding"`
-	WrappingEncryptionAlgo   string                  `json:"wrapping_encryption_algo"`
-	WrappingHashAlgo         string                  `json:"wrapping_hash_algo"`
-	WrappingMethod           string                  `json:"wrapping_method"`
-	XTS                      bool                    `json:"xts"`
-	Aliases                  []KeyAliasJSON          `json:"aliases"`
-	PublicKeyParameters      PublicKeyParametersJSON `json:"public_key_parameters"`
-	HKDFWrap                 WrapHKDFJSON            `json:"wrap_hkdf"`
-	PBEWrap                  WrapPBEJSON             `json:"wrap_pbe"`
-	RSAAESWrap               WrapRSAAESJSON          `json:"wrap_rsaaes"`
+	ID                       string                   `json:"id"`
+	ActivationDate           string                   `json:"activationDate,omitempty"`
+	Algorithm                string                   `json:"algorithm,omitempty"`
+	ArchiveDate              string                   `json:"archiveDate,omitempty"`
+	AssignSelfAsOwner        bool                     `json:"assignSelfAsOwner,omitempty"`
+	CertType                 string                   `json:"certType,omitempty"`
+	CompromiseDate           string                   `json:"compromiseDate,omitempty"`
+	CompromiseOccurrenceDate string                   `json:"compromiseOccurrenceDate,omitempty"`
+	Curveid                  string                   `json:"curveid,omitempty"`
+	DeactivationDate         string                   `json:"deactivationDate,omitempty"`
+	DefaultIV                string                   `json:"defaultIV,omitempty"`
+	Description              string                   `json:"description,omitempty"`
+	DestroyDate              string                   `json:"destroyDate,omitempty"`
+	EmptyMaterial            bool                     `json:"emptyMaterial,omitempty"`
+	Encoding                 string                   `json:"encoding,omitempty"`
+	Format                   string                   `json:"format,omitempty"`
+	GenerateKeyId            bool                     `json:"generateKeyId,omitempty"`
+	HKDFCreateParameters     *HKDFParametersJSON      `json:"hkdfCreateParameters,omitempty"`
+	IDSize                   int64                    `json:"idSize,omitempty"`
+	KeyId                    string                   `json:"keyId,omitempty"`
+	MacSignBytes             string                   `json:"macSignBytes,omitempty"`
+	MacSignKeyIdentifier     string                   `json:"macSignKeyIdentifier,omitempty"`
+	MacSignKeyIdentifierType string                   `json:"macSignKeyIdentifierType,omitempty"`
+	Material                 string                   `json:"material,omitempty"`
+	MUID                     string                   `json:"muid,omitempty"`
+	ObjectType               string                   `json:"objectType,omitempty"`
+	Name                     string                   `json:"name,omitempty"`
+	Metadata                 *KeyMetadataJSON         `json:"meta,omitempty"`
+	Padded                   bool                     `json:"padded,omitempty"`
+	Password                 string                   `json:"password,omitempty"`
+	ProcessStartDate         string                   `json:"processStartDate,omitempty"`
+	ProtectStopDate          string                   `json:"protectStopDate,omitempty"`
+	RevocationReason         string                   `json:"revocationMessage,omitempty"`
+	RevocationMessage        string                   `json:"revocationReason,omitempty"`
+	RotationFrequencyDays    string                   `json:"rotationFrequencyDays,omitempty"`
+	SecretDataEncoding       string                   `json:"secretDataEncoding,omitempty"`
+	SecretDataLink           string                   `json:"secretDataLink,omitempty"`
+	SigningAlgo              string                   `json:"signingAlgo,omitempty"`
+	Size                     int64                    `json:"size,omitempty"`
+	UnExportable             bool                     `json:"unexportable,omitempty"`
+	UnDeletable              bool                     `json:"undeletable,omitempty"`
+	State                    string                   `json:"state,omitempty"`
+	TemplateID               string                   `json:"templateId,omitempty"`
+	UsageMask                int64                    `json:"usageMask,omitempty"`
+	UUID                     string                   `json:"uuid,omitempty"`
+	WrapKeyIDType            string                   `json:"wrapKeyIDType,omitempty"`
+	WrapKeyName              string                   `json:"wrapKeyName,omitempty"`
+	WrapPublicKey            string                   `json:"wrapPublicKey,omitempty"`
+	WrapPublicKeyPadding     string                   `json:"wrapPublicKeyPadding,omitempty"`
+	WrappingEncryptionAlgo   string                   `json:"wrappingEncryptionAlgo,omitempty"`
+	WrappingHashAlgo         string                   `json:"wrappingHashAlgo,omitempty"`
+	WrappingMethod           string                   `json:"wrappingMethod,omitempty"`
+	XTS                      bool                     `json:"xts,omitempty"`
+	Aliases                  []KeyAliasJSON           `json:"aliases,omitempty"`
+	PublicKeyParameters      *PublicKeyParametersJSON `json:"publicKeyParameters,omitempty"`
+	HKDFWrap                 *WrapHKDFJSON            `json:"wrapHKDF,omitempty"`
+	PBEWrap                  *WrapPBEJSON             `json:"wrapPBE,omitempty"`
+	RSAAESWrap               *WrapRSAAESJSON          `json:"wrapRSAAES,omitempty"`
 }
 
 // type jsonCMKeysListModel struct {
@@ -164,32 +164,32 @@ type jsonCMKeyModel struct {
 // CipherTrust Manager Key Management related attributes - END
 
 // We might not need the below struct
-type KeyJSON struct {
-	KeyID            string `json:"id"`
-	URI              string `json:"uri"`
-	Account          string `json:"account"`
-	Application      string `json:"application"`
-	DevAccount       string `json:"devAccount"`
-	CreatedAt        string `json:"createdAt"`
-	UpdatedAt        string `json:"updatedAt"`
-	UsageMask        int64  `json:"usageMask"`
-	Version          int64  `json:"version"`
-	Algorithm        string `json:"algorithm"`
-	Size             int64  `json:"size"`
-	Format           string `json:"format"`
-	Exportable       bool   `json:"unexportable"`
-	Deletable        bool   `json:"undeletable"`
-	ObjectType       string `json:"objectType"`
-	ActivationDate   string `json:"activationDate"`
-	DeactivationDate string `json:"deactivationDate"`
-	ArchiveDate      string `json:"archiveDate"`
-	DestroyDate      string `json:"destroyDate"`
-	RevocationReason string `json:"revocationReason"`
-	State            string `json:"state"`
-	UUID             string `json:"uuid"`
-	Description      string `json:"description"`
-	Name             string `json:"name"`
-}
+// type KeyJSON struct {
+// 	KeyID            string `json:"id"`
+// 	URI              string `json:"uri"`
+// 	Account          string `json:"account"`
+// 	Application      string `json:"application"`
+// 	DevAccount       string `json:"devAccount"`
+// 	CreatedAt        string `json:"createdAt"`
+// 	UpdatedAt        string `json:"updatedAt"`
+// 	UsageMask        int64  `json:"usageMask"`
+// 	Version          int64  `json:"version"`
+// 	Algorithm        string `json:"algorithm"`
+// 	Size             int64  `json:"size"`
+// 	Format           string `json:"format"`
+// 	Exportable       bool   `json:"unexportable"`
+// 	Deletable        bool   `json:"undeletable"`
+// 	ObjectType       string `json:"objectType"`
+// 	ActivationDate   string `json:"activationDate"`
+// 	DeactivationDate string `json:"deactivationDate"`
+// 	ArchiveDate      string `json:"archiveDate"`
+// 	DestroyDate      string `json:"destroyDate"`
+// 	RevocationReason string `json:"revocationReason"`
+// 	State            string `json:"state"`
+// 	UUID             string `json:"uuid"`
+// 	Description      string `json:"description"`
+// 	Name             string `json:"name"`
+// }
 
 type CTEUserJSON struct {
 	GID      int    `json:"gid"`
