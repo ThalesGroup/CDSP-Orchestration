@@ -113,6 +113,8 @@ type tfsdkCMKeyModel struct {
 	HKDFWrap                 WrapHKDF            `tfsdk:"wrap_hkdf"`
 	PBEWrap                  WrapPBE             `tfsdk:"wrap_pbe"`
 	RSAAESWrap               WrapRSAAES          `tfsdk:"wrap_rsaaes"`
+	Labels                   types.Map           `tfsdk:"labels"`
+	AllVersions              types.Bool          `tfsdk:"all_versions"`
 }
 
 type tfsdkCMKeysListModel struct {

@@ -586,6 +586,13 @@ func (r *resourceCMKey) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					},
 				},
 			},
+			"labels": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"all_versions": schema.BoolAttribute{
+				Optional: true,
+			},
 		},
 	}
 }
@@ -901,6 +908,12 @@ func (r *resourceCMKey) Create(ctx context.Context, req resource.CreateRequest, 
 		}
 		payload.RSAAESWrap = &wrapRSAAES
 	}
+	// Add labels to payload
+	labelsPayload := make(map[string]interface{})
+	for k, v := range plan.Labels.Elements() {
+		labelsPayload[k] = v.(types.String).ValueString()
+	}
+	payload.Labels = labelsPayload
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -939,7 +952,7 @@ func (r *resourceCMKey) Read(ctx context.Context, req resource.ReadRequest, resp
 // Update updates the resource and sets the updated Terraform state on success.
 func (r *resourceCMKey) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan tfsdkCMKeyModel
-	payload := map[string]interface{}{}
+	var payload jsonCMKeyModel
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -947,7 +960,86 @@ func (r *resourceCMKey) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	payload["description"] = trimString(plan.Description.String())
+	if plan.ActivationDate.ValueString() != "" && plan.ActivationDate.ValueString() != types.StringNull().ValueString() {
+		payload.ActivationDate = plan.ActivationDate.ValueString()
+	}
+	// Add aliases to the payload if set
+	var arrAlias []KeyAliasJSON
+	for _, alias := range plan.Aliases {
+		var aliasJSON KeyAliasJSON
+		if alias.Alias.ValueString() != "" && alias.Alias.ValueString() != types.StringNull().ValueString() {
+			aliasJSON.Alias = alias.Alias.ValueString()
+		}
+		if alias.Index.ValueInt64() != types.Int64Null().ValueInt64() {
+			aliasJSON.Index = alias.Index.ValueInt64()
+		}
+		if alias.Type.ValueString() != "" && alias.Type.ValueString() != types.StringNull().ValueString() {
+			aliasJSON.Type = alias.Type.ValueString()
+		}
+		arrAlias = append(arrAlias, aliasJSON)
+	}
+	payload.Aliases = arrAlias
+
+	if plan.ArchiveDate.ValueString() != "" && plan.ArchiveDate.ValueString() != types.StringNull().ValueString() {
+		payload.ArchiveDate = plan.ArchiveDate.ValueString()
+	}
+	if plan.CompromiseOccurrenceDate.ValueString() != "" && plan.CompromiseOccurrenceDate.ValueString() != types.StringNull().ValueString() {
+		payload.CompromiseOccurrenceDate = plan.CompromiseOccurrenceDate.ValueString()
+	}
+	if plan.DeactivationDate.ValueString() != "" && plan.DeactivationDate.ValueString() != types.StringNull().ValueString() {
+		payload.DeactivationDate = plan.DeactivationDate.ValueString()
+	}
+	if plan.Description.ValueString() != "" && plan.Description.ValueString() != types.StringNull().ValueString() {
+		payload.Description = plan.Description.ValueString()
+	}
+	if plan.KeyId.ValueString() != "" && plan.KeyId.ValueString() != types.StringNull().ValueString() {
+		payload.KeyId = plan.KeyId.ValueString()
+	}
+	// Add meta to payload if set
+	var metadata KeyMetadataJSON
+	if (KeyMetadata{} != plan.Metadata) {
+		if plan.Metadata.OwnerId.ValueString() != "" && plan.Metadata.OwnerId.ValueString() != types.StringNull().ValueString() {
+			metadata.OwnerId = plan.Metadata.OwnerId.ValueString()
+		}
+		payload.Metadata = &metadata
+	}
+
+	if plan.MUID.ValueString() != "" && plan.MUID.ValueString() != types.StringNull().ValueString() {
+		payload.MUID = plan.MUID.ValueString()
+	}
+	if plan.ProcessStartDate.ValueString() != "" && plan.ProcessStartDate.ValueString() != types.StringNull().ValueString() {
+		payload.ProcessStartDate = plan.ProcessStartDate.ValueString()
+	}
+	if plan.ProtectStopDate.ValueString() != "" && plan.ProtectStopDate.ValueString() != types.StringNull().ValueString() {
+		payload.ProtectStopDate = plan.ProtectStopDate.ValueString()
+	}
+	if plan.RevocationMessage.ValueString() != "" && plan.RevocationMessage.ValueString() != types.StringNull().ValueString() {
+		payload.RevocationMessage = plan.RevocationMessage.ValueString()
+	}
+	if plan.RevocationReason.ValueString() != "" && plan.RevocationReason.ValueString() != types.StringNull().ValueString() {
+		payload.RevocationReason = plan.RevocationReason.ValueString()
+	}
+	if plan.RotationFrequencyDays.ValueString() != "" && plan.RotationFrequencyDays.ValueString() != types.StringNull().ValueString() {
+		payload.RotationFrequencyDays = plan.RotationFrequencyDays.ValueString()
+	}
+	if plan.UnDeletable.ValueBool() != types.BoolNull().ValueBool() {
+		payload.UnDeletable = plan.UnDeletable.ValueBool()
+	}
+	if plan.UnExportable.ValueBool() != types.BoolNull().ValueBool() {
+		payload.UnExportable = plan.UnExportable.ValueBool()
+	}
+	if plan.UsageMask.ValueInt64() != types.Int64Null().ValueInt64() {
+		payload.UsageMask = plan.UsageMask.ValueInt64()
+	}
+	if plan.AllVersions.ValueBool() != types.BoolNull().ValueBool() {
+		payload.AllVersions = plan.AllVersions.ValueBool()
+	}
+	// Add labels to payload
+	labelsPayload := make(map[string]interface{})
+	for k, v := range plan.Labels.Elements() {
+		labelsPayload[k] = v.(types.String).ValueString()
+	}
+	payload.Labels = labelsPayload
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {

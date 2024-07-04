@@ -39,9 +39,6 @@ func (r *resourceCTEPolicyIDTKeyRule) Schema(_ context.Context, _ resource.Schem
 			"rule_id": schema.StringAttribute{
 				Required:    true,
 				Description: "ID of the IDT Key Rule created in the parent policy",
-				// PlanModifiers: []planmodifier.String{
-				// 	stringplanmodifier.UseStateForUnknown(),
-				// },
 			},
 			"rule": schema.ListNestedAttribute{
 				Optional: true,

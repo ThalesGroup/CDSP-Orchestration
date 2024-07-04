@@ -132,6 +132,8 @@ type jsonCMKeyModel struct {
 	HKDFWrap                 *WrapHKDFJSON            `json:"wrapHKDF,omitempty"`
 	PBEWrap                  *WrapPBEJSON             `json:"wrapPBE,omitempty"`
 	RSAAESWrap               *WrapRSAAESJSON          `json:"wrapRSAAES,omitempty"`
+	AllVersions              bool                     `json:"allVersions,omitempty"`
+	Labels                   map[string]interface{}   `json:"labels,omitempty"`
 }
 
 // type jsonCMKeysListModel struct {

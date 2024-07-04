@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 
@@ -27,7 +28,8 @@ type dataSourceUsers struct {
 }
 
 type usersDataSourceModel struct {
-	User []tfsdkCMUserModel `tfsdk:"users"`
+	Filters types.Map          `tfsdk:"filters"`
+	User    []tfsdkCMUserModel `tfsdk:"users"`
 }
 
 func (d *dataSourceUsers) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -71,6 +73,10 @@ func (d *dataSourceUsers) Schema(_ context.Context, _ datasource.SchemaRequest, 
 					},
 				},
 			},
+			"filters": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -79,8 +85,18 @@ func (d *dataSourceUsers) Read(ctx context.Context, req datasource.ReadRequest, 
 	id := uuid.New().String()
 	tflog.Trace(ctx, MSG_METHOD_START+"[data_source_cm_users.go -> Read]["+id+"]")
 	var state usersDataSourceModel
+	req.Config.Get(ctx, &state)
+	var kvs []string
+	for k, v := range state.Filters.Elements() {
+		kv := fmt.Sprintf("%s=%s&", k, v.(types.String).ValueString())
+		kvs = append(kvs, kv)
+	}
 
-	jsonStr, err := d.client.GetAll(ctx, id, URL_USER_MANAGEMENT)
+	jsonStr, err := d.client.GetAll(
+		ctx,
+		id,
+		URL_USER_MANAGEMENT+"/?"+strings.Join(kvs, "")+"skip=0&limit=10")
+
 	if err != nil {
 		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [data_source_cm_users.go -> Read]["+id+"]")
 		resp.Diagnostics.AddError(
