@@ -12,4 +12,5 @@ const (
 	URL_CTE_POLICY        = "api/v1/transparent-encryption/policies"
 	URL_CTE_CLIENT        = "api/v1/transparent-encryption/clients"
 	URL_CTE_PROFILE       = "api/v1/transparent-encryption/profiles"
+	URL_REG_TOKEN         = "api/v1/client-management/regtokens"
 )

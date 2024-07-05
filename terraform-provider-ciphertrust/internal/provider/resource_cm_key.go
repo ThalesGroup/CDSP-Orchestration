@@ -801,15 +801,78 @@ func (r *resourceCMKey) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 	// Add hkdfCreateParameters to payload if set
 	var metadata KeyMetadataJSON
-	if (KeyMetadata{} != plan.Metadata) {
+	if (!reflect.DeepEqual(KeyMetadata{}, plan.Metadata)) {
 		if plan.Metadata.OwnerId.ValueString() != "" && plan.Metadata.OwnerId.ValueString() != types.StringNull().ValueString() {
 			metadata.OwnerId = plan.Metadata.OwnerId.ValueString()
+		}
+		if (!reflect.DeepEqual(KeyMetadataPermissions{}, plan.Metadata.Permissions)) {
+			var permission KeyMetadataPermissionsJSON
+			var decryptWithKey []string
+			var encryptWithKey []string
+			var exportKey []string
+			var macVerifyWithKey []string
+			var macWithKey []string
+			var readKey []string
+			var signVerifyWithKey []string
+			var signWithKey []string
+			var useKey []string
+
+			for _, str := range plan.Metadata.Permissions.DecryptWithKey {
+				decryptWithKey = append(decryptWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.EncryptWithKey {
+				encryptWithKey = append(encryptWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.ExportKey {
+				exportKey = append(exportKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.MACVerifyWithKey {
+				macVerifyWithKey = append(macVerifyWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.MACWithKey {
+				macWithKey = append(macWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.ReadKey {
+				readKey = append(readKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.SignVerifyWithKey {
+				signVerifyWithKey = append(signVerifyWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.SignWithKey {
+				signWithKey = append(signWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.UseKey {
+				useKey = append(useKey, str.ValueString())
+			}
+			permission.DecryptWithKey = decryptWithKey
+			permission.EncryptWithKey = encryptWithKey
+			permission.ExportKey = exportKey
+			permission.MACVerifyWithKey = macVerifyWithKey
+			permission.MACWithKey = macWithKey
+			permission.ReadKey = readKey
+			permission.SignVerifyWithKey = signVerifyWithKey
+			permission.SignWithKey = signWithKey
+			permission.UseKey = useKey
+			metadata.Permissions = &permission
+		}
+		if (!reflect.DeepEqual(KeyMetadataCTE{}, plan.Metadata.CTE)) {
+			var cteParams KeyMetadataCTEJSON
+			if plan.Metadata.CTE.PersistentOnClient.ValueBool() != types.BoolNull().ValueBool() {
+				cteParams.PersistentOnClient = plan.Metadata.CTE.PersistentOnClient.ValueBool()
+			}
+			if plan.Metadata.CTE.EncryptionMode.ValueString() != "" && plan.Metadata.CTE.EncryptionMode.ValueString() != types.StringNull().ValueString() {
+				cteParams.EncryptionMode = plan.Metadata.CTE.EncryptionMode.ValueString()
+			}
+			if plan.Metadata.CTE.CTEVersioned.ValueBool() != types.BoolNull().ValueBool() {
+				cteParams.CTEVersioned = plan.Metadata.CTE.CTEVersioned.ValueBool()
+			}
+			metadata.CTE = &cteParams
 		}
 		payload.Metadata = &metadata
 	}
 	// Add publicKeyParameters to payload if set
 	var publicKeyParameters PublicKeyParametersJSON
-	if (reflect.DeepEqual(PublicKeyParameters{}, plan.PublicKeyParameters)) {
+	if (!reflect.DeepEqual(PublicKeyParameters{}, plan.PublicKeyParameters)) {
 		if plan.PublicKeyParameters.ActivationDate.ValueString() != "" && plan.PublicKeyParameters.ActivationDate.ValueString() != types.StringNull().ValueString() {
 			publicKeyParameters.ActivationDate = plan.PublicKeyParameters.ActivationDate.ValueString()
 		}
@@ -997,9 +1060,72 @@ func (r *resourceCMKey) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 	// Add meta to payload if set
 	var metadata KeyMetadataJSON
-	if (KeyMetadata{} != plan.Metadata) {
+	if (!reflect.DeepEqual(KeyMetadata{}, plan.Metadata)) {
 		if plan.Metadata.OwnerId.ValueString() != "" && plan.Metadata.OwnerId.ValueString() != types.StringNull().ValueString() {
 			metadata.OwnerId = plan.Metadata.OwnerId.ValueString()
+		}
+		if (!reflect.DeepEqual(KeyMetadataPermissions{}, plan.Metadata.Permissions)) {
+			var permission KeyMetadataPermissionsJSON
+			var decryptWithKey []string
+			var encryptWithKey []string
+			var exportKey []string
+			var macVerifyWithKey []string
+			var macWithKey []string
+			var readKey []string
+			var signVerifyWithKey []string
+			var signWithKey []string
+			var useKey []string
+
+			for _, str := range plan.Metadata.Permissions.DecryptWithKey {
+				decryptWithKey = append(decryptWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.EncryptWithKey {
+				encryptWithKey = append(encryptWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.ExportKey {
+				exportKey = append(exportKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.MACVerifyWithKey {
+				macVerifyWithKey = append(macVerifyWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.MACWithKey {
+				macWithKey = append(macWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.ReadKey {
+				readKey = append(readKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.SignVerifyWithKey {
+				signVerifyWithKey = append(signVerifyWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.SignWithKey {
+				signWithKey = append(signWithKey, str.ValueString())
+			}
+			for _, str := range plan.Metadata.Permissions.UseKey {
+				useKey = append(useKey, str.ValueString())
+			}
+			permission.DecryptWithKey = decryptWithKey
+			permission.EncryptWithKey = encryptWithKey
+			permission.ExportKey = exportKey
+			permission.MACVerifyWithKey = macVerifyWithKey
+			permission.MACWithKey = macWithKey
+			permission.ReadKey = readKey
+			permission.SignVerifyWithKey = signVerifyWithKey
+			permission.SignWithKey = signWithKey
+			permission.UseKey = useKey
+			metadata.Permissions = &permission
+		}
+		if (!reflect.DeepEqual(KeyMetadataCTE{}, plan.Metadata.CTE)) {
+			var cteParams KeyMetadataCTEJSON
+			if plan.Metadata.CTE.PersistentOnClient.ValueBool() != types.BoolNull().ValueBool() {
+				cteParams.PersistentOnClient = plan.Metadata.CTE.PersistentOnClient.ValueBool()
+			}
+			if plan.Metadata.CTE.EncryptionMode.ValueString() != "" && plan.Metadata.CTE.EncryptionMode.ValueString() != types.StringNull().ValueString() {
+				cteParams.EncryptionMode = plan.Metadata.CTE.EncryptionMode.ValueString()
+			}
+			if plan.Metadata.CTE.CTEVersioned.ValueBool() != types.BoolNull().ValueBool() {
+				cteParams.CTEVersioned = plan.Metadata.CTE.CTEVersioned.ValueBool()
+			}
+			metadata.CTE = &cteParams
 		}
 		payload.Metadata = &metadata
 	}

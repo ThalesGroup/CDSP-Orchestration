@@ -17,7 +17,11 @@ type UserJSON struct {
 }
 
 type GroupJSON struct {
-	Name string `json:"name"`
+	Name           string                 `json:"name"`
+	AppMetadata    map[string]interface{} `json:"app_metadata"`
+	ClientMetadata map[string]interface{} `json:"client_metadata"`
+	Description    string                 `json:"description"`
+	UserMetadata   map[string]interface{} `json:"user_metadata"`
 }
 
 // CipherTrust Manager Key Management related attributes
@@ -28,8 +32,28 @@ type HKDFParametersJSON struct {
 	Salt          string `json:"salt"`
 }
 
+type KeyMetadataPermissionsJSON struct {
+	DecryptWithKey    []string `json:"DecryptWithKey"`
+	EncryptWithKey    []string `json:"EncryptWithKey"`
+	ExportKey         []string `json:"ExportKey"`
+	MACVerifyWithKey  []string `json:"MACVerifyWithKey"`
+	MACWithKey        []string `json:"MACWithKey"`
+	ReadKey           []string `json:"ReadKey"`
+	SignVerifyWithKey []string `json:"SignVerifyWithKey"`
+	SignWithKey       []string `json:"SignWithKey"`
+	UseKey            []string `json:"UseKey"`
+}
+
+type KeyMetadataCTEJSON struct {
+	PersistentOnClient bool   `json:"persistent_on_client"`
+	EncryptionMode     string `json:"encryption_mode"`
+	CTEVersioned       bool   `json:"cte_versioned"`
+}
+
 type KeyMetadataJSON struct {
-	OwnerId string `json:"owner_id"`
+	OwnerId     string                      `json:"owner_id"`
+	Permissions *KeyMetadataPermissionsJSON `json:"permissions"`
+	CTE         *KeyMetadataCTEJSON         `json:"cte"`
 }
 
 type KeyAliasJSON struct {
@@ -134,6 +158,18 @@ type jsonCMKeyModel struct {
 	RSAAESWrap               *WrapRSAAESJSON          `json:"wrapRSAAES,omitempty"`
 	AllVersions              bool                     `json:"allVersions,omitempty"`
 	Labels                   map[string]interface{}   `json:"labels,omitempty"`
+}
+
+type jsonCMRegTokenModel struct {
+	ID                        string                 `tfsdk:"id"`
+	CAID                      string                 `tfsdk:"ca_id"`
+	CertDuration              int64                  `tfsdk:"cert_duration"`
+	ClientManagementProfileID string                 `tfsdk:"client_management_profile_id"`
+	Label                     map[string]interface{} `tfsdk:"label"`
+	Labels                    map[string]interface{} `tfsdk:"labels"`
+	Lifetime                  string                 `tfsdk:"lifetime"`
+	MaxClients                int64                  `tfsdk:"max_clients"`
+	NamePrefix                string                 `tfsdk:"name_prefix"`
 }
 
 // type jsonCMKeysListModel struct {

@@ -9,8 +9,28 @@ type HKDFParameters struct {
 	Salt          types.String `tfsdk:"salt"`
 }
 
+type KeyMetadataPermissions struct {
+	DecryptWithKey    []types.String `tfsdk:"decrypt_with_key"`
+	EncryptWithKey    []types.String `tfsdk:"encrypt_with_key"`
+	ExportKey         []types.String `tfsdk:"export_key"`
+	MACVerifyWithKey  []types.String `tfsdk:"mac_verify_with_key"`
+	MACWithKey        []types.String `tfsdk:"mac_with_key"`
+	ReadKey           []types.String `tfsdk:"read_key"`
+	SignVerifyWithKey []types.String `tfsdk:"sign_verify_with_key"`
+	SignWithKey       []types.String `tfsdk:"sign_with_key"`
+	UseKey            []types.String `tfsdk:"use_key"`
+}
+
+type KeyMetadataCTE struct {
+	PersistentOnClient types.Bool   `tfsdk:"persistent_on_client"`
+	EncryptionMode     types.String `tfsdk:"encryption_mode"`
+	CTEVersioned       types.Bool   `tfsdk:"cte_versioned"`
+}
+
 type KeyMetadata struct {
-	OwnerId types.String `tfsdk:"owner_id"`
+	OwnerId     types.String           `tfsdk:"owner_id"`
+	Permissions KeyMetadataPermissions `tfsdk:"permissions"`
+	CTE         KeyMetadataCTE         `tfsdk:"cte"`
 }
 
 type KeyAlias struct {
@@ -144,12 +164,24 @@ type tfsdkCMKeysListModel struct {
 	Description      types.String `tfsdk:"description"`
 }
 
+type tfsdkCMRegTokenModel struct {
+	ID                        types.String `tfsdk:"id"`
+	CAID                      types.String `tfsdk:"ca_id"`
+	CertDuration              types.Int64  `tfsdk:"cert_duration"`
+	ClientManagementProfileID types.String `tfsdk:"client_management_profile_id"`
+	Label                     types.Map    `tfsdk:"label"`
+	Labels                    types.Map    `tfsdk:"labels"`
+	Lifetime                  types.String `tfsdk:"lifetime"`
+	MaxClients                types.Int64  `tfsdk:"max_clients"`
+	NamePrefix                types.String `tfsdk:"name_prefix"`
+}
+
 type tfsdkCMGroupModel struct {
-	Name           types.String           `tfsdk:"name"`
-	AppMetadata    map[string]interface{} `tfsdk:"app_metadata"`
-	ClientMetadata map[string]interface{} `tfsdk:"client_metadata"`
-	Description    types.String           `tfsdk:"description"`
-	UserMetadata   map[string]interface{} `tfsdk:"user_metadata"`
+	Name           types.String `tfsdk:"name"`
+	AppMetadata    types.Map    `tfsdk:"app_metadata"`
+	ClientMetadata types.Map    `tfsdk:"client_metadata"`
+	Description    types.String `tfsdk:"description"`
+	UserMetadata   types.Map    `tfsdk:"user_metadata"`
 }
 
 type tfsdkCMUserModel struct {
