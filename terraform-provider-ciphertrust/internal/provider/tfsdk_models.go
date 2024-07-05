@@ -176,6 +176,22 @@ type tfsdkCMRegTokenModel struct {
 	NamePrefix                types.String `tfsdk:"name_prefix"`
 }
 
+type tfsdkCMRegTokensListModel struct {
+	ID                types.String `tfsdk:"id"`
+	URI               types.String `tfsdk:"uri"`
+	Account           types.String `tfsdk:"account"`
+	Application       types.String `tfsdk:"application"`
+	DevAccount        types.String `tfsdk:"dev_account"`
+	CreatedAt         types.String `tfsdk:"created_at"`
+	UpdatedAt         types.String `tfsdk:"updated_at"`
+	Token             types.String `tfsdk:"token"`
+	ValidUntil        types.String `tfsdk:"valid_until"`
+	MaxClients        types.Int64  `tfsdk:"max_clients"`
+	ClientsRegistered types.Int64  `tfsdk:"clients_registered"`
+	CAID              types.String `tfsdk:"ca_id"`
+	NamePrefix        types.String `tfsdk:"name_prefix"`
+}
+
 type tfsdkCMGroupModel struct {
 	Name           types.String `tfsdk:"name"`
 	AppMetadata    types.Map    `tfsdk:"app_metadata"`

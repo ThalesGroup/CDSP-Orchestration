@@ -172,6 +172,22 @@ type jsonCMRegTokenModel struct {
 	NamePrefix                string                 `tfsdk:"name_prefix"`
 }
 
+type jsonCMRegTokensListModel struct {
+	ID                string `tfsdk:"id"`
+	URI               string `tfsdk:"uri"`
+	Account           string `tfsdk:"account"`
+	Application       string `tfsdk:"application"`
+	DevAccount        string `tfsdk:"devAccount"`
+	CreatedAt         string `tfsdk:"createdAt"`
+	UpdatedAt         string `tfsdk:"updatedAt"`
+	Token             string `tfsdk:"token"`
+	ValidUntil        string `tfsdk:"valid_until"`
+	MaxClients        int64  `tfsdk:"max_clients"`
+	ClientsRegistered int64  `tfsdk:"clients_registered"`
+	CAID              string `tfsdk:"ca_id"`
+	NamePrefix        string `tfsdk:"name_prefix"`
+}
+
 // type jsonCMKeysListModel struct {
 // 	ID               string `json:"id"`
 // 	URI              string `json:"uri"`

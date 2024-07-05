@@ -250,6 +250,7 @@ func (p *ciphertrustProvider) DataSources(_ context.Context) []func() datasource
 		NewDataSourceCTEPolicySecurityRule,
 		NewDataSourceCTEPolicySignatureRule,
 		NewDataSourceCTEProfiles,
+		NewDataSourceRegTokens,
 	}
 }
 
@@ -272,5 +273,6 @@ func (p *ciphertrustProvider) Resources(_ context.Context) []func() resource.Res
 		NewResourceCTEPolicySecurityRule,
 		NewResourceCTEPolicySignatureRule,
 		NewResourceCTEProfile,
+		NewResourceCMRegToken,
 	}
 }
