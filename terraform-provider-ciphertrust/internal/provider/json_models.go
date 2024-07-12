@@ -161,31 +161,31 @@ type jsonCMKeyModel struct {
 }
 
 type jsonCMRegTokenModel struct {
-	ID                        string                 `tfsdk:"id"`
-	CAID                      string                 `tfsdk:"ca_id"`
-	CertDuration              int64                  `tfsdk:"cert_duration"`
-	ClientManagementProfileID string                 `tfsdk:"client_management_profile_id"`
-	Label                     map[string]interface{} `tfsdk:"label"`
-	Labels                    map[string]interface{} `tfsdk:"labels"`
-	Lifetime                  string                 `tfsdk:"lifetime"`
-	MaxClients                int64                  `tfsdk:"max_clients"`
-	NamePrefix                string                 `tfsdk:"name_prefix"`
+	ID                        string                 `json:"id"`
+	CAID                      string                 `json:"ca_id"`
+	CertDuration              int64                  `json:"cert_duration"`
+	ClientManagementProfileID string                 `json:"client_management_profile_id"`
+	Label                     map[string]interface{} `json:"label"`
+	Labels                    map[string]interface{} `json:"labels"`
+	Lifetime                  string                 `json:"lifetime"`
+	MaxClients                int64                  `json:"max_clients"`
+	NamePrefix                string                 `json:"name_prefix"`
 }
 
 type jsonCMRegTokensListModel struct {
-	ID                string `tfsdk:"id"`
-	URI               string `tfsdk:"uri"`
-	Account           string `tfsdk:"account"`
-	Application       string `tfsdk:"application"`
-	DevAccount        string `tfsdk:"devAccount"`
-	CreatedAt         string `tfsdk:"createdAt"`
-	UpdatedAt         string `tfsdk:"updatedAt"`
-	Token             string `tfsdk:"token"`
-	ValidUntil        string `tfsdk:"valid_until"`
-	MaxClients        int64  `tfsdk:"max_clients"`
-	ClientsRegistered int64  `tfsdk:"clients_registered"`
-	CAID              string `tfsdk:"ca_id"`
-	NamePrefix        string `tfsdk:"name_prefix"`
+	ID                string `json:"id"`
+	URI               string `json:"uri"`
+	Account           string `json:"account"`
+	Application       string `json:"application"`
+	DevAccount        string `json:"devAccount"`
+	CreatedAt         string `json:"createdAt"`
+	UpdatedAt         string `json:"updatedAt"`
+	Token             string `json:"token"`
+	ValidUntil        string `json:"valid_until"`
+	MaxClients        int64  `json:"max_clients"`
+	ClientsRegistered int64  `json:"clients_registered"`
+	CAID              string `json:"ca_id"`
+	NamePrefix        string `json:"name_prefix"`
 }
 
 // type jsonCMKeysListModel struct {
@@ -405,6 +405,40 @@ type CTEClientModelJSON struct {
 	ProfileID              string   `json:"profile_id"`
 	ProtectionMode         string   `json:"protection_mode"`
 	SharedDomainList       []string `json:"shared_domain_list"`
+}
+
+type jsonCTEClientsListModel struct {
+	ID                     string   `tfsdk:"id"`
+	URI                    string   `tfsdk:"uri"`
+	Account                string   `tfsdk:"account"`
+	App                    string   `tfsdk:"application"`
+	DevAccount             string   `tfsdk:"dev_account"`
+	CreatedAt              string   `tfsdk:"created_at"`
+	UpdatedAt              string   `tfsdk:"updated_at"`
+	Name                   string   `tfsdk:"name"`
+	OSType                 string   `tfsdk:"os_type"`
+	OSSubType              string   `tfsdk:"os_sub_type"`
+	ClientRegID            string   `tfsdk:"client_reg_id"`
+	ServerHostname         string   `tfsdk:"server_host_name"`
+	Description            string   `tfsdk:"description"`
+	ClientLocked           bool     `tfsdk:"client_locked"`
+	SystemLocked           bool     `tfsdk:"system_locked"`
+	PasswordCreationMethod string   `tfsdk:"password_creation_method"`
+	ClientVersion          int64    `tfsdk:"client_version"`
+	RegistrationAllowed    bool     `tfsdk:"registration_allowed"`
+	CommunicationEnabled   bool     `tfsdk:"communication_enabled"`
+	Capabilities           string   `tfsdk:"capabilities"`
+	EnabledCapabilities    string   `tfsdk:"enabled_capabilities"`
+	ProtectionMode         string   `tfsdk:"protection_mode"`
+	ClientType             string   `tfsdk:"client_type"`
+	ProfileName            string   `tfsdk:"profile_name"`
+	ProfileID              string   `tfsdk:"profile_id"`
+	LDTEnabled             bool     `tfsdk:"ldt_enabled"`
+	ClientHealthStatus     string   `tfsdk:"client_health_status"`
+	Errors                 []string `tfsdk:"errors"`
+	Warnings               []string `tfsdk:"warnings"`
+	ClientErrors           []string `tfsdk:"client_errors"`
+	ClientWarnings         []string `tfsdk:"client_warnings"`
 }
 
 type UserSetJSON struct {

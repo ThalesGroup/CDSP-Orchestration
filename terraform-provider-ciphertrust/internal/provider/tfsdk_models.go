@@ -238,6 +238,40 @@ type tfsdkCTEClientModel struct {
 	SharedDomainList       []types.String `tfsdk:"shared_domain_list"`
 }
 
+type tfsdkCTEClientsListModel struct {
+	ID                     types.String   `tfsdk:"id"`
+	URI                    types.String   `tfsdk:"uri"`
+	Account                types.String   `tfsdk:"account"`
+	App                    types.String   `tfsdk:"application"`
+	DevAccount             types.String   `tfsdk:"dev_account"`
+	CreatedAt              types.String   `tfsdk:"created_at"`
+	UpdatedAt              types.String   `tfsdk:"updated_at"`
+	Name                   types.String   `tfsdk:"name"`
+	OSType                 types.String   `tfsdk:"os_type"`
+	OSSubType              types.String   `tfsdk:"os_sub_type"`
+	ClientRegID            types.String   `tfsdk:"client_reg_id"`
+	ServerHostname         types.String   `tfsdk:"server_host_name"`
+	Description            types.String   `tfsdk:"description"`
+	ClientLocked           types.Bool     `tfsdk:"client_locked"`
+	SystemLocked           types.Bool     `tfsdk:"system_locked"`
+	PasswordCreationMethod types.String   `tfsdk:"password_creation_method"`
+	ClientVersion          types.Int64    `tfsdk:"client_version"`
+	RegistrationAllowed    types.Bool     `tfsdk:"registration_allowed"`
+	CommunicationEnabled   types.Bool     `tfsdk:"communication_enabled"`
+	Capabilities           types.String   `tfsdk:"capabilities"`
+	EnabledCapabilities    types.String   `tfsdk:"enabled_capabilities"`
+	ProtectionMode         types.String   `tfsdk:"protection_mode"`
+	ClientType             types.String   `tfsdk:"client_type"`
+	ProfileName            types.String   `tfsdk:"profile_name"`
+	ProfileID              types.String   `tfsdk:"profile_id"`
+	LDTEnabled             types.Bool     `tfsdk:"ldt_enabled"`
+	ClientHealthStatus     types.String   `tfsdk:"client_health_status"`
+	Errors                 []types.String `tfsdk:"errors"`
+	Warnings               []types.String `tfsdk:"warnings"`
+	ClientErrors           []types.String `tfsdk:"client_errors"`
+	ClientWarnings         []types.String `tfsdk:"client_warnings"`
+}
+
 type DataTransformationRule struct {
 	KeyID         types.String `tfsdk:"key_id"`
 	KeyType       types.String `tfsdk:"key_type"`
