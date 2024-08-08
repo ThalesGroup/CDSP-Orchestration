@@ -16,9 +16,9 @@ PowerShell 6+ : C:\Users\<current user>\Documents\PowerShell\Modules
 
    Note: If installing on PowerShell 5.1, you must run the following command to install JWTDetails independently from the main module:
 
-      Install-Module JWTDetails
+         Install-Module JWTDetails
 
-      Optionally: add -Scope CurrentUser 
+         Optionally: add -Scope CurrentUser 
 
    This will reach out to the PSGallery and put down the module.
    
