@@ -6,6 +6,7 @@ This PowerShell Module offers simple integration between a PowerShell script and
 Download this module (available as [CipherTrustManager.zip](CipherTrustManager.zip) for simplicity) and put it in the Modules directory on your Windows computer. These Modules are usually the user's personal module path. This path can be found by running the command: "(Get-ChildItem Env:\PSModulePath).value.split(";")". Typically though, these are the appropriate paths for the different versions of PowerShell:
 
 Powershell 5.1: C:\Users\<current user>\Documents\WindowsPowerShell\Modules 
+
 PowerShell 6+ : C:\Users\<current user>\Documents\PowerShell\Modules 
 
 
@@ -14,8 +15,11 @@ PowerShell 6+ : C:\Users\<current user>\Documents\PowerShell\Modules
 1. In your PowerShell script, add `Import-Module CipherTrustManager -Force -ErrorAction Stop`. The `-Force` will ensure that the module is overwritten if already loaded. The `-ErrorAction Stop` will abort your script if the module cannot be found.
 
    Note: If installing on PowerShell 5.1, you must run the following command to install JWTDetails independently from the main module:
-       Install-Module JWTDetails
-       Optionally: add -Scope CurrentUser 
+
+      Install-Module JWTDetails
+
+      Optionally: add -Scope CurrentUser 
+
    This will reach out to the PSGallery and put down the module.
    
 3. #Initialize and authenticate a connection with CipherTrust Manager
