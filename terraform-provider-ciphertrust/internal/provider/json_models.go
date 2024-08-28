@@ -813,3 +813,21 @@ type jsonCTEProfilesList struct {
 	// DuplicateSettings       jsonCTEProfileDuplicateSettings       `json:"duplicate_settings"`
 	// CacheSettings           jsonCTEProfileCacheSettings           `json:"cache_settings"`
 }
+
+type jsonLocalCAsListModel struct {
+	ID           string `json:"id"`
+	URI          string `json:"uri"`
+	Account      string `json:"account"`
+	CreatedAt    string `json:"createdAt"`
+	UpdatedAt    string `json:"updatedAt"`
+	Name         string `json:"name"`
+	State        string `json:"state"`
+	Cert         string `json:"cert"`
+	SerialNumber string `json:"serialNumber"`
+	Subject      string `json:"subject"`
+	Issuer       string `json:"issuer"`
+}
+
+type SSHKeyJSON struct {
+	Key string `json:"key"`
+}

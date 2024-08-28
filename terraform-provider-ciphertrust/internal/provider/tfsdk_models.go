@@ -723,6 +723,10 @@ type tfsdkCTEProfileCreate struct {
 	UploadSettings          tfsdkCTEProfileUploadSettings          `tfsdk:"upload_settings"`
 }
 
+type tfsdkCMSSHKeyModel struct {
+	Key types.String `tfsdk:"key"`
+}
+
 type tfsdkCTEProfilesList struct {
 	ID                     types.String `tfsdk:"id"`
 	URI                    types.String `tfsdk:"uri"`

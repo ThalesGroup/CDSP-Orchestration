@@ -13,4 +13,6 @@ const (
 	URL_CTE_CLIENT        = "api/v1/transparent-encryption/clients"
 	URL_CTE_PROFILE       = "api/v1/transparent-encryption/profiles"
 	URL_REG_TOKEN         = "api/v1/client-management/regtokens"
+	URL_LOCAL_CA          = "api/v1/ca/local-cas"
+	URL_SSH_KEY           = "api/v1/system/ssh/keys"
 )

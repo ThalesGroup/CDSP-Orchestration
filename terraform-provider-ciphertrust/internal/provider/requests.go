@@ -92,3 +92,25 @@ func (c *Client) UpdateData(ctx context.Context, uuid string, endpoint string, d
 	tflog.Trace(ctx, MSG_METHOD_END+"[requests.go -> UpdateData]["+uuid+"]")
 	return ret, nil
 }
+
+func (c *CMClientBootstrap) PostDataBootstrap(ctx context.Context, uuid string, endpoint string, data []byte, id string) (string, error) {
+	tflog.Trace(ctx, MSG_METHOD_START+"[requests.go -> PostDataBootstrap]["+uuid+"]")
+	reader := bytes.NewBuffer(data)
+	tflog.Debug(ctx, "*****POST data for*****"+endpoint+"*****"+reader.String()+"*****")
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/%s/%s", c.CipherTrustURL, endpoint, uuid), reader)
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [requests.go -> PostDataBootstrap]["+uuid+"]")
+		return "", err
+	}
+
+	body, err := c.doRequestBootstrap(ctx, uuid, req)
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [requests.go -> PostDataBootstrap]["+uuid+"]")
+		return "", err
+	}
+
+	ret := gjson.Get(string(body), id).String()
+	tflog.Trace(ctx, MSG_METHOD_END+"[requests.go -> PostDataBootstrap]["+uuid+"]")
+	return ret, nil
+}
