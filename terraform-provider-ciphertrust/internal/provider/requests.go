@@ -98,7 +98,7 @@ func (c *CMClientBootstrap) PostDataBootstrap(ctx context.Context, uuid string, 
 	reader := bytes.NewBuffer(data)
 	tflog.Debug(ctx, "*****POST data for*****"+endpoint+"*****"+reader.String()+"*****")
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/%s/%s", c.CipherTrustURL, endpoint, uuid), reader)
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/%s", c.CipherTrustURL, endpoint), reader)
 	if err != nil {
 		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [requests.go -> PostDataBootstrap]["+uuid+"]")
 		return "", err
@@ -112,5 +112,27 @@ func (c *CMClientBootstrap) PostDataBootstrap(ctx context.Context, uuid string, 
 
 	ret := gjson.Get(string(body), id).String()
 	tflog.Trace(ctx, MSG_METHOD_END+"[requests.go -> PostDataBootstrap]["+uuid+"]")
+	return ret, nil
+}
+
+func (c *CMClientBootstrap) PatchDataBootstrap(ctx context.Context, uuid string, endpoint string, data []byte) (string, error) {
+	tflog.Trace(ctx, MSG_METHOD_START+"[requests.go -> PatchDataBootstrap]["+uuid+"]")
+	reader := bytes.NewBuffer(data)
+	tflog.Debug(ctx, "*****PATCH data for*****"+endpoint+"*****"+reader.String()+"*****")
+
+	req, err := http.NewRequest("PATCH", fmt.Sprintf("%s/%s", c.CipherTrustURL, endpoint), reader)
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [requests.go -> PatchDataBootstrap]["+uuid+"]")
+		return "", err
+	}
+
+	body, err := c.doRequestBootstrap(ctx, uuid, req)
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [requests.go -> PatchDataBootstrap]["+uuid+"]")
+		return "", err
+	}
+
+	ret := string(body)
+	tflog.Trace(ctx, MSG_METHOD_END+"[requests.go -> PatchDataBootstrap]["+uuid+"]")
 	return ret, nil
 }

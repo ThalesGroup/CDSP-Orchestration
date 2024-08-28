@@ -15,4 +15,5 @@ const (
 	URL_REG_TOKEN         = "api/v1/client-management/regtokens"
 	URL_LOCAL_CA          = "api/v1/ca/local-cas"
 	URL_SSH_KEY           = "api/v1/system/ssh/keys"
+	URL_CHANGE_USER_PWD   = "api/v1/auth/changepw"
 )

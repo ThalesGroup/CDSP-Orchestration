@@ -831,3 +831,9 @@ type jsonLocalCAsListModel struct {
 type SSHKeyJSON struct {
 	Key string `json:"key"`
 }
+
+type PwdChangeJSON struct {
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	NewPassword string `json:"new_password"`
+}

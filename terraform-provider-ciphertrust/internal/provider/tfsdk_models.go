@@ -727,6 +727,12 @@ type tfsdkCMSSHKeyModel struct {
 	Key types.String `tfsdk:"key"`
 }
 
+type tfsdkCMPwdChangeModel struct {
+	Username    types.String `tfsdk:"username"`
+	Password    types.String `tfsdk:"password"`
+	NewPassword types.String `tfsdk:"new_password"`
+}
+
 type tfsdkCTEProfilesList struct {
 	ID                     types.String `tfsdk:"id"`
 	URI                    types.String `tfsdk:"uri"`

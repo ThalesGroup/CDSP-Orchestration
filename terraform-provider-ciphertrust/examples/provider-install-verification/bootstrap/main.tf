@@ -34,3 +34,12 @@ resource "ciphertrust_cm_ssh_key" "sshKey" {
 output "ssh_key_update" {
   value = ciphertrust_cm_ssh_key.sshKey
 }
+
+resource "ciphertrust_cm_user_password_change" "changePwd" {
+  username = "admin"
+  password = "admin"
+  new_password = "ChangeIt01!"
+}
+output "user_change_pwd" {
+  value = ciphertrust_cm_user_password_change.changePwd
+}

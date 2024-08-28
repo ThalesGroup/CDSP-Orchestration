@@ -311,5 +311,7 @@ func (p *ciphertrustProvider) Resources(_ context.Context) []func() resource.Res
 		NewResourceCTEPolicySignatureRule,
 		NewResourceCTEProfile,
 		NewResourceCMRegToken,
+		NewResourceCMSSHKey,
+		NewResourceCMPwdChange,
 	}
 }
