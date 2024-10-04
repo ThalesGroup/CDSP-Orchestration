@@ -770,3 +770,29 @@ type tfsdkCTEProfilesList struct {
 	// DuplicateSettings       tfsdkCTEProfileDuplicateSettings       `tfsdk:"duplicate_settings"`
 	// CacheSettings           tfsdkCTEProfileCacheSettings           `tfsdk:"cache_settings"`
 }
+
+type TFSDK_IAMRoleAnywhere struct {
+	AnywhereRoleARN types.String `tfsdk:"anywhere_role_arn"`
+	Certificate     types.String `tfsdk:"certificate"`
+	ProfileARN      types.String `tfsdk:"profile_arn"`
+	TrustAnchorARN  types.String `tfsdk:"trust_anchor_arn"`
+	PrivateKey      types.String `tfsdk:"private_key"`
+}
+
+type tfsdkAWSConnectionModel struct {
+	ID                      types.String          `tfsdk:"id"`
+	Name                    types.String          `tfsdk:"name"`
+	Description             types.String          `tfsdk:"description"`
+	AccessKeyID             types.String          `tfsdk:"access_key_id"`
+	AssumeRoleARN           types.String          `tfsdk:"assume_role_arn"`
+	AssumeRoleExternalID    types.String          `tfsdk:"assume_role_external_id"`
+	AWSRegion               types.String          `tfsdk:"aws_region"`
+	AWSSTSRegionalEndpoints types.String          `tfsdk:"aws_sts_regional_endpoints"`
+	CloudName               types.String          `tfsdk:"cloud_name"`
+	IsRoleAnywhere          types.Bool            `tfsdk:"is_role_anywhere"`
+	IAMRoleAnywhere         TFSDK_IAMRoleAnywhere `tfsdk:"iam_role_anywhere"`
+	Labels                  types.Map             `tfsdk:"labels"`
+	Meta                    types.Map             `tfsdk:"meta"`
+	Products                []types.String        `tfsdk:"products"`
+	SecretAccessKey         types.String          `tfsdk:"secret_access_key"`
+}

@@ -408,37 +408,37 @@ type CTEClientModelJSON struct {
 }
 
 type jsonCTEClientsListModel struct {
-	ID                     string   `tfsdk:"id"`
-	URI                    string   `tfsdk:"uri"`
-	Account                string   `tfsdk:"account"`
-	App                    string   `tfsdk:"application"`
-	DevAccount             string   `tfsdk:"dev_account"`
-	CreatedAt              string   `tfsdk:"created_at"`
-	UpdatedAt              string   `tfsdk:"updated_at"`
-	Name                   string   `tfsdk:"name"`
-	OSType                 string   `tfsdk:"os_type"`
-	OSSubType              string   `tfsdk:"os_sub_type"`
-	ClientRegID            string   `tfsdk:"client_reg_id"`
-	ServerHostname         string   `tfsdk:"server_host_name"`
-	Description            string   `tfsdk:"description"`
-	ClientLocked           bool     `tfsdk:"client_locked"`
-	SystemLocked           bool     `tfsdk:"system_locked"`
-	PasswordCreationMethod string   `tfsdk:"password_creation_method"`
-	ClientVersion          int64    `tfsdk:"client_version"`
-	RegistrationAllowed    bool     `tfsdk:"registration_allowed"`
-	CommunicationEnabled   bool     `tfsdk:"communication_enabled"`
-	Capabilities           string   `tfsdk:"capabilities"`
-	EnabledCapabilities    string   `tfsdk:"enabled_capabilities"`
-	ProtectionMode         string   `tfsdk:"protection_mode"`
-	ClientType             string   `tfsdk:"client_type"`
-	ProfileName            string   `tfsdk:"profile_name"`
-	ProfileID              string   `tfsdk:"profile_id"`
-	LDTEnabled             bool     `tfsdk:"ldt_enabled"`
-	ClientHealthStatus     string   `tfsdk:"client_health_status"`
-	Errors                 []string `tfsdk:"errors"`
-	Warnings               []string `tfsdk:"warnings"`
-	ClientErrors           []string `tfsdk:"client_errors"`
-	ClientWarnings         []string `tfsdk:"client_warnings"`
+	ID                     string   `json:"id"`
+	URI                    string   `json:"uri"`
+	Account                string   `json:"account"`
+	App                    string   `json:"application"`
+	DevAccount             string   `json:"dev_account"`
+	CreatedAt              string   `json:"created_at"`
+	UpdatedAt              string   `json:"updated_at"`
+	Name                   string   `json:"name"`
+	OSType                 string   `json:"os_type"`
+	OSSubType              string   `json:"os_sub_type"`
+	ClientRegID            string   `json:"client_reg_id"`
+	ServerHostname         string   `json:"server_host_name"`
+	Description            string   `json:"description"`
+	ClientLocked           bool     `json:"client_locked"`
+	SystemLocked           bool     `json:"system_locked"`
+	PasswordCreationMethod string   `json:"password_creation_method"`
+	ClientVersion          int64    `json:"client_version"`
+	RegistrationAllowed    bool     `json:"registration_allowed"`
+	CommunicationEnabled   bool     `json:"communication_enabled"`
+	Capabilities           string   `json:"capabilities"`
+	EnabledCapabilities    string   `json:"enabled_capabilities"`
+	ProtectionMode         string   `json:"protection_mode"`
+	ClientType             string   `json:"client_type"`
+	ProfileName            string   `json:"profile_name"`
+	ProfileID              string   `json:"profile_id"`
+	LDTEnabled             bool     `json:"ldt_enabled"`
+	ClientHealthStatus     string   `json:"client_health_status"`
+	Errors                 []string `json:"errors"`
+	Warnings               []string `json:"warnings"`
+	ClientErrors           []string `json:"client_errors"`
+	ClientWarnings         []string `json:"client_warnings"`
 }
 
 type UserSetJSON struct {
@@ -836,4 +836,31 @@ type PwdChangeJSON struct {
 	Username    string `json:"username"`
 	Password    string `json:"password"`
 	NewPassword string `json:"new_password"`
+}
+
+// CCKM Models
+type IAMRoleAnywhereJSON struct {
+	AnywhereRoleARN string `json:"anywhere_role_arn"`
+	Certificate     string `json:"certificate"`
+	ProfileARN      string `json:"profile_arn"`
+	TrustAnchorARN  string `json:"trust_anchor_arn"`
+	PrivateKey      string `json:"private_key"`
+}
+
+type jsonAWSConnectionModel struct {
+	ID                      string                 `json:"id"`
+	Name                    string                 `json:"name"`
+	Description             string                 `json:"description"`
+	AccessKeyID             string                 `json:"access_key_id"`
+	AssumeRoleARN           string                 `json:"assume_role_arn"`
+	AssumeRoleExternalID    string                 `json:"assume_role_external_id"`
+	AWSRegion               string                 `json:"aws_region"`
+	AWSSTSRegionalEndpoints string                 `json:"aws_sts_regional_endpoints"`
+	CloudName               string                 `json:"cloud_name"`
+	IsRoleAnywhere          bool                   `json:"is_role_anywhere"`
+	IAMRoleAnywhere         *IAMRoleAnywhereJSON   `json:"iam_role_anywhere"`
+	Labels                  map[string]interface{} `json:"labels"`
+	Meta                    map[string]interface{} `json:"meta"`
+	Products                []string               `json:"products"`
+	SecretAccessKey         string                 `json:"secret_access_key"`
 }

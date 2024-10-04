@@ -16,4 +16,6 @@ const (
 	URL_LOCAL_CA          = "api/v1/ca/local-cas"
 	URL_SSH_KEY           = "api/v1/system/ssh/keys"
 	URL_CHANGE_USER_PWD   = "api/v1/auth/changepw"
+	// CCKM Endpoints
+	URL_AWS_CONNECTION = "api/v1/connectionmgmt/services/aws/connections"
 )
