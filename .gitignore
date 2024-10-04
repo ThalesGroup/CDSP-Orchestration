@@ -12,3 +12,7 @@ terraform-provider-ciphertrust/examples/provider-install-verification/main.tf
 /terraform-provider-ciphertrust/vendor
 /terraform-provider-ciphertrust/examples/provider-install-verification/.terraform
 terraform-provider-ciphertrust/examples/provider-install-verification/bootstrap/terraform.txt
+*.exe
+*.hcl
+*.txt
+/terraform-provider-ciphertrust/examples/provider-install-verification/bootstrap/.terraform
