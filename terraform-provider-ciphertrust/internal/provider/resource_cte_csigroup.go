@@ -218,7 +218,7 @@ func (r *resourceCTECSIGroup) Update(ctx context.Context, req resource.UpdateReq
 			if err != nil {
 				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_csigroup.go -> add-clients]["+plan.ID.ValueString()+"]")
 				resp.Diagnostics.AddError(
-					"Invalid data input: CTE CSIGroup Add Clients",
+					"Invalid data input: CTE CSIStorageGroup Add Clients",
 					err.Error(),
 				)
 				return
@@ -233,12 +233,102 @@ func (r *resourceCTECSIGroup) Update(ctx context.Context, req resource.UpdateReq
 			if err != nil {
 				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_csigroup.go -> add-clients]["+plan.ID.ValueString()+"]")
 				resp.Diagnostics.AddError(
-					"Error updating CTE CSIGroup on CipherTrust Manager: ",
-					"Could not update CTE CSIGroup, unexpected error: "+err.Error(),
+					"Error updating CTE CSIStorageGroup on CipherTrust Manager: ",
+					"Could not update CTE CSIStorageGroup, unexpected error: "+err.Error(),
 				)
 				return
 			}
 			plan.ID = types.StringValue(response)
+		} else if plan.OpType.ValueString() == "remove-client" {
+			response, err := r.client.DeleteByURL(
+				ctx,
+				plan.ID.ValueString(),
+				URL_CTE_CSIGROUP+"/"+plan.ID.ValueString()+"/clients/"+plan.ClientID.ValueString())
+			if err != nil {
+				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_clientgroup.go -> remove-client]["+plan.ID.ValueString()+"]")
+				resp.Diagnostics.AddError(
+					"Error removing client from CTE CSIStorageGroup on CipherTrust Manager: ",
+					"Could not remove client from the CTE CSIStorageGroup, unexpected error: "+err.Error(),
+				)
+				return
+			}
+			tflog.Debug(ctx, "[resource_cte_clientgroup.go -> remove-client -> Output]["+types.StringValue(response).String()+"]")
+		} else if plan.OpType.ValueString() == "add-guard-policies" {
+			var policiesArr []string
+			for _, policy := range plan.PolicyList {
+				policiesArr = append(policiesArr, policy.ValueString())
+			}
+			payload.PolicyList = policiesArr
+
+			payloadJSON, err := json.Marshal(payload)
+			if err != nil {
+				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_csigroup.go -> add-guard-policies]["+plan.ID.ValueString()+"]")
+				resp.Diagnostics.AddError(
+					"Invalid data input: CTE CSIStorageGroup Add GuardPolicies",
+					err.Error(),
+				)
+				return
+			}
+
+			response, err := r.client.UpdateDataFullURL(
+				ctx,
+				plan.ID.ValueString(),
+				URL_CTE_CSIGROUP+"/"+plan.ID.ValueString()+"/guardpoints",
+				payloadJSON,
+				"id")
+			if err != nil {
+				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_csigroup.go -> add-guard-policies]["+plan.ID.ValueString()+"]")
+				resp.Diagnostics.AddError(
+					"Error updating CTE CSIStorageGroup on CipherTrust Manager: ",
+					"Could not update CTE CSIStorageGroup, unexpected error: "+err.Error(),
+				)
+				return
+			}
+			plan.ID = types.StringValue(response)
+		} else if plan.OpType.ValueString() == "update-guard-policy" {
+			if plan.GuardEnabled.ValueBool() != types.BoolNull().ValueBool() {
+				payload.GuardEnabled = plan.GuardEnabled.ValueBool()
+			}
+
+			payloadJSON, err := json.Marshal(payload)
+			if err != nil {
+				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_csigroup.go -> update-guard-policy]["+plan.ID.ValueString()+"]")
+				resp.Diagnostics.AddError(
+					"Invalid data input: CTE CSIStorageGroup Update GuardPolicies",
+					err.Error(),
+				)
+				return
+			}
+
+			response, err := r.client.UpdateDataFullURL(
+				ctx,
+				plan.ID.ValueString(),
+				URL_CTE_CSIGROUP+"/guardpoints"+"/"+plan.GPID.ValueString(),
+				payloadJSON,
+				"id")
+			if err != nil {
+				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_csigroup.go -> update-guard-policy]["+plan.ID.ValueString()+"]")
+				resp.Diagnostics.AddError(
+					"Error updating CTE CSIStorageGroup on CipherTrust Manager: ",
+					"Could not update CTE CSIStorageGroup, unexpected error: "+err.Error(),
+				)
+				return
+			}
+			plan.ID = types.StringValue(response)
+		} else if plan.OpType.ValueString() == "remove-guard-policy" {
+			response, err := r.client.DeleteByURL(
+				ctx,
+				plan.ID.ValueString(),
+				URL_CTE_CSIGROUP+"/guardpoints/"+plan.GPID.ValueString())
+			if err != nil {
+				tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [resource_cte_clientgroup.go -> remove-guard-policy]["+plan.ID.ValueString()+"]")
+				resp.Diagnostics.AddError(
+					"Error removing guard policy from CTE CSIStorageGroup on CipherTrust Manager: ",
+					"Could not remove guard policy from the CTE CSIStorageGroup, unexpected error: "+err.Error(),
+				)
+				return
+			}
+			tflog.Debug(ctx, "[resource_cte_clientgroup.go -> remove-client -> Output]["+types.StringValue(response).String()+"]")
 		} else {
 			resp.Diagnostics.AddError(
 				"op_type is a required",
