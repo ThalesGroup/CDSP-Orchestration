@@ -47,10 +47,6 @@ func (r *resourceCTEClient) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Required:    true,
 				Description: "Name to uniquely identify the client. This name will be visible on the CipherTrust Manager.",
 			},
-			"description": schema.StringAttribute{
-				Optional:    true,
-				Description: "Description to identify the client.",
-			},
 			"client_locked": schema.BoolAttribute{
 				Optional:    true,
 				Description: "Whether the CTE client is locked. The default value is false. Enable this option to lock the configuration of the CTE Agent on the client. Set to true to lock the configuration, set to false to unlock. Locking the Agent configuration prevents updates to any policies on the client.",
@@ -58,6 +54,14 @@ func (r *resourceCTEClient) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"client_type": schema.StringAttribute{
 				Optional:    true,
 				Description: "Type of CTE Client. The default value is FS. Valid values are CTE-U and FS.",
+			},
+			"communication_enabled": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Whether communication with the client is enabled. The default value is false. Can be set to true only if registration_allowed is true.",
+			},
+			"description": schema.StringAttribute{
+				Optional:    true,
+				Description: "Description to identify the client.",
 			},
 			"password": schema.StringAttribute{
 				Optional:    true,
@@ -102,6 +106,11 @@ func (r *resourceCTEClient) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"enabled_capabilities": schema.StringAttribute{
 				Optional:    true,
 				Description: "Client capabilities to be enabled. Separate values with comma. Valid values are LDT and EKP",
+			},
+			"labels": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+				Description: "Labels are key/value pairs used to group resources. They are based on Kubernetes Labels, see https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/.",
 			},
 			"lgcs_access_only": schema.BoolAttribute{
 				Optional:    true,
@@ -174,6 +183,9 @@ func (r *resourceCTEClient) Create(ctx context.Context, req resource.CreateReque
 	}
 	if plan.SystemLocked.ValueBool() != types.BoolNull().ValueBool() {
 		payload.SystemLocked = plan.SystemLocked.ValueBool()
+	}
+	if plan.CommunicationEnabled.ValueBool() != types.BoolNull().ValueBool() {
+		payload.CommunicationEnabled = plan.CommunicationEnabled.ValueBool()
 	}
 
 	payloadJSON, err := json.Marshal(payload)
@@ -283,6 +295,12 @@ func (r *resourceCTEClient) Update(ctx context.Context, req resource.UpdateReque
 			payload.SharedDomainList = append(payload.SharedDomainList, domain.ValueString())
 		}
 	}
+	// Add labels to payload
+	labelsPayload := make(map[string]interface{})
+	for k, v := range plan.Labels.Elements() {
+		labelsPayload[k] = v.(types.String).ValueString()
+	}
+	payload.Labels = labelsPayload
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {

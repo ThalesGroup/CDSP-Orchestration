@@ -236,6 +236,46 @@ type tfsdkCTEClientModel struct {
 	ProfileID              types.String   `tfsdk:"profile_id"`
 	ProtectionMode         types.String   `tfsdk:"protection_mode"`
 	SharedDomainList       []types.String `tfsdk:"shared_domain_list"`
+	Labels                 types.Map      `tfsdk:"labels"`
+}
+
+type tfsdkCTEClientGroupModel struct {
+	ID                      types.String   `tfsdk:"id"`
+	ClusterType             types.String   `tfsdk:"cluster_type"`
+	Name                    types.String   `tfsdk:"name"`
+	CommunicationEnabled    types.Bool     `tfsdk:"communication_enabled"`
+	Description             types.String   `tfsdk:"description"`
+	LDTDesignatedPrimarySet types.String   `tfsdk:"ldt_designated_primary_set"`
+	Password                types.String   `tfsdk:"password"`
+	PasswordCreationMethod  types.String   `tfsdk:"password_creation_method"`
+	ProfileID               types.String   `tfsdk:"profile_id"`
+	ClientLocked            types.Bool     `tfsdk:"client_locked"`
+	EnableDomainSharing     types.Bool     `tfsdk:"enable_domain_sharing"`
+	EnabledCapabilities     types.String   `tfsdk:"enabled_capabilities"`
+	SharedDomainList        []types.String `tfsdk:"shared_domain_list"`
+	SystemLocked            types.Bool     `tfsdk:"system_locked"`
+	AuthBinaries            types.String   `tfsdk:"auth_binaries"`
+	ReSign                  types.Bool     `tfsdk:"re_sign"`
+	ClientList              []types.String `tfsdk:"client_list"`
+	InheritAttributes       types.Bool     `tfsdk:"inherit_attributes"`
+	ClientID                types.String   `tfsdk:"client_id"`
+	OpType                  types.String   `tfsdk:"op_type"`
+	Paused                  types.Bool     `tfsdk:"paused"`
+}
+
+type tfsdkCTECSIGroupModel struct {
+	ID            types.String   `tfsdk:"id"`
+	Namespace     types.String   `tfsdk:"kubernetes_namespace"`
+	StorageClass  types.String   `tfsdk:"kubernetes_storage_class"`
+	ClientProfile types.String   `tfsdk:"client_profile"`
+	Name          types.String   `tfsdk:"name"`
+	Description   types.String   `tfsdk:"description"`
+	ClientList    []types.String `tfsdk:"client_list"`
+	PolicyList    []types.String `tfsdk:"policy_list"`
+	ClientID      types.String   `tfsdk:"client_id"`
+	GuardEnabled  types.Bool     `tfsdk:"guard_enabled"`
+	GPID          types.String   `tfsdk:"gp_id"`
+	OpType        types.String   `tfsdk:"op_type"`
 }
 
 type tfsdkCTEClientsListModel struct {
@@ -701,6 +741,7 @@ type tfsdkCTEProfileCreate struct {
 	Description             types.String                           `tfsdk:"description"`
 	DuplicateSettings       tfsdkCTEProfileDuplicateSettings       `tfsdk:"duplicate_settings"`
 	FileSettings            tfsdkCTEProfileFileSettings            `tfsdk:"file_settings"`
+	Labels                  types.Map                              `tfsdk:"labels"`
 	LDTQOSCapCPUAllocation  types.Bool                             `tfsdk:"ldt_qos_cap_cpu_allocation"`
 	LDTQOSCapCPUPercent     types.Int64                            `tfsdk:"ldt_qos_cpu_percent"`
 	LDTQOSRekeyOption       types.String                           `tfsdk:"ldt_qos_rekey_option"`
@@ -769,6 +810,14 @@ type tfsdkCTEProfilesList struct {
 	// UploadSettings          tfsdkCTEProfileUploadSettings          `tfsdk:"upload_settings"`
 	// DuplicateSettings       tfsdkCTEProfileDuplicateSettings       `tfsdk:"duplicate_settings"`
 	// CacheSettings           tfsdkCTEProfileCacheSettings           `tfsdk:"cache_settings"`
+}
+
+type tfsdkLDTGroupCommSvc struct {
+	ID          types.String   `tfsdk:"id"`
+	Name        types.String   `tfsdk:"name"`
+	Description types.String   `tfsdk:"description"`
+	OpType      types.String   `tfsdk:"op_type"`
+	ClientList  []types.String `tfsdk:"client_list"`
 }
 
 type TFSDK_IAMRoleAnywhere struct {

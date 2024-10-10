@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	_ resource.Resource              = &resourceCTEProcessSet{}
-	_ resource.ResourceWithConfigure = &resourceCTEProcessSet{}
+	_ resource.Resource              = &resourceCCKMAWSConnection{}
+	_ resource.ResourceWithConfigure = &resourceCCKMAWSConnection{}
 )
 
 func NewResourceCCKMAWSConnection() resource.Resource {

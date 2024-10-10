@@ -382,29 +382,67 @@ type CTEPolicyModelJSON struct {
 }
 
 type CTEClientModelJSON struct {
-	ID                     string   `json:"id"`
-	Name                   string   `json:"name"`
-	ClientLocked           bool     `json:"client_locked"`
-	ClientType             string   `json:"client_type"`
-	CommunicationEnabled   bool     `json:"communication_enabled"`
-	Description            string   `json:"description"`
-	Password               string   `json:"password"`
-	PasswordCreationMethod string   `json:"password_creation_method"`
-	ProfileIdentifier      string   `json:"profile_identifier"`
-	RegistrationAllowed    bool     `json:"registration_allowed"`
-	SystemLocked           bool     `json:"system_locked"`
-	ClientMFAEnabled       bool     `json:"client_mfa_enabled"`
-	DelClient              bool     `json:"del_client"`
-	DisableCapability      string   `json:"disable_capability"`
-	DynamicParameters      string   `json:"dynamic_parameters"`
-	EnableDomainSharing    bool     `json:"enable_domain_sharing"`
-	EnabledCapabilities    string   `json:"enabled_capabilities"`
-	LGCSAccessOnly         bool     `json:"lgcs_access_only"`
-	MaxNumCacheLog         int64    `json:"max_num_cache_log"`
-	MaxSpaceCacheLog       int64    `json:"max_space_cache_log"`
-	ProfileID              string   `json:"profile_id"`
-	ProtectionMode         string   `json:"protection_mode"`
-	SharedDomainList       []string `json:"shared_domain_list"`
+	ID                     string                 `json:"id"`
+	Name                   string                 `json:"name"`
+	ClientLocked           bool                   `json:"client_locked"`
+	ClientType             string                 `json:"client_type"`
+	CommunicationEnabled   bool                   `json:"communication_enabled"`
+	Description            string                 `json:"description"`
+	Password               string                 `json:"password"`
+	PasswordCreationMethod string                 `json:"password_creation_method"`
+	ProfileIdentifier      string                 `json:"profile_identifier"`
+	RegistrationAllowed    bool                   `json:"registration_allowed"`
+	SystemLocked           bool                   `json:"system_locked"`
+	ClientMFAEnabled       bool                   `json:"client_mfa_enabled"`
+	DelClient              bool                   `json:"del_client"`
+	DisableCapability      string                 `json:"disable_capability"`
+	DynamicParameters      string                 `json:"dynamic_parameters"`
+	EnableDomainSharing    bool                   `json:"enable_domain_sharing"`
+	EnabledCapabilities    string                 `json:"enabled_capabilities"`
+	LGCSAccessOnly         bool                   `json:"lgcs_access_only"`
+	MaxNumCacheLog         int64                  `json:"max_num_cache_log"`
+	MaxSpaceCacheLog       int64                  `json:"max_space_cache_log"`
+	ProfileID              string                 `json:"profile_id"`
+	ProtectionMode         string                 `json:"protection_mode"`
+	SharedDomainList       []string               `json:"shared_domain_list"`
+	Labels                 map[string]interface{} `json:"labels"`
+}
+type jsonCTEClientGroupModel struct {
+	ID                      string   `json:"id"`
+	ClusterType             string   `json:"cluster_type"`
+	Name                    string   `json:"name"`
+	CommunicationEnabled    bool     `json:"communication_enabled"`
+	Description             string   `json:"description"`
+	LDTDesignatedPrimarySet string   `json:"ldt_designated_primary_set"`
+	Password                string   `json:"password"`
+	PasswordCreationMethod  string   `json:"password_creation_method"`
+	ProfileID               string   `json:"profile_id"`
+	ClientLocked            bool     `json:"client_locked"`
+	EnableDomainSharing     bool     `json:"enable_domain_sharing"`
+	EnabledCapabilities     string   `json:"enabled_capabilities"`
+	SharedDomainList        []string `json:"shared_domain_list"`
+	SystemLocked            bool     `json:"system_locked"`
+	AuthBinaries            string   `json:"auth_binaries"`
+	ReSign                  bool     `json:"re_sign"`
+	ClientList              []string `json:"client_list"`
+	InheritAttributes       bool     `json:"inherit_attributes"`
+	ClientID                string   `json:"client_id"`
+	Paused                  bool     `json:"paused"`
+}
+
+type jsonCTECSIGroupModel struct {
+	ID            string   `json:"id"`
+	Namespace     string   `json:"k8s_namespace"`
+	StorageClass  string   `json:"k8s_storage_class"`
+	ClientProfile string   `json:"client_profile"`
+	Name          string   `json:"name"`
+	Description   string   `json:"description"`
+	ClientList    []string `json:"client_list"`
+	PolicyList    []string `json:"policy_list"`
+	ClientID      string   `json:"client_id"`
+	GuardEnabled  bool     `json:"guard_enabled"`
+	GPID          string   `json:"gp_id"`
+	OpType        string   `json:"op_type"`
 }
 
 type jsonCTEClientsListModel struct {
@@ -536,9 +574,9 @@ type CTEClientGuardPointParamsJSON struct {
 }
 
 type CTEClientGuardPointJSON struct {
-	CTEClientID      string                        `json:"cte_client_id"`
-	GuardPaths       []string                      `json:"guard_paths"`
-	GuardPointParams CTEClientGuardPointParamsJSON `json:"guard_point_params"`
+	CTEClientID      string                         `json:"cte_client_id"`
+	GuardPaths       []string                       `json:"guard_paths"`
+	GuardPointParams *CTEClientGuardPointParamsJSON `json:"guard_point_params"`
 }
 
 type UpdateGPJSON struct {
@@ -754,6 +792,7 @@ type jsonCTEProfileCreate struct {
 	Description             string                                `json:"description"`
 	DuplicateSettings       jsonCTEProfileDuplicateSettings       `json:"duplicate_settings"`
 	FileSettings            jsonCTEProfileFileSettings            `json:"file_settings"`
+	Labels                  map[string]interface{}                `json:"labels"`
 	LDTQOSCapCPUAllocation  bool                                  `json:"ldt_qos_cap_cpu_allocation"`
 	LDTQOSCapCPUPercent     int64                                 `json:"ldt_qos_cpu_percent"`
 	LDTQOSRekeyOption       string                                `json:"ldt_qos_rekey_option"`
@@ -812,6 +851,14 @@ type jsonCTEProfilesList struct {
 	// UploadSettings          jsonCTEProfileUploadSettings          `json:"upload_settings"`
 	// DuplicateSettings       jsonCTEProfileDuplicateSettings       `json:"duplicate_settings"`
 	// CacheSettings           jsonCTEProfileCacheSettings           `json:"cache_settings"`
+}
+
+type jsonLDTGroupCommSvc struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	OpType      string   `json:"op_type"`
+	ClientList  []string `json:"client_list"`
 }
 
 type jsonLocalCAsListModel struct {
