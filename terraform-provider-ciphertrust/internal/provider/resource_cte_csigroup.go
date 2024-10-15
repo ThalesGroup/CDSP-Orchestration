@@ -355,13 +355,13 @@ func (r *resourceCTECSIGroup) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	// Delete existing order
-	output, err := r.client.DeleteByID(ctx, state.ID.ValueString(), URL_CTE_PROCESS_SET)
+	// Delete existing CSI StorageGroup
+	output, err := r.client.DeleteByID(ctx, state.ID.ValueString(), URL_CTE_CSIGROUP)
 	tflog.Trace(ctx, MSG_METHOD_END+"[resource_cte_csigroup.go -> Delete]["+state.ID.ValueString()+"]["+output+"]")
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Deleting CTE Process Set",
-			"Could not delete CTE Process Set, unexpected error: "+err.Error(),
+			"Error Deleting CTE CSISecurityGroup",
+			"Could not delete CSISecurityGroup, unexpected error: "+err.Error(),
 		)
 		return
 	}
