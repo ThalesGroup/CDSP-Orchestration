@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -44,18 +43,15 @@ func (r *resourceCMGroup) Schema(_ context.Context, _ resource.SchemaRequest, re
 				},
 			},
 			"app_metadata": schema.MapNestedAttribute{
-				//ElementType: types.DynamicType,
 				Optional: true,
 			},
 			"client_metadata": schema.MapNestedAttribute{
-				//ElementType: types.DynamicType,
 				Optional: true,
 			},
 			"description": schema.StringAttribute{
 				Optional: true,
 			},
 			"user_metadata": schema.MapNestedAttribute{
-				//ElementType: types.DynamicType,
 				Optional: true,
 			},
 		},
@@ -69,6 +65,7 @@ func (r *resourceCMGroup) Create(ctx context.Context, req resource.CreateRequest
 
 	// Retrieve values from plan
 	var plan tfsdkCMGroupModel
+	var payload GroupJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -76,57 +73,30 @@ func (r *resourceCMGroup) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	payload := map[string]interface{}{}
-	payload["name"] = trimString(plan.Name.String())
+	if plan.Name.ValueString() != "" && plan.Name.ValueString() != types.StringNull().ValueString() {
+		payload.Name = plan.Name.ValueString()
+	}
+	if plan.Description.ValueString() != "" && plan.Description.ValueString() != types.StringNull().ValueString() {
+		payload.Description = plan.Description.ValueString()
+	}
 
-	// appMetadataByte := new(bytes.Buffer)
-	// for key, value := range plan.AppMetadata {
-	// 	fmt.Fprintf(appMetadataByte, "%s=\"%s\"\n", key, value)
-	// }
+	appMetadataPayload := make(map[string]interface{})
+	for k, v := range plan.AppMetadata.Elements() {
+		appMetadataPayload[k] = v.(types.String).ValueString()
+	}
+	payload.AppMetadata = appMetadataPayload
 
-	appMetadataJSON := make(map[string]interface{})
-	for key, value := range plan.AppMetadata {
-		appMetadataJSON[key] = value
+	clientMetadataPayload := make(map[string]interface{})
+	for k, v := range plan.ClientMetadata.Elements() {
+		clientMetadataPayload[k] = v.(types.String).ValueString()
 	}
-	appMetadataJSONBytes, err := json.Marshal(appMetadataJSON)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error converting data to JSON",
-			err.Error(),
-		)
-		return
-	}
-	payload["app_metadata"] = bytes.NewBuffer(appMetadataJSONBytes)
+	payload.ClientMetadata = clientMetadataPayload
 
-	clientMetadataJSON := make(map[string]interface{})
-	for key, value := range plan.ClientMetadata {
-		clientMetadataJSON[key] = value
+	userMetadataPayload := make(map[string]interface{})
+	for k, v := range plan.UserMetadata.Elements() {
+		userMetadataPayload[k] = v.(types.String).ValueString()
 	}
-	clientMetadataJSONBytes, err := json.Marshal(clientMetadataJSON)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error converting data to JSON",
-			err.Error(),
-		)
-		return
-	}
-	payload["client_metadata"] = bytes.NewBuffer(clientMetadataJSONBytes)
-
-	payload["description"] = plan.Description.ValueString()
-
-	userMetadataJSON := make(map[string]interface{})
-	for key, value := range plan.UserMetadata {
-		userMetadataJSON[key] = value
-	}
-	userMetadataJSONBytes, err := json.Marshal(userMetadataJSON)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error converting data to JSON",
-			err.Error(),
-		)
-		return
-	}
-	payload["user_metadata"] = bytes.NewBuffer(userMetadataJSONBytes)
+	payload.UserMetadata = userMetadataPayload
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -166,6 +136,7 @@ func (r *resourceCMGroup) Read(ctx context.Context, req resource.ReadRequest, re
 func (r *resourceCMGroup) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	id := uuid.New().String()
 	var plan tfsdkCMGroupModel
+	var payload GroupJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -173,52 +144,30 @@ func (r *resourceCMGroup) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	payload := map[string]interface{}{}
-	payload["name"] = trimString(plan.Name.String())
+	if plan.Name.ValueString() != "" && plan.Name.ValueString() != types.StringNull().ValueString() {
+		payload.Name = plan.Name.ValueString()
+	}
+	if plan.Description.ValueString() != "" && plan.Description.ValueString() != types.StringNull().ValueString() {
+		payload.Description = plan.Description.ValueString()
+	}
 
-	appMetadataJSON := make(map[string]interface{})
-	for key, value := range plan.AppMetadata {
-		appMetadataJSON[key] = value
+	appMetadataPayload := make(map[string]interface{})
+	for k, v := range plan.AppMetadata.Elements() {
+		appMetadataPayload[k] = v.(types.String).ValueString()
 	}
-	appMetadataJSONBytes, err := json.Marshal(appMetadataJSON)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error converting data to JSON",
-			err.Error(),
-		)
-		return
-	}
-	payload["app_metadata"] = bytes.NewBuffer(appMetadataJSONBytes)
+	payload.AppMetadata = appMetadataPayload
 
-	clientMetadataJSON := make(map[string]interface{})
-	for key, value := range plan.ClientMetadata {
-		clientMetadataJSON[key] = value
+	clientMetadataPayload := make(map[string]interface{})
+	for k, v := range plan.ClientMetadata.Elements() {
+		clientMetadataPayload[k] = v.(types.String).ValueString()
 	}
-	clientMetadataJSONBytes, err := json.Marshal(clientMetadataJSON)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error converting data to JSON",
-			err.Error(),
-		)
-		return
-	}
-	payload["client_metadata"] = bytes.NewBuffer(clientMetadataJSONBytes)
+	payload.ClientMetadata = clientMetadataPayload
 
-	payload["description"] = plan.Description.ValueString()
-
-	userMetadataJSON := make(map[string]interface{})
-	for key, value := range plan.UserMetadata {
-		userMetadataJSON[key] = value
+	userMetadataPayload := make(map[string]interface{})
+	for k, v := range plan.UserMetadata.Elements() {
+		userMetadataPayload[k] = v.(types.String).ValueString()
 	}
-	userMetadataJSONBytes, err := json.Marshal(userMetadataJSON)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error converting data to JSON",
-			err.Error(),
-		)
-		return
-	}
-	payload["user_metadata"] = bytes.NewBuffer(userMetadataJSONBytes)
+	payload.UserMetadata = userMetadataPayload
 
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {

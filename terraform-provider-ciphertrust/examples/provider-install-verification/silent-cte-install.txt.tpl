@@ -1,0 +1,4 @@
+SERVER_IP=${kms_ip}
+REG_TOKEN=${reg_token}
+AGENT_USEIP=1
+ENABLE_LDT=1

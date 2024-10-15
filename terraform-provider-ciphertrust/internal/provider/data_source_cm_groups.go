@@ -31,7 +31,8 @@ type tfsdkCMGroupsListModel struct {
 }
 
 type groupsDataSourceModel struct {
-	Groups []tfsdkCMGroupsListModel `tfsdk:"groups"`
+	Filters types.Map                `tfsdk:"filters"`
+	Groups  []tfsdkCMGroupsListModel `tfsdk:"groups"`
 }
 
 func (d *dataSourceGroups) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -50,6 +51,10 @@ func (d *dataSourceGroups) Schema(_ context.Context, _ datasource.SchemaRequest,
 						},
 					},
 				},
+			},
+			"filters": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
 			},
 		},
 	}

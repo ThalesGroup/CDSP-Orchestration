@@ -17,35 +17,233 @@ type UserJSON struct {
 }
 
 type GroupJSON struct {
-	Name string `json:"name"`
+	Name           string                 `json:"name"`
+	AppMetadata    map[string]interface{} `json:"app_metadata"`
+	ClientMetadata map[string]interface{} `json:"client_metadata"`
+	Description    string                 `json:"description"`
+	UserMetadata   map[string]interface{} `json:"user_metadata"`
 }
 
-type KeyJSON struct {
-	KeyID            string `json:"id"`
-	URI              string `json:"uri"`
-	Account          string `json:"account"`
-	Application      string `json:"application"`
-	DevAccount       string `json:"devAccount"`
-	CreatedAt        string `json:"createdAt"`
-	UpdatedAt        string `json:"updatedAt"`
-	UsageMask        int64  `json:"usageMask"`
-	Version          int64  `json:"version"`
-	Algorithm        string `json:"algorithm"`
-	Size             int64  `json:"size"`
-	Format           string `json:"format"`
-	Exportable       bool   `json:"unexportable"`
-	Deletable        bool   `json:"undeletable"`
-	ObjectType       string `json:"objectType"`
-	ActivationDate   string `json:"activationDate"`
-	DeactivationDate string `json:"deactivationDate"`
-	ArchiveDate      string `json:"archiveDate"`
-	DestroyDate      string `json:"destroyDate"`
-	RevocationReason string `json:"revocationReason"`
-	State            string `json:"state"`
-	UUID             string `json:"uuid"`
-	Description      string `json:"description"`
-	Name             string `json:"name"`
+// CipherTrust Manager Key Management related attributes
+type HKDFParametersJSON struct {
+	HashAlgorithm string `json:"hashAlgorithm"`
+	IKMKeyName    string `json:"ikmKeyName"`
+	Info          string `json:"info"`
+	Salt          string `json:"salt"`
 }
+
+type KeyMetadataPermissionsJSON struct {
+	DecryptWithKey    []string `json:"DecryptWithKey"`
+	EncryptWithKey    []string `json:"EncryptWithKey"`
+	ExportKey         []string `json:"ExportKey"`
+	MACVerifyWithKey  []string `json:"MACVerifyWithKey"`
+	MACWithKey        []string `json:"MACWithKey"`
+	ReadKey           []string `json:"ReadKey"`
+	SignVerifyWithKey []string `json:"SignVerifyWithKey"`
+	SignWithKey       []string `json:"SignWithKey"`
+	UseKey            []string `json:"UseKey"`
+}
+
+type KeyMetadataCTEJSON struct {
+	PersistentOnClient bool   `json:"persistent_on_client"`
+	EncryptionMode     string `json:"encryption_mode"`
+	CTEVersioned       bool   `json:"cte_versioned"`
+}
+
+type KeyMetadataJSON struct {
+	OwnerId     string                      `json:"owner_id"`
+	Permissions *KeyMetadataPermissionsJSON `json:"permissions"`
+	CTE         *KeyMetadataCTEJSON         `json:"cte"`
+}
+
+type KeyAliasJSON struct {
+	Alias string `json:"alias"`
+	Index int64  `json:"index"`
+	Type  string `json:"type"`
+}
+
+type PublicKeyParametersJSON struct {
+	ActivationDate   string         `json:"activationDate,omitempty"`
+	Aliases          []KeyAliasJSON `json:"aliases"`
+	ArchiveDate      string         `json:"archiveDate,omitempty"`
+	DeactivationDate string         `json:"deactivationDate,omitempty"`
+	Name             string         `json:"name"`
+	State            string         `json:"state"`
+	UnDeletable      bool           `json:"undeletable"`
+	UnExportable     bool           `json:"unexportable"`
+	UsageMask        int64          `json:"usageMask"`
+}
+
+type WrapHKDFJSON struct {
+	HashAlgorithm string `json:"hashAlgorithm"`
+	Info          string `json:"info"`
+	OKMLen        int64  `json:"okmLen"`
+	Salt          string `json:"salt"`
+}
+
+type WrapPBEJSON struct {
+	DKLen                  int64  `json:"dklen"`
+	HashAlgorithm          string `json:"hashAlgorithm"`
+	Iteration              int64  `json:"iteration"`
+	Password               string `json:"password"`
+	PasswordIdentifier     string `json:"passwordIdentifier"`
+	PasswordIdentifierType string `json:"passwordIdentifierType"`
+	Purpose                string `json:"purpose"`
+	Salt                   string `json:"salt"`
+}
+
+type WrapRSAAESJSON struct {
+	AESKeySize int64  `json:"aesKeySize"`
+	Padding    string `json:"padding"`
+}
+
+type jsonCMKeyModel struct {
+	ID                       string                   `json:"id"`
+	ActivationDate           string                   `json:"activationDate,omitempty"`
+	Algorithm                string                   `json:"algorithm,omitempty"`
+	ArchiveDate              string                   `json:"archiveDate,omitempty"`
+	AssignSelfAsOwner        bool                     `json:"assignSelfAsOwner,omitempty"`
+	CertType                 string                   `json:"certType,omitempty"`
+	CompromiseDate           string                   `json:"compromiseDate,omitempty"`
+	CompromiseOccurrenceDate string                   `json:"compromiseOccurrenceDate,omitempty"`
+	Curveid                  string                   `json:"curveid,omitempty"`
+	DeactivationDate         string                   `json:"deactivationDate,omitempty"`
+	DefaultIV                string                   `json:"defaultIV,omitempty"`
+	Description              string                   `json:"description,omitempty"`
+	DestroyDate              string                   `json:"destroyDate,omitempty"`
+	EmptyMaterial            bool                     `json:"emptyMaterial,omitempty"`
+	Encoding                 string                   `json:"encoding,omitempty"`
+	Format                   string                   `json:"format,omitempty"`
+	GenerateKeyId            bool                     `json:"generateKeyId,omitempty"`
+	HKDFCreateParameters     *HKDFParametersJSON      `json:"hkdfCreateParameters,omitempty"`
+	IDSize                   int64                    `json:"idSize,omitempty"`
+	KeyId                    string                   `json:"keyId,omitempty"`
+	MacSignBytes             string                   `json:"macSignBytes,omitempty"`
+	MacSignKeyIdentifier     string                   `json:"macSignKeyIdentifier,omitempty"`
+	MacSignKeyIdentifierType string                   `json:"macSignKeyIdentifierType,omitempty"`
+	Material                 string                   `json:"material,omitempty"`
+	MUID                     string                   `json:"muid,omitempty"`
+	ObjectType               string                   `json:"objectType,omitempty"`
+	Name                     string                   `json:"name,omitempty"`
+	Metadata                 *KeyMetadataJSON         `json:"meta,omitempty"`
+	Padded                   bool                     `json:"padded,omitempty"`
+	Password                 string                   `json:"password,omitempty"`
+	ProcessStartDate         string                   `json:"processStartDate,omitempty"`
+	ProtectStopDate          string                   `json:"protectStopDate,omitempty"`
+	RevocationReason         string                   `json:"revocationMessage,omitempty"`
+	RevocationMessage        string                   `json:"revocationReason,omitempty"`
+	RotationFrequencyDays    string                   `json:"rotationFrequencyDays,omitempty"`
+	SecretDataEncoding       string                   `json:"secretDataEncoding,omitempty"`
+	SecretDataLink           string                   `json:"secretDataLink,omitempty"`
+	SigningAlgo              string                   `json:"signingAlgo,omitempty"`
+	Size                     int64                    `json:"size,omitempty"`
+	UnExportable             bool                     `json:"unexportable,omitempty"`
+	UnDeletable              bool                     `json:"undeletable,omitempty"`
+	State                    string                   `json:"state,omitempty"`
+	TemplateID               string                   `json:"templateId,omitempty"`
+	UsageMask                int64                    `json:"usageMask,omitempty"`
+	UUID                     string                   `json:"uuid,omitempty"`
+	WrapKeyIDType            string                   `json:"wrapKeyIDType,omitempty"`
+	WrapKeyName              string                   `json:"wrapKeyName,omitempty"`
+	WrapPublicKey            string                   `json:"wrapPublicKey,omitempty"`
+	WrapPublicKeyPadding     string                   `json:"wrapPublicKeyPadding,omitempty"`
+	WrappingEncryptionAlgo   string                   `json:"wrappingEncryptionAlgo,omitempty"`
+	WrappingHashAlgo         string                   `json:"wrappingHashAlgo,omitempty"`
+	WrappingMethod           string                   `json:"wrappingMethod,omitempty"`
+	XTS                      bool                     `json:"xts,omitempty"`
+	Aliases                  []KeyAliasJSON           `json:"aliases,omitempty"`
+	PublicKeyParameters      *PublicKeyParametersJSON `json:"publicKeyParameters,omitempty"`
+	HKDFWrap                 *WrapHKDFJSON            `json:"wrapHKDF,omitempty"`
+	PBEWrap                  *WrapPBEJSON             `json:"wrapPBE,omitempty"`
+	RSAAESWrap               *WrapRSAAESJSON          `json:"wrapRSAAES,omitempty"`
+	AllVersions              bool                     `json:"allVersions,omitempty"`
+	Labels                   map[string]interface{}   `json:"labels,omitempty"`
+}
+
+type jsonCMRegTokenModel struct {
+	ID                        string                 `json:"id"`
+	CAID                      string                 `json:"ca_id"`
+	CertDuration              int64                  `json:"cert_duration"`
+	ClientManagementProfileID string                 `json:"client_management_profile_id"`
+	Label                     map[string]interface{} `json:"label"`
+	Labels                    map[string]interface{} `json:"labels"`
+	Lifetime                  string                 `json:"lifetime"`
+	MaxClients                int64                  `json:"max_clients"`
+	NamePrefix                string                 `json:"name_prefix"`
+}
+
+type jsonCMRegTokensListModel struct {
+	ID                string `json:"id"`
+	URI               string `json:"uri"`
+	Account           string `json:"account"`
+	Application       string `json:"application"`
+	DevAccount        string `json:"devAccount"`
+	CreatedAt         string `json:"createdAt"`
+	UpdatedAt         string `json:"updatedAt"`
+	Token             string `json:"token"`
+	ValidUntil        string `json:"valid_until"`
+	MaxClients        int64  `json:"max_clients"`
+	ClientsRegistered int64  `json:"clients_registered"`
+	CAID              string `json:"ca_id"`
+	NamePrefix        string `json:"name_prefix"`
+}
+
+// type jsonCMKeysListModel struct {
+// 	ID               string `json:"id"`
+// 	URI              string `json:"uri"`
+// 	Account          string `json:"account"`
+// 	Application      string `json:"application"`
+// 	DevAccount       string `json:"devAccount"`
+// 	CreateAt         string `json:"createdAt"`
+// 	Name             string `json:"name"`
+// 	UpdatedAt        string `json:"updatedAt"`
+// 	UsageMask        int64  `json:"usageMask"`
+// 	Version          int64  `json:"version"`
+// 	Algorithm        string `json:"algorithm"`
+// 	Size             int64  `json:"size"`
+// 	Format           string `json:"format"`
+// 	Unexportable     bool   `json:"unexportable"`
+// 	Undeletable      bool   `json:"undeletable"`
+// 	ObjectType       string `json:"objectType"`
+// 	ActivationDate   string `json:"activationDate"`
+// 	DeactivationDate string `json:"deactivationDate"`
+// 	ArchiveDate      string `json:"archiveDate"`
+// 	DestroyDate      string `json:"destroyDate"`
+// 	RevocationReason string `json:"revocationReason"`
+// 	State            string `json:"state"`
+// 	UUID             string `json:"uuid"`
+// 	Description      string `json:"description"`
+// }
+
+// CipherTrust Manager Key Management related attributes - END
+
+// We might not need the below struct
+// type KeyJSON struct {
+// 	KeyID            string `json:"id"`
+// 	URI              string `json:"uri"`
+// 	Account          string `json:"account"`
+// 	Application      string `json:"application"`
+// 	DevAccount       string `json:"devAccount"`
+// 	CreatedAt        string `json:"createdAt"`
+// 	UpdatedAt        string `json:"updatedAt"`
+// 	UsageMask        int64  `json:"usageMask"`
+// 	Version          int64  `json:"version"`
+// 	Algorithm        string `json:"algorithm"`
+// 	Size             int64  `json:"size"`
+// 	Format           string `json:"format"`
+// 	Exportable       bool   `json:"unexportable"`
+// 	Deletable        bool   `json:"undeletable"`
+// 	ObjectType       string `json:"objectType"`
+// 	ActivationDate   string `json:"activationDate"`
+// 	DeactivationDate string `json:"deactivationDate"`
+// 	ArchiveDate      string `json:"archiveDate"`
+// 	DestroyDate      string `json:"destroyDate"`
+// 	RevocationReason string `json:"revocationReason"`
+// 	State            string `json:"state"`
+// 	UUID             string `json:"uuid"`
+// 	Description      string `json:"description"`
+// 	Name             string `json:"name"`
+// }
 
 type CTEUserJSON struct {
 	GID      int    `json:"gid"`
@@ -184,29 +382,101 @@ type CTEPolicyModelJSON struct {
 }
 
 type CTEClientModelJSON struct {
+	ID                     string                 `json:"id"`
+	Name                   string                 `json:"name"`
+	ClientLocked           bool                   `json:"client_locked"`
+	ClientType             string                 `json:"client_type"`
+	CommunicationEnabled   bool                   `json:"communication_enabled"`
+	Description            string                 `json:"description"`
+	Password               string                 `json:"password"`
+	PasswordCreationMethod string                 `json:"password_creation_method"`
+	ProfileIdentifier      string                 `json:"profile_identifier"`
+	RegistrationAllowed    bool                   `json:"registration_allowed"`
+	SystemLocked           bool                   `json:"system_locked"`
+	ClientMFAEnabled       bool                   `json:"client_mfa_enabled"`
+	DelClient              bool                   `json:"del_client"`
+	DisableCapability      string                 `json:"disable_capability"`
+	DynamicParameters      string                 `json:"dynamic_parameters"`
+	EnableDomainSharing    bool                   `json:"enable_domain_sharing"`
+	EnabledCapabilities    string                 `json:"enabled_capabilities"`
+	LGCSAccessOnly         bool                   `json:"lgcs_access_only"`
+	MaxNumCacheLog         int64                  `json:"max_num_cache_log"`
+	MaxSpaceCacheLog       int64                  `json:"max_space_cache_log"`
+	ProfileID              string                 `json:"profile_id"`
+	ProtectionMode         string                 `json:"protection_mode"`
+	SharedDomainList       []string               `json:"shared_domain_list"`
+	Labels                 map[string]interface{} `json:"labels"`
+}
+type jsonCTEClientGroupModel struct {
+	ID                      string   `json:"id"`
+	ClusterType             string   `json:"cluster_type"`
+	Name                    string   `json:"name"`
+	CommunicationEnabled    bool     `json:"communication_enabled"`
+	Description             string   `json:"description"`
+	LDTDesignatedPrimarySet string   `json:"ldt_designated_primary_set"`
+	Password                string   `json:"password"`
+	PasswordCreationMethod  string   `json:"password_creation_method"`
+	ProfileID               string   `json:"profile_id"`
+	ClientLocked            bool     `json:"client_locked"`
+	EnableDomainSharing     bool     `json:"enable_domain_sharing"`
+	EnabledCapabilities     string   `json:"enabled_capabilities"`
+	SharedDomainList        []string `json:"shared_domain_list"`
+	SystemLocked            bool     `json:"system_locked"`
+	AuthBinaries            string   `json:"auth_binaries"`
+	ReSign                  bool     `json:"re_sign"`
+	ClientList              []string `json:"client_list"`
+	InheritAttributes       bool     `json:"inherit_attributes"`
+	ClientID                string   `json:"client_id"`
+	Paused                  bool     `json:"paused"`
+}
+
+type jsonCTECSIGroupModel struct {
+	ID            string   `json:"id"`
+	Namespace     string   `json:"k8s_namespace"`
+	StorageClass  string   `json:"k8s_storage_class"`
+	ClientProfile string   `json:"client_profile"`
+	Name          string   `json:"name"`
+	Description   string   `json:"description"`
+	ClientList    []string `json:"client_list"`
+	PolicyList    []string `json:"policy_list"`
+	ClientID      string   `json:"client_id"`
+	GuardEnabled  bool     `json:"guard_enabled"`
+	GPID          string   `json:"gp_id"`
+	OpType        string   `json:"op_type"`
+}
+
+type jsonCTEClientsListModel struct {
 	ID                     string   `json:"id"`
+	URI                    string   `json:"uri"`
+	Account                string   `json:"account"`
+	App                    string   `json:"application"`
+	DevAccount             string   `json:"dev_account"`
+	CreatedAt              string   `json:"created_at"`
+	UpdatedAt              string   `json:"updated_at"`
 	Name                   string   `json:"name"`
-	ClientLocked           bool     `json:"client_locked"`
-	ClientType             string   `json:"client_type"`
-	CommunicationEnabled   bool     `json:"communication_enabled"`
+	OSType                 string   `json:"os_type"`
+	OSSubType              string   `json:"os_sub_type"`
+	ClientRegID            string   `json:"client_reg_id"`
+	ServerHostname         string   `json:"server_host_name"`
 	Description            string   `json:"description"`
-	Password               string   `json:"password"`
-	PasswordCreationMethod string   `json:"password_creation_method"`
-	ProfileIdentifier      string   `json:"profile_identifier"`
-	RegistrationAllowed    bool     `json:"registration_allowed"`
+	ClientLocked           bool     `json:"client_locked"`
 	SystemLocked           bool     `json:"system_locked"`
-	ClientMFAEnabled       bool     `json:"client_mfa_enabled"`
-	DelClient              bool     `json:"del_client"`
-	DisableCapability      string   `json:"disable_capability"`
-	DynamicParameters      string   `json:"dynamic_parameters"`
-	EnableDomainSharing    bool     `json:"enable_domain_sharing"`
+	PasswordCreationMethod string   `json:"password_creation_method"`
+	ClientVersion          int64    `json:"client_version"`
+	RegistrationAllowed    bool     `json:"registration_allowed"`
+	CommunicationEnabled   bool     `json:"communication_enabled"`
+	Capabilities           string   `json:"capabilities"`
 	EnabledCapabilities    string   `json:"enabled_capabilities"`
-	LGCSAccessOnly         bool     `json:"lgcs_access_only"`
-	MaxNumCacheLog         int64    `json:"max_num_cache_log"`
-	MaxSpaceCacheLog       int64    `json:"max_space_cache_log"`
-	ProfileID              string   `json:"profile_id"`
 	ProtectionMode         string   `json:"protection_mode"`
-	SharedDomainList       []string `json:"shared_domain_list"`
+	ClientType             string   `json:"client_type"`
+	ProfileName            string   `json:"profile_name"`
+	ProfileID              string   `json:"profile_id"`
+	LDTEnabled             bool     `json:"ldt_enabled"`
+	ClientHealthStatus     string   `json:"client_health_status"`
+	Errors                 []string `json:"errors"`
+	Warnings               []string `json:"warnings"`
+	ClientErrors           []string `json:"client_errors"`
+	ClientWarnings         []string `json:"client_warnings"`
 }
 
 type UserSetJSON struct {
@@ -304,9 +574,9 @@ type CTEClientGuardPointParamsJSON struct {
 }
 
 type CTEClientGuardPointJSON struct {
-	CTEClientID      string                        `json:"cte_client_id"`
-	GuardPaths       []string                      `json:"guard_paths"`
-	GuardPointParams CTEClientGuardPointParamsJSON `json:"guard_point_params"`
+	CTEClientID      string                         `json:"cte_client_id"`
+	GuardPaths       []string                       `json:"guard_paths"`
+	GuardPointParams *CTEClientGuardPointParamsJSON `json:"guard_point_params"`
 }
 
 type UpdateGPJSON struct {
@@ -522,6 +792,7 @@ type jsonCTEProfileCreate struct {
 	Description             string                                `json:"description"`
 	DuplicateSettings       jsonCTEProfileDuplicateSettings       `json:"duplicate_settings"`
 	FileSettings            jsonCTEProfileFileSettings            `json:"file_settings"`
+	Labels                  map[string]interface{}                `json:"labels"`
 	LDTQOSCapCPUAllocation  bool                                  `json:"ldt_qos_cap_cpu_allocation"`
 	LDTQOSCapCPUPercent     int64                                 `json:"ldt_qos_cpu_percent"`
 	LDTQOSRekeyOption       string                                `json:"ldt_qos_rekey_option"`
@@ -580,4 +851,63 @@ type jsonCTEProfilesList struct {
 	// UploadSettings          jsonCTEProfileUploadSettings          `json:"upload_settings"`
 	// DuplicateSettings       jsonCTEProfileDuplicateSettings       `json:"duplicate_settings"`
 	// CacheSettings           jsonCTEProfileCacheSettings           `json:"cache_settings"`
+}
+
+type jsonLDTGroupCommSvc struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	OpType      string   `json:"op_type"`
+	ClientList  []string `json:"client_list"`
+}
+
+type jsonLocalCAsListModel struct {
+	ID           string `json:"id"`
+	URI          string `json:"uri"`
+	Account      string `json:"account"`
+	CreatedAt    string `json:"createdAt"`
+	UpdatedAt    string `json:"updatedAt"`
+	Name         string `json:"name"`
+	State        string `json:"state"`
+	Cert         string `json:"cert"`
+	SerialNumber string `json:"serialNumber"`
+	Subject      string `json:"subject"`
+	Issuer       string `json:"issuer"`
+}
+
+type SSHKeyJSON struct {
+	Key string `json:"key"`
+}
+
+type PwdChangeJSON struct {
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	NewPassword string `json:"new_password"`
+}
+
+// CCKM Models
+type IAMRoleAnywhereJSON struct {
+	AnywhereRoleARN string `json:"anywhere_role_arn"`
+	Certificate     string `json:"certificate"`
+	ProfileARN      string `json:"profile_arn"`
+	TrustAnchorARN  string `json:"trust_anchor_arn"`
+	PrivateKey      string `json:"private_key"`
+}
+
+type jsonAWSConnectionModel struct {
+	ID                      string                 `json:"id"`
+	Name                    string                 `json:"name"`
+	Description             string                 `json:"description"`
+	AccessKeyID             string                 `json:"access_key_id"`
+	AssumeRoleARN           string                 `json:"assume_role_arn"`
+	AssumeRoleExternalID    string                 `json:"assume_role_external_id"`
+	AWSRegion               string                 `json:"aws_region"`
+	AWSSTSRegionalEndpoints string                 `json:"aws_sts_regional_endpoints"`
+	CloudName               string                 `json:"cloud_name"`
+	IsRoleAnywhere          bool                   `json:"is_role_anywhere"`
+	IAMRoleAnywhere         *IAMRoleAnywhereJSON   `json:"iam_role_anywhere"`
+	Labels                  map[string]interface{} `json:"labels"`
+	Meta                    map[string]interface{} `json:"meta"`
+	Products                []string               `json:"products"`
+	SecretAccessKey         string                 `json:"secret_access_key"`
 }

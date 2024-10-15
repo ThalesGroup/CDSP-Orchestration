@@ -119,6 +119,11 @@ func (r *resourceCTEProfile) Schema(_ context.Context, _ resource.SchemaRequest,
 					},
 				},
 			},
+			"labels": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+				Description: "Labels are key/value pairs used to group resources. They are based on Kubernetes Labels, see https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/.",
+			},
 			"ldt_qos_cap_cpu_allocation": schema.BoolAttribute{
 				Optional:    true,
 				Description: "Whether to allow CPU allocation for Quality of Service (QoS) capabilities.",
@@ -528,6 +533,13 @@ func (r *resourceCTEProfile) Create(ctx context.Context, req resource.CreateRequ
 		fileSettings.MaxOldFiles = plan.FileSettings.MaxOldFiles.ValueInt64()
 	}
 	payload.FileSettings = fileSettings
+
+	// Add labels to payload
+	labelsPayload := make(map[string]interface{})
+	for k, v := range plan.Labels.Elements() {
+		labelsPayload[k] = v.(types.String).ValueString()
+	}
+	payload.Labels = labelsPayload
 
 	if plan.LDTQOSCapCPUAllocation.ValueBool() != types.BoolNull().ValueBool() {
 		payload.LDTQOSCapCPUAllocation = bool(plan.LDTQOSCapCPUAllocation.ValueBool())

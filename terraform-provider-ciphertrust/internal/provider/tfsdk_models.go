@@ -9,8 +9,28 @@ type HKDFParameters struct {
 	Salt          types.String `tfsdk:"salt"`
 }
 
+type KeyMetadataPermissions struct {
+	DecryptWithKey    []types.String `tfsdk:"decrypt_with_key"`
+	EncryptWithKey    []types.String `tfsdk:"encrypt_with_key"`
+	ExportKey         []types.String `tfsdk:"export_key"`
+	MACVerifyWithKey  []types.String `tfsdk:"mac_verify_with_key"`
+	MACWithKey        []types.String `tfsdk:"mac_with_key"`
+	ReadKey           []types.String `tfsdk:"read_key"`
+	SignVerifyWithKey []types.String `tfsdk:"sign_verify_with_key"`
+	SignWithKey       []types.String `tfsdk:"sign_with_key"`
+	UseKey            []types.String `tfsdk:"use_key"`
+}
+
+type KeyMetadataCTE struct {
+	PersistentOnClient types.Bool   `tfsdk:"persistent_on_client"`
+	EncryptionMode     types.String `tfsdk:"encryption_mode"`
+	CTEVersioned       types.Bool   `tfsdk:"cte_versioned"`
+}
+
 type KeyMetadata struct {
-	OwnerId types.String `tfsdk:"owner_id"`
+	OwnerId     types.String           `tfsdk:"owner_id"`
+	Permissions KeyMetadataPermissions `tfsdk:"permissions"`
+	CTE         KeyMetadataCTE         `tfsdk:"cte"`
 }
 
 type KeyAlias struct {
@@ -26,8 +46,8 @@ type PublicKeyParameters struct {
 	DeactivationDate types.String `tfsdk:"deactivation_date"`
 	Name             types.String `tfsdk:"name"`
 	State            types.String `tfsdk:"state"`
-	Deletable        types.Bool   `tfsdk:"undeletable"`
-	Exportable       types.Bool   `tfsdk:"unexportable"`
+	UnDeletable      types.Bool   `tfsdk:"undeletable"`
+	UnExportable     types.Bool   `tfsdk:"unexportable"`
 	UsageMask        types.Int64  `tfsdk:"usage_mask"`
 }
 
@@ -94,9 +114,10 @@ type tfsdkCMKeyModel struct {
 	SecretDataLink           types.String        `tfsdk:"secret_data_link"`
 	SigningAlgo              types.String        `tfsdk:"signing_algo"`
 	Size                     types.Int64         `tfsdk:"size"`
-	Exportable               types.Bool          `tfsdk:"unexportable"`
-	Deletable                types.Bool          `tfsdk:"undeletable"`
+	UnExportable             types.Bool          `tfsdk:"unexportable"`
+	UnDeletable              types.Bool          `tfsdk:"undeletable"`
 	State                    types.String        `tfsdk:"state"`
+	TemplateID               types.String        `tfsdk:"template_id"`
 	UsageMask                types.Int64         `tfsdk:"usage_mask"`
 	UUID                     types.String        `tfsdk:"uuid"`
 	WrapKeyIDType            types.String        `tfsdk:"wrap_key_id_type"`
@@ -112,14 +133,71 @@ type tfsdkCMKeyModel struct {
 	HKDFWrap                 WrapHKDF            `tfsdk:"wrap_hkdf"`
 	PBEWrap                  WrapPBE             `tfsdk:"wrap_pbe"`
 	RSAAESWrap               WrapRSAAES          `tfsdk:"wrap_rsaaes"`
+	Labels                   types.Map           `tfsdk:"labels"`
+	AllVersions              types.Bool          `tfsdk:"all_versions"`
+}
+
+type tfsdkCMKeysListModel struct {
+	ID               types.String `tfsdk:"id"`
+	URI              types.String `tfsdk:"uri"`
+	Account          types.String `tfsdk:"account"`
+	Application      types.String `tfsdk:"application"`
+	DevAccount       types.String `tfsdk:"dev_account"`
+	CreatedAt        types.String `tfsdk:"created_at"`
+	Name             types.String `tfsdk:"name"`
+	UpdatedAt        types.String `tfsdk:"updated_at"`
+	UsageMask        types.Int64  `tfsdk:"usage_mask"`
+	Version          types.Int64  `tfsdk:"version"`
+	Algorithm        types.String `tfsdk:"algorithm"`
+	Size             types.Int64  `tfsdk:"size"`
+	Format           types.String `tfsdk:"format"`
+	Unexportable     types.Bool   `tfsdk:"unexportable"`
+	Undeletable      types.Bool   `tfsdk:"undeletable"`
+	ObjectType       types.String `tfsdk:"object_type"`
+	ActivationDate   types.String `tfsdk:"activation_date"`
+	DeactivationDate types.String `tfsdk:"deactivation_date"`
+	ArchiveDate      types.String `tfsdk:"archive_date"`
+	DestroyDate      types.String `tfsdk:"destroy_date"`
+	RevocationReason types.String `tfsdk:"revocation_reason"`
+	State            types.String `tfsdk:"state"`
+	UUID             types.String `tfsdk:"uuid"`
+	Description      types.String `tfsdk:"description"`
+}
+
+type tfsdkCMRegTokenModel struct {
+	ID                        types.String `tfsdk:"id"`
+	CAID                      types.String `tfsdk:"ca_id"`
+	CertDuration              types.Int64  `tfsdk:"cert_duration"`
+	ClientManagementProfileID types.String `tfsdk:"client_management_profile_id"`
+	Label                     types.Map    `tfsdk:"label"`
+	Labels                    types.Map    `tfsdk:"labels"`
+	Lifetime                  types.String `tfsdk:"lifetime"`
+	MaxClients                types.Int64  `tfsdk:"max_clients"`
+	NamePrefix                types.String `tfsdk:"name_prefix"`
+}
+
+type tfsdkCMRegTokensListModel struct {
+	ID                types.String `tfsdk:"id"`
+	URI               types.String `tfsdk:"uri"`
+	Account           types.String `tfsdk:"account"`
+	Application       types.String `tfsdk:"application"`
+	DevAccount        types.String `tfsdk:"dev_account"`
+	CreatedAt         types.String `tfsdk:"created_at"`
+	UpdatedAt         types.String `tfsdk:"updated_at"`
+	Token             types.String `tfsdk:"token"`
+	ValidUntil        types.String `tfsdk:"valid_until"`
+	MaxClients        types.Int64  `tfsdk:"max_clients"`
+	ClientsRegistered types.Int64  `tfsdk:"clients_registered"`
+	CAID              types.String `tfsdk:"ca_id"`
+	NamePrefix        types.String `tfsdk:"name_prefix"`
 }
 
 type tfsdkCMGroupModel struct {
-	Name           types.String           `tfsdk:"name"`
-	AppMetadata    map[string]interface{} `tfsdk:"app_metadata"`
-	ClientMetadata map[string]interface{} `tfsdk:"client_metadata"`
-	Description    types.String           `tfsdk:"description"`
-	UserMetadata   map[string]interface{} `tfsdk:"user_metadata"`
+	Name           types.String `tfsdk:"name"`
+	AppMetadata    types.Map    `tfsdk:"app_metadata"`
+	ClientMetadata types.Map    `tfsdk:"client_metadata"`
+	Description    types.String `tfsdk:"description"`
+	UserMetadata   types.Map    `tfsdk:"user_metadata"`
 }
 
 type tfsdkCMUserModel struct {
@@ -158,6 +236,80 @@ type tfsdkCTEClientModel struct {
 	ProfileID              types.String   `tfsdk:"profile_id"`
 	ProtectionMode         types.String   `tfsdk:"protection_mode"`
 	SharedDomainList       []types.String `tfsdk:"shared_domain_list"`
+	Labels                 types.Map      `tfsdk:"labels"`
+}
+
+type tfsdkCTEClientGroupModel struct {
+	ID                      types.String   `tfsdk:"id"`
+	ClusterType             types.String   `tfsdk:"cluster_type"`
+	Name                    types.String   `tfsdk:"name"`
+	CommunicationEnabled    types.Bool     `tfsdk:"communication_enabled"`
+	Description             types.String   `tfsdk:"description"`
+	LDTDesignatedPrimarySet types.String   `tfsdk:"ldt_designated_primary_set"`
+	Password                types.String   `tfsdk:"password"`
+	PasswordCreationMethod  types.String   `tfsdk:"password_creation_method"`
+	ProfileID               types.String   `tfsdk:"profile_id"`
+	ClientLocked            types.Bool     `tfsdk:"client_locked"`
+	EnableDomainSharing     types.Bool     `tfsdk:"enable_domain_sharing"`
+	EnabledCapabilities     types.String   `tfsdk:"enabled_capabilities"`
+	SharedDomainList        []types.String `tfsdk:"shared_domain_list"`
+	SystemLocked            types.Bool     `tfsdk:"system_locked"`
+	AuthBinaries            types.String   `tfsdk:"auth_binaries"`
+	ReSign                  types.Bool     `tfsdk:"re_sign"`
+	ClientList              []types.String `tfsdk:"client_list"`
+	InheritAttributes       types.Bool     `tfsdk:"inherit_attributes"`
+	ClientID                types.String   `tfsdk:"client_id"`
+	OpType                  types.String   `tfsdk:"op_type"`
+	Paused                  types.Bool     `tfsdk:"paused"`
+}
+
+type tfsdkCTECSIGroupModel struct {
+	ID            types.String   `tfsdk:"id"`
+	Namespace     types.String   `tfsdk:"kubernetes_namespace"`
+	StorageClass  types.String   `tfsdk:"kubernetes_storage_class"`
+	ClientProfile types.String   `tfsdk:"client_profile"`
+	Name          types.String   `tfsdk:"name"`
+	Description   types.String   `tfsdk:"description"`
+	ClientList    []types.String `tfsdk:"client_list"`
+	PolicyList    []types.String `tfsdk:"policy_list"`
+	ClientID      types.String   `tfsdk:"client_id"`
+	GuardEnabled  types.Bool     `tfsdk:"guard_enabled"`
+	GPID          types.String   `tfsdk:"gp_id"`
+	OpType        types.String   `tfsdk:"op_type"`
+}
+
+type tfsdkCTEClientsListModel struct {
+	ID                     types.String   `tfsdk:"id"`
+	URI                    types.String   `tfsdk:"uri"`
+	Account                types.String   `tfsdk:"account"`
+	App                    types.String   `tfsdk:"application"`
+	DevAccount             types.String   `tfsdk:"dev_account"`
+	CreatedAt              types.String   `tfsdk:"created_at"`
+	UpdatedAt              types.String   `tfsdk:"updated_at"`
+	Name                   types.String   `tfsdk:"name"`
+	OSType                 types.String   `tfsdk:"os_type"`
+	OSSubType              types.String   `tfsdk:"os_sub_type"`
+	ClientRegID            types.String   `tfsdk:"client_reg_id"`
+	ServerHostname         types.String   `tfsdk:"server_host_name"`
+	Description            types.String   `tfsdk:"description"`
+	ClientLocked           types.Bool     `tfsdk:"client_locked"`
+	SystemLocked           types.Bool     `tfsdk:"system_locked"`
+	PasswordCreationMethod types.String   `tfsdk:"password_creation_method"`
+	ClientVersion          types.Int64    `tfsdk:"client_version"`
+	RegistrationAllowed    types.Bool     `tfsdk:"registration_allowed"`
+	CommunicationEnabled   types.Bool     `tfsdk:"communication_enabled"`
+	Capabilities           types.String   `tfsdk:"capabilities"`
+	EnabledCapabilities    types.String   `tfsdk:"enabled_capabilities"`
+	ProtectionMode         types.String   `tfsdk:"protection_mode"`
+	ClientType             types.String   `tfsdk:"client_type"`
+	ProfileName            types.String   `tfsdk:"profile_name"`
+	ProfileID              types.String   `tfsdk:"profile_id"`
+	LDTEnabled             types.Bool     `tfsdk:"ldt_enabled"`
+	ClientHealthStatus     types.String   `tfsdk:"client_health_status"`
+	Errors                 []types.String `tfsdk:"errors"`
+	Warnings               []types.String `tfsdk:"warnings"`
+	ClientErrors           []types.String `tfsdk:"client_errors"`
+	ClientWarnings         []types.String `tfsdk:"client_warnings"`
 }
 
 type DataTransformationRule struct {
@@ -589,6 +741,7 @@ type tfsdkCTEProfileCreate struct {
 	Description             types.String                           `tfsdk:"description"`
 	DuplicateSettings       tfsdkCTEProfileDuplicateSettings       `tfsdk:"duplicate_settings"`
 	FileSettings            tfsdkCTEProfileFileSettings            `tfsdk:"file_settings"`
+	Labels                  types.Map                              `tfsdk:"labels"`
 	LDTQOSCapCPUAllocation  types.Bool                             `tfsdk:"ldt_qos_cap_cpu_allocation"`
 	LDTQOSCapCPUPercent     types.Int64                            `tfsdk:"ldt_qos_cpu_percent"`
 	LDTQOSRekeyOption       types.String                           `tfsdk:"ldt_qos_rekey_option"`
@@ -609,6 +762,16 @@ type tfsdkCTEProfileCreate struct {
 	SyslogSettings          tfsdkCTEProfileSyslogSettings          `tfsdk:"syslog_settings"`
 	SystemAdminLogger       tfsdkCTEProfileManagementServiceLogger `tfsdk:"system_admin_logger"`
 	UploadSettings          tfsdkCTEProfileUploadSettings          `tfsdk:"upload_settings"`
+}
+
+type tfsdkCMSSHKeyModel struct {
+	Key types.String `tfsdk:"key"`
+}
+
+type tfsdkCMPwdChangeModel struct {
+	Username    types.String `tfsdk:"username"`
+	Password    types.String `tfsdk:"password"`
+	NewPassword types.String `tfsdk:"new_password"`
 }
 
 type tfsdkCTEProfilesList struct {
@@ -647,4 +810,38 @@ type tfsdkCTEProfilesList struct {
 	// UploadSettings          tfsdkCTEProfileUploadSettings          `tfsdk:"upload_settings"`
 	// DuplicateSettings       tfsdkCTEProfileDuplicateSettings       `tfsdk:"duplicate_settings"`
 	// CacheSettings           tfsdkCTEProfileCacheSettings           `tfsdk:"cache_settings"`
+}
+
+type tfsdkLDTGroupCommSvc struct {
+	ID          types.String   `tfsdk:"id"`
+	Name        types.String   `tfsdk:"name"`
+	Description types.String   `tfsdk:"description"`
+	OpType      types.String   `tfsdk:"op_type"`
+	ClientList  []types.String `tfsdk:"client_list"`
+}
+
+type TFSDK_IAMRoleAnywhere struct {
+	AnywhereRoleARN types.String `tfsdk:"anywhere_role_arn"`
+	Certificate     types.String `tfsdk:"certificate"`
+	ProfileARN      types.String `tfsdk:"profile_arn"`
+	TrustAnchorARN  types.String `tfsdk:"trust_anchor_arn"`
+	PrivateKey      types.String `tfsdk:"private_key"`
+}
+
+type tfsdkAWSConnectionModel struct {
+	ID                      types.String          `tfsdk:"id"`
+	Name                    types.String          `tfsdk:"name"`
+	Description             types.String          `tfsdk:"description"`
+	AccessKeyID             types.String          `tfsdk:"access_key_id"`
+	AssumeRoleARN           types.String          `tfsdk:"assume_role_arn"`
+	AssumeRoleExternalID    types.String          `tfsdk:"assume_role_external_id"`
+	AWSRegion               types.String          `tfsdk:"aws_region"`
+	AWSSTSRegionalEndpoints types.String          `tfsdk:"aws_sts_regional_endpoints"`
+	CloudName               types.String          `tfsdk:"cloud_name"`
+	IsRoleAnywhere          types.Bool            `tfsdk:"is_role_anywhere"`
+	IAMRoleAnywhere         TFSDK_IAMRoleAnywhere `tfsdk:"iam_role_anywhere"`
+	Labels                  types.Map             `tfsdk:"labels"`
+	Meta                    types.Map             `tfsdk:"meta"`
+	Products                []types.String        `tfsdk:"products"`
+	SecretAccessKey         types.String          `tfsdk:"secret_access_key"`
 }

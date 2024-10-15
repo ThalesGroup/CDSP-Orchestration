@@ -22,6 +22,12 @@ type Client struct {
 	AuthData       AuthStruct
 }
 
+// Bootstrap Client for CipherTrust Manager
+type CMClientBootstrap struct {
+	CipherTrustURL string
+	HTTPClient     *http.Client
+}
+
 // AuthStruct
 type AuthStruct struct {
 	Username   string `json:"username"`
@@ -33,6 +39,31 @@ type AuthStruct struct {
 // AuthResponse
 type AuthResponse struct {
 	Token string `json:"jwt"`
+}
+
+// Create new client for CM with auth details
+// Usable for som bootstrap API calls
+func NewCMClientBoot(ctx context.Context, uuid string, address *string) (*CMClientBootstrap, error) {
+	tflog.Trace(ctx, MSG_METHOD_START+"[client.go -> NewCMClientBoot]["+uuid+"]")
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	c := CMClientBootstrap{
+		HTTPClient: &http.Client{
+			Timeout:   10 * time.Second,
+			Transport: tr,
+		},
+		// Default CM URL
+		CipherTrustURL: CipherTrustURL,
+	}
+
+	if address != nil {
+		c.CipherTrustURL = *address
+	}
+
+	tflog.Trace(ctx, MSG_METHOD_END+" [client.go -> NewCMClientBoot]["+uuid+"]")
+	return &c, nil
 }
 
 // Create New Client for CipherTrust Manager
@@ -101,6 +132,38 @@ func (c *Client) doRequest(ctx context.Context, uuid string, req *http.Request, 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [client.go -> doRequest]["+uuid+"]")
+		return nil, err
+	}
+
+	if res.StatusCode == http.StatusOK ||
+		res.StatusCode == http.StatusCreated ||
+		res.StatusCode == http.StatusPartialContent ||
+		res.StatusCode == http.StatusAccepted ||
+		res.StatusCode == http.StatusNonAuthoritativeInfo ||
+		res.StatusCode == http.StatusNoContent {
+		tflog.Trace(ctx, MSG_METHOD_END+"[client.go -> doRequest]["+uuid+"]")
+		return body, err
+	} else {
+		tflog.Trace(ctx, MSG_METHOD_END+"[client.go -> doRequest]["+uuid+"]")
+		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
+	}
+}
+
+func (c *CMClientBootstrap) doRequestBootstrap(ctx context.Context, uuid string, req *http.Request) ([]byte, error) {
+	tflog.Trace(ctx, MSG_METHOD_START+"[client.go -> doRequestBootstrap]["+uuid+"]")
+
+	req.Header.Add("Content-Type", "application/json")
+
+	res, err := c.HTTPClient.Do(req)
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [client.go -> doRequestBootstrap]["+uuid+"]")
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		tflog.Debug(ctx, ERR_METHOD_END+err.Error()+" [client.go -> doRequestBootstrap]["+uuid+"]")
 		return nil, err
 	}
 

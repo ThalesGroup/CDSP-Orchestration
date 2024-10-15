@@ -147,9 +147,9 @@ func (r *resourceCTEClientGP) Create(ctx context.Context, req resource.CreateReq
 
 	// Retrieve values from plan
 	var plan tfsdkCTEClientGuardPoint
-	var guardpointParamsModel tfsdkCTEClientGuardPointParamsModel
+	var guardpointParamsPlan tfsdkCTEClientGuardPointParamsModel
 	var payload CTEClientGuardPointJSON
-	var guardpointParams CTEClientGuardPointParamsJSON
+	var guardpointParamsPayload CTEClientGuardPointParamsJSON
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -157,50 +157,51 @@ func (r *resourceCTEClientGP) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	if guardpointParamsModel.GPType.ValueString() != "" && guardpointParamsModel.GPType.ValueString() != types.StringNull().ValueString() {
-		guardpointParams.GPType = string(guardpointParamsModel.GPType.ValueString())
+	if (tfsdkCTEClientGuardPointParamsModel{} != plan.GuardPointParams) {
+		if guardpointParamsPlan.GPType.ValueString() != "" && guardpointParamsPlan.GPType.ValueString() != types.StringNull().ValueString() {
+			guardpointParamsPayload.GPType = string(guardpointParamsPlan.GPType.ValueString())
+		}
+		if guardpointParamsPlan.PolicyID.ValueString() != "" && guardpointParamsPlan.PolicyID.ValueString() != types.StringNull().ValueString() {
+			guardpointParamsPayload.PolicyID = string(guardpointParamsPlan.PolicyID.ValueString())
+		}
+		if guardpointParamsPlan.IsAutomountEnabled.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsAutomountEnabled = bool(guardpointParamsPlan.IsAutomountEnabled.ValueBool())
+		}
+		if guardpointParamsPlan.IsCIFSEnabled.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsCIFSEnabled = bool(guardpointParamsPlan.IsCIFSEnabled.ValueBool())
+		}
+		if guardpointParamsPlan.IsDataClassificationEnabled.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsDataClassificationEnabled = bool(guardpointParamsPlan.IsDataClassificationEnabled.ValueBool())
+		}
+		if guardpointParamsPlan.IsDataLineageEnabled.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsDataLineageEnabled = bool(guardpointParamsPlan.IsDataLineageEnabled.ValueBool())
+		}
+		if guardpointParamsPlan.DiskName.ValueString() != "" && guardpointParamsPlan.DiskName.ValueString() != types.StringNull().ValueString() {
+			guardpointParamsPayload.DiskName = string(guardpointParamsPlan.DiskName.ValueString())
+		}
+		if guardpointParamsPlan.DiskgroupName.ValueString() != "" && guardpointParamsPlan.DiskgroupName.ValueString() != types.StringNull().ValueString() {
+			guardpointParamsPayload.DiskgroupName = string(guardpointParamsPlan.DiskgroupName.ValueString())
+		}
+		if guardpointParamsPlan.IsEarlyAccessEnabled.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsEarlyAccessEnabled = bool(guardpointParamsPlan.IsEarlyAccessEnabled.ValueBool())
+		}
+		if guardpointParamsPlan.IsIntelligentProtectionEnabled.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsIntelligentProtectionEnabled = bool(guardpointParamsPlan.IsIntelligentProtectionEnabled.ValueBool())
+		}
+		if guardpointParamsPlan.IsDeviceIDTCapable.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsDeviceIDTCapable = bool(guardpointParamsPlan.IsDeviceIDTCapable.ValueBool())
+		}
+		if guardpointParamsPlan.IsMFAEnabled.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.IsMFAEnabled = bool(guardpointParamsPlan.IsMFAEnabled.ValueBool())
+		}
+		if guardpointParamsPlan.NWShareCredentialsID.ValueString() != "" && guardpointParamsPlan.NWShareCredentialsID.ValueString() != types.StringNull().ValueString() {
+			guardpointParamsPayload.NWShareCredentialsID = string(guardpointParamsPlan.NWShareCredentialsID.ValueString())
+		}
+		if guardpointParamsPlan.PreserveSparseRegions.ValueBool() != types.BoolNull().ValueBool() {
+			guardpointParamsPayload.PreserveSparseRegions = bool(guardpointParamsPlan.PreserveSparseRegions.ValueBool())
+		}
+		payload.GuardPointParams = &guardpointParamsPayload
 	}
-	if guardpointParamsModel.PolicyID.ValueString() != "" && guardpointParamsModel.PolicyID.ValueString() != types.StringNull().ValueString() {
-		guardpointParams.PolicyID = string(guardpointParamsModel.PolicyID.ValueString())
-	}
-	if guardpointParamsModel.IsAutomountEnabled.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsAutomountEnabled = bool(guardpointParamsModel.IsAutomountEnabled.ValueBool())
-	}
-	if guardpointParamsModel.IsCIFSEnabled.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsCIFSEnabled = bool(guardpointParamsModel.IsCIFSEnabled.ValueBool())
-	}
-	if guardpointParamsModel.IsDataClassificationEnabled.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsDataClassificationEnabled = bool(guardpointParamsModel.IsDataClassificationEnabled.ValueBool())
-	}
-	if guardpointParamsModel.IsDataLineageEnabled.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsDataLineageEnabled = bool(guardpointParamsModel.IsDataLineageEnabled.ValueBool())
-	}
-	if guardpointParamsModel.DiskName.ValueString() != "" && guardpointParamsModel.DiskName.ValueString() != types.StringNull().ValueString() {
-		guardpointParams.DiskName = string(guardpointParamsModel.DiskName.ValueString())
-	}
-	if guardpointParamsModel.DiskgroupName.ValueString() != "" && guardpointParamsModel.DiskgroupName.ValueString() != types.StringNull().ValueString() {
-		guardpointParams.DiskgroupName = string(guardpointParamsModel.DiskgroupName.ValueString())
-	}
-	if guardpointParamsModel.IsEarlyAccessEnabled.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsEarlyAccessEnabled = bool(guardpointParamsModel.IsEarlyAccessEnabled.ValueBool())
-	}
-	if guardpointParamsModel.IsIntelligentProtectionEnabled.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsIntelligentProtectionEnabled = bool(guardpointParamsModel.IsIntelligentProtectionEnabled.ValueBool())
-	}
-	if guardpointParamsModel.IsDeviceIDTCapable.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsDeviceIDTCapable = bool(guardpointParamsModel.IsDeviceIDTCapable.ValueBool())
-	}
-	if guardpointParamsModel.IsMFAEnabled.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.IsMFAEnabled = bool(guardpointParamsModel.IsMFAEnabled.ValueBool())
-	}
-	if guardpointParamsModel.NWShareCredentialsID.ValueString() != "" && guardpointParamsModel.NWShareCredentialsID.ValueString() != types.StringNull().ValueString() {
-		guardpointParams.NWShareCredentialsID = string(guardpointParamsModel.NWShareCredentialsID.ValueString())
-	}
-	if guardpointParamsModel.PreserveSparseRegions.ValueBool() != types.BoolNull().ValueBool() {
-		guardpointParams.PreserveSparseRegions = bool(guardpointParamsModel.PreserveSparseRegions.ValueBool())
-	}
-
-	payload.GuardPointParams = guardpointParams
 
 	for _, gp := range plan.GuardPaths {
 		payload.GuardPaths = append(payload.GuardPaths, gp.ValueString())

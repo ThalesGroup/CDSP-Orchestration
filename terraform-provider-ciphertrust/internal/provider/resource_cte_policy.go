@@ -48,8 +48,12 @@ func (r *resourceCTEPolicy) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Required:    true,
 				Description: "Name of the policy.",
 			},
+			"description": schema.StringAttribute{
+				Optional:    true,
+				Description: "Description of the policy.",
+			},
 			"policy_type": schema.StringAttribute{
-				Optional: true,
+				Required: true,
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{"Standard", "LDT", "IDT", "Cloud_Object_Storage", "CSI"}...),
 				},
@@ -74,10 +78,6 @@ func (r *resourceCTEPolicy) Schema(_ context.Context, _ resource.SchemaRequest, 
 						},
 					},
 				},
-			},
-			"description": schema.StringAttribute{
-				Optional:    true,
-				Description: "Description of the policy.",
 			},
 			"idt_key_rules": schema.ListNestedAttribute{
 				Optional:    true,
