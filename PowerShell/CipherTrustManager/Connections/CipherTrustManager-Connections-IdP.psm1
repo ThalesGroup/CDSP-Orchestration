@@ -75,7 +75,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMIdPConnections -strategy ldap
         Returns a list of all LDAP Identity Providers
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMIdPConnections {
     param
@@ -219,7 +219,7 @@ function Find-CMIdPConnections {
     .EXAMPLE
         PS> New-CMIdPConnectionLDAP -name contoso.com -root_dn "DC=contoso,DC=com" -server_url "ldaps://mydc.contoso.com" -uid_field "sAMAccountName" -root_ca_file 'C:\temp\mydc-root.cer' -bindsecurecredentials $bindcreds -group_base_dn "DC=contoso,DC=com" -group_filter "(objectClass=Group)" -group_id_field "cn" -group_member_field "member"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMIdPConnectionLDAP{
     param(
@@ -368,7 +368,7 @@ function New-CMIdPConnectionLDAP{
     .EXAMPLE
         PS> New-CMIdPConnectionOIDC -name ThalesSTA -clientsecureinfo $clientinfo -discovery_uri "https://{oauth-provider-hostname}/.well-known/openid-configuration" -redirect_uris "https://cm-node1/api/v1/auth/oidc-callback","https://cm-node2/api/v1/auth/oidc-callback"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMIdPConnectionOIDC{
     param(
@@ -476,7 +476,7 @@ function New-CMIdPConnectionOIDC{
     .EXAMPLE
         PS> Get-CMIdPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMIdPConnection{
     param(
@@ -602,7 +602,7 @@ function Get-CMIdPConnection{
     .EXAMPLE
         PS> New-CMIdPConnectionLDAP -name contoso.com -root_dn "DC=contoso,DC=com" -server_url "ldaps://mydc.contoso.com" -uid_field "sAMAccountName" -root_ca_file 'C:\temp\mydc-root.cer' -bindsecurecredentials $bindcreds -group_base_dn "DC=contoso,DC=com" -group_filter "(objectClass=Group)" -group_id_field "cn" -group_member_field "member"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMIdPConnectionLDAP{
     param(
@@ -767,7 +767,7 @@ function Update-CMIdPConnectionLDAP{
     .EXAMPLE
         PS> Update-CMIdPConnectionOIDC -name ThalesSTA -client_id cfab123f-5b09-4cc1-85b1-e754f123f985 -redirect_uris "https://10.0.0.1/api/v1/auth/oidc-callback","https://10.0.0.2/api/v1/auth/oidc-callback"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMIdPConnectionOIDC{
     param(
@@ -923,7 +923,7 @@ function Update-CMIdPConnectionOIDC{
         PS> Remove-CMLDAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -force
         Using the id of the connection. And bypass confirmations.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMIdPConnection{
     param(
@@ -1018,7 +1018,7 @@ function Remove-CMIdPConnection{
         PS> Remove-CMIdPConnectionLDAPInUse -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -force
         Using the id of the connection. And bypass confirmations.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMIdPConnectionLDAPInUse{
     param(
@@ -1157,7 +1157,7 @@ function Remove-CMIdPConnectionLDAPInUse{
     .PARAMETER securetestcreds
         PS Credential object containing the User Credentials for testing a LDAP connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMIdPLDAPConnParameters{
     param(
@@ -1322,7 +1322,7 @@ function Test-CMIdPLDAPConnParameters{
     .EXAMPLE
         PS> Get-CMIdPConnectionUsers -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMIdPConnectionUsers{
     param(

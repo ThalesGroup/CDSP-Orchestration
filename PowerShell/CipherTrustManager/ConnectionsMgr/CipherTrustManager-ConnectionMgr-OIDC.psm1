@@ -94,7 +94,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMOIDCConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMOIDCConnections {
     param
@@ -296,7 +296,7 @@ function Find-CMOIDCConnections {
     .EXAMPLE
         PS> New-CMOIDCConnection -name ricky.oidc -clientsecureinfo $clientinfo -url "https://{oauth-provider-hostname}/.well-known/openid-configuration"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMOIDCConnection{
     param(
@@ -404,7 +404,7 @@ function New-CMOIDCConnection{
         PS> Get-CMOIDCConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMOIDCConnection{
     param(
@@ -504,7 +504,7 @@ function Get-CMOIDCConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMOIDCConnection{
     param(
@@ -614,7 +614,7 @@ function Update-CMOIDCConnection{
         PS> Remove-CMOIDCConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMOIDCConnection{
     param(

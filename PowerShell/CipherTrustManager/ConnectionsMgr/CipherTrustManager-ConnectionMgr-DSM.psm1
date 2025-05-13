@@ -94,7 +94,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMDSMConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMDSMConnections {
     param
@@ -294,7 +294,7 @@ function Find-CMDSMConnections {
     .EXAMPLE
         PS> New-CMDSMConnection -name "MyDSMCluster" -nodename "dsm1.mydomain.com" -dsmcertfile .\dsmnode1cert.pem -dsmsecurecredentials [PSCredential]$dsmcreds
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMDSMConnection{
     param(
@@ -411,7 +411,7 @@ function New-CMDSMConnection{
         PS> Get-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMDSMConnection{
     param(
@@ -513,7 +513,7 @@ function Get-CMDSMConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMDSMConnection{
     param(
@@ -622,7 +622,7 @@ function Update-CMDSMConnection{
         PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMDSMConnection{
     param(
@@ -704,7 +704,7 @@ function Remove-CMDSMConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing DSM connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMDSMConnection{
     param(
@@ -784,7 +784,7 @@ function Test-CMDSMConnection{
     .PARAMETER domain_id
         (Optional) If DSM user is restricted to a domain, provide domain id.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMDSMConnParameters{
     param(
@@ -879,7 +879,7 @@ function Test-CMDSMConnParameters{
         PS> Find-CMDSMConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Find-CMDSMConnectionNodes{
         param(
@@ -961,7 +961,7 @@ function Test-CMDSMConnParameters{
         PS> Add-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodename "dsm2.mydomain.local" -dsmcertfile .\dsm2_cert.pem
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Add-CMDSMConnectionNode{
         param(
@@ -1055,7 +1055,7 @@ function Test-CMDSMConnParameters{
     .EXAMPLE
         PS> Get-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Get-CMDSMConnectionNodes{
         param(
@@ -1138,7 +1138,7 @@ function Test-CMDSMConnParameters{
         PS> Remove-CMDSMConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Remove-CMDSMConnectionNode{
         param(
@@ -1233,7 +1233,7 @@ function Test-CMDSMConnParameters{
     .EXAMPLE
         PS> Update-CMDSMConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -dsmcertfile .\dsm2_cert.pem
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Update-CMDSMConnectionNode{
         param(

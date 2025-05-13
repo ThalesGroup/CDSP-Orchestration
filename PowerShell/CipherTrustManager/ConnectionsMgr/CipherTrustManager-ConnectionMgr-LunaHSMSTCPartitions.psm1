@@ -85,7 +85,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMLunaHSMSTCPartitions -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMLunaHSMSTCPartitions {
     param
@@ -209,7 +209,7 @@ function Find-CMLunaHSMSTCPartitions {
     .EXAMPLE
         PS> New-CMLunaHSMConnection -name "My Luna HSM Connection 1" -description "CCKM HA Group" -hostname 192.168.100.70,192.168.100.71 -serial 12345,98765 -label part1,part2 -copass "MyPassword" -ha_enabled -metadata "red:stop,green:go"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Register-CMLunaHSMSTCPartition{
     param(
@@ -310,7 +310,7 @@ function Register-CMLunaHSMSTCPartition{
         PS> Get-CMLunaHSMSTCPartition -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMLunaHSMSTCPartition{
     param(
@@ -388,7 +388,7 @@ function Get-CMLunaHSMSTCPartition{
         PS> Remove-CMLunaHSMSTCPartition -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMLunaHSMSTCPartition{
     param(

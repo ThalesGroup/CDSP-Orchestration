@@ -82,7 +82,7 @@ $target_uri = "/transparent-encryption"
         PS> New-CTEPolicyElement -policyElementType <policyElementType> -name <name> -type <type> source_list <source_list>
         This shows the minimum parameters necessary to create a CTE SignatureSet.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEPolicyElement {
     # classification_tags not supported yet
@@ -213,7 +213,7 @@ function New-CTEPolicyElement {
         PS> New-CTEElementsList -policyElementType <policyElementType> -directory <directory> -file <file> -signature <signature>
         This shows the minimum parameters necessary to create a CTE SignatureSet.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEElementsList {
     param(
@@ -353,7 +353,7 @@ function New-CTEElementsList {
         PS> Find-CTEPolicyElementsByType -policyElementType <policyElementType> -name <name>
         This will return all the Policy Elements of type policyElementType where name matches $name
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CTEPolicyElementsByType {
     param
@@ -431,7 +431,7 @@ function Find-CTEPolicyElementsByType {
         PS> Remove-CTEPolicyElement -policyElementType <policyElementType> -id <id>
         This will delete the CTE Policy Element with identifier id and type policyElementType
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CTEPolicyElement {
     param
@@ -498,7 +498,7 @@ function Remove-CTEPolicyElement {
         PS> Update-CTEPolicyElement -policyElementType <policyElementType> -id <id> -source_list <source_list>
         This shows the minimum parameters necessary to update a signatureset.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CTEPolicyElement {
     param
@@ -589,7 +589,7 @@ function Update-CTEPolicyElement {
         PS> Update-CTEPolicyElementAddElements -policyElementType <policyElementType> -id <id> -elementsList <elementsList>
         This shows the minimum parameters necessary to add elements to a CTE Policy Element Set.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CTEPolicyElementAddElements {
     param
@@ -678,7 +678,7 @@ function Update-CTEPolicyElementAddElements {
         PS> Remove-CTEPolicyElementDeleteElements -policyElementType <policyElementType> -id <id>
         This shows the parameters required to remove elements from a CTE Policy Element Set.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CTEPolicyElementDeleteElements {
     param
@@ -764,7 +764,7 @@ function Remove-CTEPolicyElementDeleteElements {
         PS> Update-CTEPolicyElementUpdateElementByIndex -policyElementType <policyElementType> -id <id> -elementIndex <index> -directory <directory> -file <file> -hdfs <hdfs> -include_subfolders <include_subfolders>
         This shows the parameters required to update the componet by Index within a CTE Policy Element Set.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CTEPolicyElementUpdateElementByIndex {
     param

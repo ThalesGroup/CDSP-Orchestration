@@ -65,7 +65,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 #
 #        List configuration
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMAkeylessConfiguration {
     param
@@ -123,7 +123,7 @@ function Get-CMAkeylessConfiguration {
 
         Clears an alarm by setting clearedAt to the current date, clearedBy to this user and alarm state to off.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMAkeylessConfiguration {
     param

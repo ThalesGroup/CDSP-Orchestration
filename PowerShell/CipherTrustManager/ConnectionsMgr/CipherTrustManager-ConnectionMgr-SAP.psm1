@@ -94,7 +94,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMSAPConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMSAPConnections {
     param
@@ -305,7 +305,7 @@ function Find-CMSAPConnections {
     .EXAMPLE
         PS> New-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -user_credentials $SAPUserObject -user_tenant mytenant
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMSAPConnection{
     param(
@@ -436,7 +436,7 @@ function New-CMSAPConnection{
         PS> Get-CMSAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSAPConnection{
     param(
@@ -530,7 +530,7 @@ function Get-CMSAPConnection{
     .EXAMPLE
         PS> Update-CMSAPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMSAPConnection{
     param(
@@ -664,7 +664,7 @@ function Update-CMSAPConnection{
         PS> Remove-CMSAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMSAPConnection{
     param(
@@ -746,7 +746,7 @@ function Remove-CMSAPConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing SAP Data Custodian connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSAPConnection{
     param(
@@ -828,7 +828,7 @@ function Test-CMSAPConnection{
     .PARAMETER technical_user_credentials
         (Optional) Pass a PowerShell Credential Object for the Technical User Credentials.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSAPConnParameters{
     param(
@@ -936,7 +936,7 @@ function Test-CMSAPConnParameters{
         PS> Find-CMSAPConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 

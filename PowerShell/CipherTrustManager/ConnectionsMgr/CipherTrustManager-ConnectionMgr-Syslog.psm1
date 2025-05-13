@@ -96,7 +96,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMSyslogConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMSyslogConnections {
     param
@@ -308,7 +308,7 @@ function Find-CMSyslogConnections {
     .EXAMPLE
         PS> New-CMSyslogConnection -name "My Syslog Connection 1" -target 192.168.1.50 -port 514 -transport tcp
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMSyslogConnection{
     param(
@@ -421,7 +421,7 @@ function New-CMSyslogConnection{
         PS> Get-CMSyslogConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSyslogConnection{
     param(
@@ -530,7 +530,7 @@ function Get-CMSyslogConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMSyslogConnection{
     param(
@@ -642,7 +642,7 @@ function Update-CMSyslogConnection{
         PS> Remove-CMSyslogConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMSyslogConnection{
     param(
@@ -724,7 +724,7 @@ function Remove-CMSyslogConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Syslog connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSyslogConnection{
     param(
@@ -803,7 +803,7 @@ function Test-CMSyslogConnection{
     .PARAMETER ca_certfile
         (Optional) Specify the filename for a PEM certificate for Syslog CA certificate. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSyslogConnParameters{
     param(

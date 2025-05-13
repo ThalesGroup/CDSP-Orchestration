@@ -87,7 +87,7 @@ public enum CM_AlarmSourceTypes {
 #
 #        Lists alarms. Results can be refined with query params.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMAlarms {
     param
@@ -230,7 +230,7 @@ function Find-CMAlarms {
 
         Clears an alarm by setting clearedAt to the current date, clearedBy to this user and alarm state to off.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Clear-CMAlarm {
     param
@@ -308,7 +308,7 @@ function Clear-CMAlarm {
 
        Acknowledges an alarm by setting acknowledgedAt to the current date and acknowledgedBy to this user.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Ack-CMAlarm {
     param

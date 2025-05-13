@@ -114,7 +114,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMConnection -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMConnections {
     param
@@ -341,7 +341,7 @@ function Find-CMConnections {
         PS> Remove-CMConnection -name "scpbackup" -force
         Removes a connection named "scpbackup" even if marked as "in use."
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMConnection {
     param
@@ -488,7 +488,7 @@ function Remove-CMConnection {
     .EXAMPLE
         PS> New-CMConnectionCSR -name "MyConnectionCert" -cn "mydevice.ciphertrustmanager.local" -size 2048 -dnsNames "mydevice.contoso.com,mydevice.contoso.local" -ipAddresses "10.0.0.1" -emailAddresses "support@contoso.com" -ou "Security" -o "Thales DIS" -l "Plantation" -st "Florida" -c "USA"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMConnectionCSR {
 param (

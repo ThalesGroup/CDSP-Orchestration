@@ -116,7 +116,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMAzureConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMAzureConnections {
     param
@@ -372,7 +372,7 @@ function Find-CMAzureConnections {
         This example uses certificate files for the External Certificate. It will import the files and convert to proper JSON format.
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMAzureConnection{
     param(
@@ -504,7 +504,7 @@ function New-CMAzureConnection{
         PS> Get-CMAzureConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMAzureConnection{
     param(
@@ -643,7 +643,7 @@ function Get-CMAzureConnection{
             }
         }
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+    https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMAzureConnection{
     param(
@@ -774,7 +774,7 @@ function Update-CMAzureConnection{
         PS> Remove-CMAzureConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMAzureConnection{
     param(
@@ -893,7 +893,7 @@ function Remove-CMAzureConnection{
     .PARAMETER management_url
         (Optional) Azure stack management URL
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMAzureConnection{
     param(
@@ -1026,7 +1026,7 @@ function Test-CMAzureConnection{
     .PARAMETER management_url
         (Optional) Azure stack management URL
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMAzureConnParameters{
     param(

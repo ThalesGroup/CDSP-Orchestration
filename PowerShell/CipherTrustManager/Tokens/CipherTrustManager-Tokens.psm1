@@ -100,7 +100,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 
         Returns a list of all CM Tokens owned by user (local|7fd1b8c9-dda6-46ea-a016-094e2f518356) and that were created before 30 Days ago.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMTokens {
     param
@@ -292,7 +292,7 @@ function Find-CMTokens {
 
         This creates a syslog connection overUser udp with the default message format of rfc5424
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMToken {
     [CmdletBinding(DefaultParameterSetName = 'by PSCredential')]
@@ -460,7 +460,7 @@ function New-CMToken {
 
         This will return the information related to the token of id `token_id`
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMToken {
     param
@@ -526,7 +526,7 @@ function Get-CMToken {
 
         Deletes the token tagged with the label "div42" by the token's id
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMToken {
     param
@@ -605,7 +605,7 @@ function Remove-CMToken {
 
         Revokes the specific refresh token
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Revoke-CMToken {
     [CmdletBinding(DefaultParameterSetName = 'by ClientID')]
@@ -725,7 +725,7 @@ function Revoke-CMToken {
 
         Returns the domain(s) for current user
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSelfDomains {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -777,7 +777,7 @@ function Get-CMSelfDomains {
 
         Rotates the token auth key, new key is effective after restart of CM services.    
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMAuthKeyRotate {
     param
@@ -866,7 +866,7 @@ function Set-CMAuthKeyRotate {
 
         Get the info related to current Auth Key.    
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMAuthKey {
     param()
@@ -915,7 +915,7 @@ function Get-CMAuthKey {
 
         Get the info related to current Auth Key.    
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMAkeylessToken {
     param()

@@ -65,7 +65,7 @@ $target_uri = "/transparent-encryption/policies"
         PS> New-CTEPolicy -name <name> -policy_type <policy_type> -data_transform_rules <data_transform_rules> -security_rules <security_rules>
         This shows the minimum parameters necessary to create a new CTE Policy. Policy Type can be Standard, LDT, IDT, Cloud_Object_Storage, or CSI
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEPolicy {
     param
@@ -180,7 +180,7 @@ function New-CTEPolicy {
         PS> $list = New-CTEDataTxRulesList -dataTxRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new Data Transformation rule and add to an array that can be associated with a CTE client policy
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEDataTxRulesList {
     param(
@@ -250,7 +250,7 @@ function New-CTEDataTxRulesList {
         PS> $list = New-CTEIDTKeyRulesList -idtKeyRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new In-Place data Transformation rule and add to an array that can be associated with a CTE client policy
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEIDTKeyRulesList {
     param(
@@ -324,7 +324,7 @@ function New-CTEIDTKeyRulesList {
         PS> New-CTEKeyRulesList -keyRulesList $list -key_id <key_id> -resource_set_id <resource_set_id>
         This shows the minimum parameters necessary to create a new key rule and add to an array that can be associated with a CTE client policy
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEKeyRulesList {
     param(
@@ -394,7 +394,7 @@ function New-CTEKeyRulesList {
         PS> New-CTELDTKeyRulesList -ldtKeyRulesList $list -current_key <current_key> -resource_set_id <resource_set_id> -transformation_key <transformation_key>
         This shows the minimum parameters necessary to create a new LDT rule. Current and transformation key is a HashTable of Key ID and ID type and add to an array that can be associated with a CTE client policy
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTELDTKeyRulesList {
     param(
@@ -484,7 +484,7 @@ function New-CTELDTKeyRulesList {
         PS> New-CTESecurityRulesList -securityRulesList $list -effect <effect> -action <action> -partial_match <partial_match> -resource_set_id <resource_set_id> -exclude_resource_set <exclude_resource_set>
         This shows the parameters to create a new Security Rule that allows or blocks access to a particular resource and add the same to an array that can be associated with a CTE client policy
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTESecurityRulesList {
     param(
@@ -584,7 +584,7 @@ function New-CTESecurityRulesList {
         PS> New-CTESignatureRulesList -signatureRulesList $list -signature_set_id <signature_set_id>
         This shows the parameters to create a new signature rule with minimum parameters i.e. signature_set_id and add the same to an array that can be associated with a CTE client policy
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTESignatureRulesList {
     param(
@@ -632,7 +632,7 @@ function New-CTESignatureRulesList {
     .EXAMPLE
         PS> $ldtKey = New-CTELDTKey -key_id <key_id> -key_type 'id'
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTELDTKey {
     param(
@@ -668,7 +668,7 @@ function New-CTELDTKey {
     .EXAMPLE
         PS> $meta = New-CTEPolicyMetadata -restrict_update <restrict_update>
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEPolicyMetadata {
     param(

@@ -81,7 +81,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 
         Returns a list of all users whose name starts with "Bob" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMUsers {
     param
@@ -282,7 +282,7 @@ function Find-CMUsers {
 
         This creates a User with basic settings. Password is provided in plaintext (least secure)
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMUser {
     [CmdletBinding(DefaultParameterSetName = 'by PSCredential')]
@@ -441,7 +441,7 @@ function New-CMUser {
 
         This will return the information related to the user of id `user_id`
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMUser {
     param
@@ -509,7 +509,7 @@ function Get-CMUser {
 
         Deletes the user `Bob Smith` by the user's id
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMUser {
     param
@@ -609,7 +609,7 @@ function Remove-CMUser {
 
         This updates a user's name, email, username and password by ID.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMUser {
     [CmdletBinding(DefaultParameterSetName = 'by PSCredential')]
@@ -762,7 +762,7 @@ function Set-CMUser {
 
         Returns the user resource for current user
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSelf {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -815,7 +815,7 @@ function Get-CMSelf {
 
         This updates current user's email address.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMSelf {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -914,7 +914,7 @@ function Set-CMSelf {
 
         This updates password for current user. Passwords are provided by plaintext (least secure)
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMSelfPwd {
     [CmdletBinding(DefaultParameterSetName = 'by PSCredential')]
@@ -1061,7 +1061,7 @@ function Set-CMSelfPwd {
 
         This disables user account lockout
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMGlobalPwdPolicies {
     param
@@ -1186,7 +1186,7 @@ function Set-CMGlobalPwdPolicies {
 
         This disables user account lockout
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMGlobalPwdPolicies {
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"

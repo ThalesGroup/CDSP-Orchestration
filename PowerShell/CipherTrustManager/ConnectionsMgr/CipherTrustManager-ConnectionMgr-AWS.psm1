@@ -99,7 +99,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMAWSConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMAWSConnections {
     param
@@ -366,7 +366,7 @@ function Find-CMAWSConnections {
         
         This example uses certificate files for the IAM Role Anywhere certificate. It will import the files and convert to proper JSON format.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+    https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMAWSConnection{
     param(
@@ -508,7 +508,7 @@ function New-CMAWSConnection{
         PS> Get-CMAWSConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMAWSConnection{
     param(
@@ -640,7 +640,7 @@ function Get-CMAWSConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMAWSConnection{
     param(
@@ -788,7 +788,7 @@ function Update-CMAWSConnection{
         PS> Remove-CMAWSConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMAWSConnection{
     param(
@@ -910,7 +910,7 @@ function Remove-CMAWSConnection{
     .PARAMETER anywhere_trust_anchor_arn
         (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
     .LINK
-    https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+    https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
     #>
 function Test-CMAWSConnection{
     param(
@@ -1078,7 +1078,7 @@ function Test-CMAWSConnection{
     .PARAMETER anywhere_trust_anchor_arn
         (Required if using IAM Role Anywhere) Specify AWS IAM Anywhere Trust Anchor ARN.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMAWSConnParameters{
     param(

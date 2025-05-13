@@ -89,7 +89,7 @@ $target_uri = "/transparent-encryption/clients"
         This shows the minimum parameters necessary to create a CTE client with default client_type FS (FileSystem), client_locked status as False, communication_enabled as False, password_creation_method as GENERATE, registration_allowed as False and system_locked as False.
         You can create CTE client by providing non default values for the above fields.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEClient {
     # classification_tags not supported yet
@@ -202,7 +202,7 @@ function New-CTEClient {
         PS> Find-CTEClients -name <name>
         This example will return all the CTE clients where name matches "name"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CTEClients {
     param
@@ -312,7 +312,7 @@ function Find-CTEClients {
         PS> Update-CTEClient -id <id> -enabled_capabilities 'LDT'
         This example will update the CTE client with id "id" and enable capabilities to allow Live Data Transformation
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CTEClient {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', 
@@ -474,7 +474,7 @@ function Update-CTEClient {
         PS> New-CTEGuardPointParams -guard_point_type <guard_point_type> -policy_id <policy_id>
         This example shows minimum parameters required to create a new GuardPoint Params data structure
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEGuardPointParams {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', 
@@ -569,7 +569,7 @@ function New-CTEGuardPointParams {
         PS> New-CTEClientGuardPoint -guard_paths <guard_paths> -guard_point_params <guard_point_params>
         This example shows minimum parameters required to create a new GuardPoint that includes an array of Guard Paths plus a HashTable type of variable that holds the GuardPoint params
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEGuardPoint {
     # classification_tags not supported yet
@@ -648,7 +648,7 @@ function New-CTEGuardPoint {
         PS> Find-CTEClientGuardPoints -client_id <client_id> -guard_path <guard_path>
         This example will return a list of all the GuardPoints where guard_path matches "guard_path" and within the client "client_id"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CTEGuardPoints {
     param
@@ -726,7 +726,7 @@ function Find-CTEGuardPoints {
         PS> Remove-CTEGuardPoint -client_id <client_id> -guard_point_id_list <guard_point_id_list>
         This example will unguard all the GuardPoints in the list guard_point_id_list from the client with ID client_id
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CTEGuardPoint {
     param

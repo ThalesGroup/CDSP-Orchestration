@@ -108,7 +108,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMElastisearchConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMElasticsearchConnections {
     param
@@ -321,7 +321,7 @@ function Find-CMElasticsearchConnections {
     .EXAMPLE
         PS> New-CMElasticsearchConnection -name "My Elasticsearch Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_securecreds $mycred -transport tls
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMElasticsearchConnection{
     param(
@@ -441,7 +441,7 @@ function New-CMElasticsearchConnection{
         PS> Get-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMElasticsearchConnection{
     param(
@@ -551,7 +551,7 @@ function Get-CMElasticsearchConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMElasticsearchConnection{
     param(
@@ -674,7 +674,7 @@ function Update-CMElasticsearchConnection{
         PS> Remove-CMElasticsearchConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMElasticsearchConnection{
     param(
@@ -777,7 +777,7 @@ function Remove-CMElasticsearchConnection{
             - tcp
             - tls
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMElasticsearchConnection{
     param(
@@ -863,7 +863,7 @@ function Test-CMElasticsearchConnection{
             - tcp
             - tls
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMElasticsearchConnParameters{
     param(

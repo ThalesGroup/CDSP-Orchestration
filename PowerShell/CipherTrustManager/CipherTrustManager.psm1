@@ -104,7 +104,7 @@ $KMS_NAME = "CipherTrust Manager"
     Enter Password : **********
 
     .LINK
-    Online version: https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+    Online version: https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Connect-CipherTrustManager {
@@ -200,7 +200,7 @@ function Connect-CipherTrustManager {
     PS> Connect-CipherTrustManager -server 10.23.104.40 -user "user1" -pass "P@ssw0rd!"
 
     .LINK
-    Online version: https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+    Online version: https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Disconnect-CipherTrustManager {

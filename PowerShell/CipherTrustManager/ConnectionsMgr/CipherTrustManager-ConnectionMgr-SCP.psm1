@@ -107,7 +107,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMSCPConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMSCPConnections {
     param
@@ -321,7 +321,7 @@ function Find-CMSCPConnections {
     .EXAMPLE
         PS> New-CMSCPConnection -name "My Backup Target" -target 192.168.1.19 -auth_method key -username backupuser -target_path "/opt/ciphertrust_backup" -public_key "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLMaZxKfKeEsEOrONz5gaIac+J9XA+JGTSDMWeA7dDl56EQcyv6nTKsEm2hO5iILGKJH1TBw+fiZOU+qWM8wZu4="
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMSCPConnection{
     param(
@@ -451,7 +451,7 @@ function New-CMSCPConnection{
         PS> Get-CMSCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSCPConnection{
     param(
@@ -546,7 +546,7 @@ function Get-CMSCPConnection{
     .EXAMPLE
         PS> Update-CMSCPConnection -name "My SAP Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMSCPConnection{
     param(
@@ -673,7 +673,7 @@ function Update-CMSCPConnection{
         PS> Remove-CMSCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMSCPConnection{
     param(
@@ -755,7 +755,7 @@ function Remove-CMSCPConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing SCP connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSCPConnection{
     param(
@@ -838,7 +838,7 @@ function Test-CMSCPConnection{
         Note: Use complete paths, not relative to user's home folder. 
         Example "/home/ubuntu/datafolder" or "/opt/cm_backups"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSCPConnParameters{
     param(
@@ -937,7 +937,7 @@ function Test-CMSCPConnParameters{
         PS> Find-CMSCPConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 

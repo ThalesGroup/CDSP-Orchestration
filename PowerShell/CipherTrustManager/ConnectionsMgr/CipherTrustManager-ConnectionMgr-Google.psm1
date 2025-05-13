@@ -109,7 +109,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMGCPConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMGCPConnections {
     param
@@ -315,7 +315,7 @@ function Find-CMGCPConnections {
         This example uses certificate files for the External Certificate. It will import the files and convert to proper JSON format.
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMGCPConnection{
     param(
@@ -415,7 +415,7 @@ function New-CMGCPConnection{
         PS> Get-CMGCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMGCPConnection{
     param(
@@ -514,7 +514,7 @@ function Get-CMGCPConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMGCPConnection{
     param(
@@ -617,7 +617,7 @@ function Update-CMGCPConnection{
         PS> Remove-CMGCPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMGCPConnection{
     param(
@@ -708,7 +708,7 @@ function Remove-CMGCPConnection{
         Filter the result based on the cloud name. 
             - GCP
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMGCPConnection{
     param(
@@ -802,7 +802,7 @@ function Test-CMGCPConnection{
     .PARAMETER key_file_file
         Specify a filename for the Google Private Key file.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMGCPConnParameters{
     param(

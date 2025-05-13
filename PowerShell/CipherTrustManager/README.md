@@ -25,7 +25,7 @@ Connect-CipherTrustManager `
     -domain <sub-domain_to_authenticate_into> #(optional)
 ```
 
-3. At this point, you are connected and authenticated so you can make any calls that the REST API and PowerShell Module supports
+3. At this point, you are connected and authenticated so you can make any calls that the REST API and PowerShell Module supports.
 
 ## What's in the Module so far
 

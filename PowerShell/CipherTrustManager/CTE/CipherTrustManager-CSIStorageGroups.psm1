@@ -50,7 +50,7 @@ $target_uri = "/transparent-encryption/csigroups"
         PS> New-CTECSIStorageGroup -k8s_namespace <k8s_namespace> -k8s_storage_class <k8s_storage_class> -name <name> -client_profile <client_profile>
         This shows the minimum parameters necessary to create a CSI Storage Group
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTECSIStorageGroup {
     param
@@ -139,7 +139,7 @@ function New-CTECSIStorageGroup {
         PS> Find-CTECSIStorageGroups -name <name>
         This method will return all the CSI Storage Groups created on the CipherTrust Manager matching the filter "name"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CTECSIStorageGroups {
     param
@@ -212,7 +212,7 @@ function Find-CTECSIStorageGroups {
         PS> Remove-CTECSIStorageGroup -sg_id <sg_id>
         This method will delete the CSI Storage Groups with ID "sg_id"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CTECSIStorageGroup {
     param
@@ -263,7 +263,7 @@ function Remove-CTECSIStorageGroup {
         PS> New-CTEAddClientsStorageGroup -sg_id <sg_id> -client_list <client_list>
         This method will add the elemets of client_list in the CSI Storage Group with ID "sg_id"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEAddClientsStorageGroup {
     # classification_tags not supported yet
@@ -329,7 +329,7 @@ function New-CTEAddClientsStorageGroup {
         PS> New-CTEAddGuardPoliciesStorageGroup -sg_id <sg_id> -policy_list <policy_list>
         This method will add the elemets of policy_list in the CSI Storage Group with ID "sg_id"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CTEAddGuardPoliciesStorageGroup {
     param

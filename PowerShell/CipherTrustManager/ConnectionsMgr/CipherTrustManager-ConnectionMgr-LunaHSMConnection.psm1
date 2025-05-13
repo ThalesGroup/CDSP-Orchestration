@@ -108,7 +108,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMLunaHSMConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMLunaHSMConnections {
     param
@@ -320,7 +320,7 @@ function Find-CMLunaHSMConnections {
     .EXAMPLE
         PS> New-CMLunaHSMConnection -name "My Luna HSM Connection 1" -description "CCKM HA Group" -hostname 192.168.100.70,192.168.100.71 -serial 12345,98765 -label part1,part2 -copass "MyPassword" -ha_enabled -metadata "red:stop,green:go"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMLunaHSMConnection{
     param(
@@ -442,7 +442,7 @@ function New-CMLunaHSMConnection{
         PS> Get-CMLunaHSMConnections -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMLunaHSMConnection{
     param(
@@ -538,7 +538,7 @@ function Get-CMLunaHSMConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMLunaHSMConnection{
     param(
@@ -642,7 +642,7 @@ function Update-CMLunaHSMConnection{
         PS> Remove-CMLunaHSMConnections -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMLunaHSMConnection{
     param(
@@ -738,7 +738,7 @@ function Remove-CMLunaHSMConnection{
         Explanation:
         This command will add an additional partition attached to "My Luna HSM Connection" with appropriate partition details.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Add-CMLunaHSMConnectionPartition{
     param(
@@ -834,7 +834,7 @@ function Add-CMLunaHSMConnectionPartition{
         Explanation:
         This command will add an additional partition attached to "My Luna HSM Connection" with appropriate partition details.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMLunaHSMConnectionPartition{
     param(
@@ -913,7 +913,7 @@ function Remove-CMLunaHSMConnectionPartition{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Luna HSM connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMLunaHSMConnection{
     param(
@@ -992,7 +992,7 @@ function Test-CMLunaHSMConnection{
     .PARAMETER ha_enabled
         This flag signifies if it is HighAvailability(HA) Group or not. The default is false.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMLunaHSMConnParameters{
     param(
@@ -1083,7 +1083,7 @@ function Test-CMLunaHSMConnParameters{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Luna HSM connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMLunaHSMConnectionStatus{
     param(

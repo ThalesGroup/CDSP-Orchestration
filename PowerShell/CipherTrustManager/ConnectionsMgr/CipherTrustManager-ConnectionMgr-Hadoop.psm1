@@ -94,7 +94,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMHadoopConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMHadoopConnections {
     param
@@ -311,7 +311,7 @@ function Find-CMHadoopConnections {
     .EXAMPLE
         PS> New-CMHadoopConnection -name "MyHadoopCluster" -nodename "node1" -hadoopcertfile .\knoxnode1cert.pem -knoxsecurecredentials [PSCredential]$knoxcreds
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMHadoopConnection{
     param(
@@ -438,7 +438,7 @@ function New-CMHadoopConnection{
         PS> Get-CMHadoopConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMHadoopConnection{
     param(
@@ -548,7 +548,7 @@ function Get-CMHadoopConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMHadoopConnection{
     param(
@@ -660,7 +660,7 @@ function Update-CMHadoopConnection{
         PS> Remove-CMHadoopConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMHadoopConnection{
     param(
@@ -742,7 +742,7 @@ function Remove-CMHadoopConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Hadoop connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMHadoopConnection{
     param(
@@ -820,7 +820,7 @@ function Test-CMHadoopConnection{
     .PARAMETER knoxsecurecredentials
         Supply a PSCredential object with the Knox username and password
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMHadoopConnParameters{
     param(
@@ -921,7 +921,7 @@ function Test-CMHadoopConnParameters{
         PS> Find-CMHadoopConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Find-CMHadoopConnectionNodes{
         param(
@@ -1009,7 +1009,7 @@ function Test-CMHadoopConnParameters{
         PS> Add-CMHadoopConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodename "node2" -hadoopcertfile .\hadoop2_cert.pem
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Add-CMHadoopConnectionNode{
         param(
@@ -1111,7 +1111,7 @@ function Test-CMHadoopConnParameters{
     .EXAMPLE
         PS> Get-CMHadoopConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Get-CMHadoopConnectionNodes{
         param(
@@ -1194,7 +1194,7 @@ function Test-CMHadoopConnParameters{
         PS> Remove-CMHadoopConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Remove-CMHadoopConnectionNode{
         param(
@@ -1297,7 +1297,7 @@ function Test-CMHadoopConnParameters{
     .EXAMPLE
         PS> Update-CMHadoopConnectionNode -id "27657168-c3fb-47a7-9cd7-72d69d48d48b" -nodeid "7c585e46-cc4b-4b6b-b456-e74aeb5d5aab" -hadoopcertfile .\node2_cert.pem
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
     function Update-CMHadoopConnectionNode{
         param(

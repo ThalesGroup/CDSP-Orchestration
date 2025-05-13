@@ -102,7 +102,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMLDAPConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMLDAPConnections {
     param
@@ -388,7 +388,7 @@ function Find-CMLDAPConnections {
     .EXAMPLE
         PS> New-CMLDAPConnection -name ricky.local -base_dn "DC=ricky,DC=local" -server_url "ldaps://lab2019dc.ricky.local:636" -user_login_attribute "sAMAccountName" -root_ca_file 'C:\myfiles\mydc-root.cer' -bindsecurecredentials $bindcreds
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMLDAPConnection{
     param(
@@ -534,7 +534,7 @@ function New-CMLDAPConnection{
         PS> Get-CMLDAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMLDAPConnection{
     param(
@@ -673,7 +673,7 @@ function Get-CMLDAPConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMLDAPConnection{
     param(
@@ -827,7 +827,7 @@ function Update-CMLDAPConnection{
         PS> Remove-CMLDAPConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMLDAPConnection{
     param(
@@ -909,7 +909,7 @@ function Remove-CMLDAPConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing LDAP connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMLDAPConnection{
     param(
@@ -1025,7 +1025,7 @@ function Test-CMLDAPConnection{
     .PARAMETER securetestcreds
         PS Credential object containing the User Credentials for testing a LDAP connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMLDAPConnParameters{
     param(
@@ -1167,7 +1167,7 @@ function Test-CMLDAPConnParameters{
         PS> Find-CMLDAPConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 

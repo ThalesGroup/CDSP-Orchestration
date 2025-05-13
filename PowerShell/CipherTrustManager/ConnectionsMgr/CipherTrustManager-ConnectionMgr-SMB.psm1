@@ -95,7 +95,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMSMBConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMSMBConnections {
     param
@@ -301,7 +301,7 @@ function Find-CMSMBConnections {
     .EXAMPLE
         PS> New-CMSMBConnection -name "My SMB Target" -target 192.168.1.18 -username smbuser -pass smbpassword 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMSMBConnection{
     param(
@@ -417,7 +417,7 @@ function New-CMSMBConnection{
         PS> Get-CMSMBConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSMBConnection{
     param(
@@ -512,7 +512,7 @@ function Get-CMSMBConnection{
     .EXAMPLE
         PS> Update-CMSMBConnection -name "My SAP Connection"  -target 192.168.1.18 -user newuser -pass newpass
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMSMBConnection{
     param(
@@ -635,7 +635,7 @@ function Update-CMSMBConnection{
         PS> Remove-CMSMBConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMSMBConnection{
     param(
@@ -719,7 +719,7 @@ function Remove-CMSMBConnection{
     .PARAMETER path
         Path of SMB share on the host
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSMBConnection{
     param(
@@ -809,7 +809,7 @@ function Test-CMSMBConnection{
     .PARAMETER technical_user_credentials
         (Optional) Pass a PowerShell Credential Object for the Technical User Credentials.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSMBConnParameters{
     param(
@@ -911,7 +911,7 @@ function Test-CMSMBConnParameters{
         PS> Find-CMSMBConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 

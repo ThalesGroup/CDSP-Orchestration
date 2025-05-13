@@ -61,7 +61,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 
         Returns this system's info attributes. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMInfo {
     param()
@@ -119,7 +119,7 @@ function Get-CMInfo {
 
         Returns the major and minor version numbers as an object 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMVersion {
     param()
@@ -159,7 +159,7 @@ function Get-CMVersion {
 
         This sets the name of the server to "server name".
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMName {
     param

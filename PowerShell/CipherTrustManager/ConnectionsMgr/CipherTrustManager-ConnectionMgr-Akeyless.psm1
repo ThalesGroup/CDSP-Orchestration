@@ -91,7 +91,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMAkeylessConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMAkeylessConnections {
     param
@@ -296,7 +296,7 @@ function Find-CMAkeylessConnections {
     .EXAMPLE
         PS> New-CMAkeylessConnection -name MyTestAKeylessConnection -description "This is my Test AKeyless Connection" -access_key_id abc123abc123 --access_key xyz987xyz987 -metadata "red:stop,:green:go,blue:ocean" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
         #>
 function New-CMAkeylessConnection{
     param(
@@ -389,7 +389,7 @@ function New-CMAkeylessConnection{
         PS> Get-CMAkeylessConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMAkeylessConnection{
     param(
@@ -486,7 +486,7 @@ function Get-CMAkeylessConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMAkeylessConnection{
     param(
@@ -588,7 +588,7 @@ function Update-CMAkeylessConnection{
         PS> Remove-CMAkeylessConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMAkeylessConnection{
     param(
@@ -669,7 +669,7 @@ function Remove-CMAkeylessConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Akeyless connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMAkeylessConnection{
     param(
@@ -738,7 +738,7 @@ function Test-CMAkeylessConnection{
     .PARAMETER access_key_id
         The ID of a key used for accessing the Akeyless server.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMAkeylessConnParameters{
     param(

@@ -99,7 +99,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
 
         Returns a list of all syslog connections that are using TLS for transport 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMSyslogs {
     param
@@ -218,7 +218,7 @@ function Find-CMSyslogs {
 
         This creates a syslog connection overUser udp with the default message format of rfc5424
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMSyslog {
     param
@@ -306,7 +306,7 @@ function New-CMSyslog {
 
         This will return the information related to the syslog connection of id `syslog_id`
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSyslog {
     param
@@ -377,7 +377,7 @@ function Get-CMSyslog {
 
         Deletes the `udp` syslog connection by the connection's id
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMSyslog {
     param
@@ -463,7 +463,7 @@ function Remove-CMSyslog {
 
         This updates a connection's transport type to tcp.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Set-CMSyslog {
     param

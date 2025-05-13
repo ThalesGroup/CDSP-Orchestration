@@ -94,7 +94,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMSalesforceConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMSalesforceConnections {
     param
@@ -336,7 +336,7 @@ function Find-CMSalesforceConnections {
     .EXAMPLE
         PS> New-CMSalesforceConnection -name "My Salesforce Connection" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMSalesforceConnection{
     param(
@@ -488,7 +488,7 @@ function New-CMSalesforceConnection{
         PS> Get-CMSalesforceConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMSalesforceConnection{
     param(
@@ -613,7 +613,7 @@ function Get-CMSalesforceConnection{
     .EXAMPLE
         PS> Update-CMSalesforceConnection -name "My Salesforce Connection" -api_endpoint "https://demo-kms-endpoint/kms/v2" -username new_user -user_secret new_secret
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMSalesforceConnection{
     param(
@@ -774,7 +774,7 @@ function Update-CMSalesforceConnection{
         PS> Remove-CMSalesforceConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMSalesforceConnection{
     param(
@@ -856,7 +856,7 @@ function Remove-CMSalesforceConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Salesforce connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSalesforceConnection{
     param(
@@ -955,7 +955,7 @@ function Test-CMSalesforceConnection{
     .PARAMETER tls_cert_key_pscredential
         Pass a PowerShell Credential Object for the TLS Client Private key.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMSalesforceConnParameters{
     param(
@@ -1087,7 +1087,7 @@ Specify the filename for a PEM certificate for the Mutual TLS Authentication cer
         PS> Find-CMSalesforceConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 

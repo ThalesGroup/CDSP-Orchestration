@@ -94,7 +94,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMOCIConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMOCIConnections {
     param
@@ -304,7 +304,7 @@ function Find-CMOCIConnections {
         PS> New-CMOCIConnection -name "My OCI Connection" -region ap-sydney-1 -user_ocid "ocid1.user.oc1..asdaaaaat2x4wy2jz4iat56kk7kqbzcevwyrasdty2bquujjhwcstmcfvbfq" -tenancy_ocid "ocid1.tenancy.oc1..7777aaaadixb52q2mvlsn634ql577776hb2vg7audpd4d4mcf5zluymff644" -fingerprint "c4:a9:89:47:21:11:11:ac:c4:a9:89:47:21:31:9e" -keyfile C:\Temp\MyOCIPrivateKey.key -pass <KeyFilePassPhrase>
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMOCIConnection{
     param(
@@ -438,7 +438,7 @@ function New-CMOCIConnection{
         PS> Get-CMOCIConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMOCIConnection{
     param(
@@ -537,7 +537,7 @@ function Get-CMOCIConnection{
     .EXAMPLE
         PS> Update-CMOCIConnection -name "My OCI Connection" -tenancy_ocid "ocid1.tenancy.oc1..aaaaaaaaggotgset73cbbtvi5kdhq3igriadqeqweqevldkff3vjpx43hpkncroa"
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMOCIConnection{
     param(
@@ -677,7 +677,7 @@ function Update-CMOCIConnection{
         PS> Remove-CMOCIConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMOCIConnection{
     param(
@@ -759,7 +759,7 @@ function Remove-CMOCIConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Oracle connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMOCIConnection{
     param(
@@ -841,7 +841,7 @@ function Test-CMOCIConnection{
     .PARAMETER securepass
         Pass a PowerShell Credential Object for the Private Key Passphrase when using an encrypted private key. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMOCIConnParameters{
     param(
@@ -949,7 +949,7 @@ function Test-CMOCIConnParameters{
         PS> Find-CMOCIConnectionNodes -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 

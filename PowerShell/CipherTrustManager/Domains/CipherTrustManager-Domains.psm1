@@ -63,7 +63,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         
         Result: MyDomain
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMDomainCurrent {
 
@@ -119,7 +119,7 @@ function Get-CMDomainCurrent {
         PS> Find-CMDomains -name tar*
         Returns a list of all Domains whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMDomains {
     param
@@ -227,7 +227,7 @@ function Find-CMDomains {
         PS> New-CMDomain -name MyDomain -admins "local|7fd1b8c9-dda6-46ea-a016-094e2f518356","contoso.com|myAdmin"
         Creates a domain with the name MyDomain with a two administrators in a comma-separated list. One administrator being local and the second from an LDAP Connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function New-CMDomain {
@@ -328,7 +328,7 @@ function New-CMDomain {
     .EXAMPLE
         PS> Remove-CMDomain -name MyDomain 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Remove-CMDomain {
@@ -415,7 +415,7 @@ function Remove-CMDomain {
         PS> Get-CMDomainSyslogRedirection
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Get-CMDomainSyslogRedirection {
@@ -472,7 +472,7 @@ function Get-CMDomainSyslogRedirection {
         PS> Update-CMDomainSyslogRedirection -status off
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Update-CMDomainSyslogRedirection {
@@ -553,7 +553,7 @@ function Update-CMDomainSyslogRedirection {
         PS> Update-CMDomainHSM -name "DEV" -hsm_kek_label MyNewKEK
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Update-CMDomainHSM {
@@ -655,7 +655,7 @@ function Update-CMDomainHSM {
         PS> Find-CMDomainKEKS -name "DEV"
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Find-CMDomainKEKS {
@@ -731,7 +731,7 @@ function Find-CMDomainKEKS {
         PS> Get-CMDomainKEK -name "MyDomain" -kekid "d0930205-bd38-4230-a46b-03075d85d400"
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Get-CMDomainKEK {
@@ -818,7 +818,7 @@ function Get-CMDomainKEK {
         PS> Update-CMDomainRotateKEK -name <DomainName> -retry
 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 
 function Update-CMDomainRotateKEK {

@@ -106,7 +106,7 @@ if($PSVersionTable.PSVersion.Major -ge 6){
         PS> Find-CMLokiConnections -name tar*
         Returns a list of all Connections whose name starts with "tar" 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Find-CMLokiConnections {
     param
@@ -319,7 +319,7 @@ function Find-CMLokiConnections {
     .EXAMPLE
         PS> New-CMLokiConnection -name "My Loki Connection 1" -target 192.168.1.50 -port 514 -ca_certfile CACert.pem -http_securecreds $mycred -transport tls
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function New-CMLokiConnection{
     param(
@@ -438,7 +438,7 @@ function New-CMLokiConnection{
         PS> Get-CMLokiConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Use the complete name of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Get-CMLokiConnection{
     param(
@@ -548,7 +548,7 @@ function Get-CMLokiConnection{
             }
         }
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Update-CMLokiConnection{
     param(
@@ -671,7 +671,7 @@ function Update-CMLokiConnection{
         PS> Remove-CMLokiConnection -id "27657168-c3fb-47a7-9cd7-72d69d48d48b"
         Using the id of the connection. 
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Remove-CMLokiConnection{
     param(
@@ -753,7 +753,7 @@ function Remove-CMLokiConnection{
     .PARAMETER id
         CipherTrust Manager "id" value of the existing Loki connection.
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMLokiConnection{
     param(
@@ -839,7 +839,7 @@ function Test-CMLokiConnection{
             - tcp
             - tls
     .LINK
-        https://github.com/thalescpl-io/CDSP_Orchestration/tree/main/PowerShell/CipherTrustManager
+        https://github.com/ThalesGroup/CDSP-Orchestration/tree/main/PowerShell
 #>
 function Test-CMLokiConnParameters{
     param(
