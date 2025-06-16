@@ -16,12 +16,13 @@
 # Module Variables
 #
 $CM_Session = [ordered]@{
-    KMS_IP    = $null
-    User      = $null
-    Pass      = $null
-    Domain    = $null
-    REST_URL  = $null
-    AuthToken = $null
+    KMS_IP      = $null
+    User        = $null
+    Pass        = $null
+    Domain      = $null
+    Auth_Domain = $null
+    REST_URL    = $null
+    AuthToken   = $null
     refresh_token = $null
 }
 #New-Variable -Name CM_Session -Value $CM_Session -Scope Script -Force
@@ -89,6 +90,12 @@ $KMS_NAME = "CipherTrust Manager"
     .PARAMETER domain
     (Optional) Specify the desired CipherTrust Manager Domain to work in.
 
+    .PARAMETER auth_domain
+    (Optional) Uses: 
+     -- CDSPaaS - Specify the DPOD Tenant ID
+     -- Domain-Local User Accounts - User accounts created directly in a domain and not at the root then assigned.
+
+
     .INPUTS
     None. You cannot pipe objects to Connect-CipherTrustManager.
 
@@ -124,7 +131,11 @@ function Connect-CipherTrustManager {
         [string] $refresh_token,
         [Parameter(Mandatory = $false,
         ValueFromPipelineByPropertyName = $true)] 
-        [string] $domain        
+        [string] $domain,
+        [Parameter(Mandatory = $false,
+        ValueFromPipelineByPropertyName = $true)] 
+        [string] $auth_domain  
+
     )
 
     Write-Debug "Start: $($MyInvocation.MyCommand.Name)"
@@ -156,6 +167,7 @@ function Connect-CipherTrustManager {
     }
 
     $CM_Session.Domain = $domain
+    $CM_Session.Auth_Domain = $auth_domain
 
     Write-Debug "Session Parameters: $($CM_Session | Format-Table | Out-String)"
 
